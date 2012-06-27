@@ -3,13 +3,17 @@ Contributors: tigroumeow
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 0.1
+Stable tag: 0.1.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
 == Description ==
 
 This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will now look beautiful and smooth on every device.
+
+In the case the resolution of the original images are not high enough, you will see a warning in the Media Library where you will be able to re-upload bigger images.
+
+It handles two different methods (for now) to serves the images to your visitors. Pick the one that works best with your hosting and environment.
 
 == Changelog ==
 
@@ -47,6 +51,8 @@ Thanks for asking! :p Please visit Totoro Times (http://www.totorotimes.com), an
 == Screenshots ==
 
 1. A new column in the Media Library.
+2. Basic Settings
+3. Advanced Settings
 
 == Wishlist ==
 
