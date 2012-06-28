@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smoothly on Retina displays.
-Version: 0.1.2
+Version: 0.1.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -48,7 +48,24 @@ register_activation_hook( __FILE__, 'wr2x_activate' );
  *
  */
 
+function wr2x_get_image_sizes() {
+	$sizes = array();
+	global $_wp_additional_image_sizes;
+	foreach (get_intermediate_image_sizes() as $s) {
+		if (isset($_wp_additional_image_sizes[$s])) {
+			$width = intval($_wp_additional_image_sizes[$s]['width']);
+			$height = intval($_wp_additional_image_sizes[$s]['height']);
+		} else {
+			$width = get_option($s.'_size_w');
+			$height = get_option($s.'_size_h');
+		}
+		$sizes[$s] = array( 'width' => $width, 'height' => $height );
+	}
+	return $sizes;
+}
+ 
 function wr2x_settings_page() {
+
     $settings_api = WeDevs_Settings_API::getInstance();
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
 	echo "<h1>WP Retina 2x</h1>";
@@ -103,11 +120,8 @@ function wr2x_admin_init() {
         )
     );
 	
-	global $_wp_additional_image_sizes;
-	$wpsizes = $_wp_additional_image_sizes;
+	$wpsizes = wr2x_get_image_sizes();
 	$sizes = array();
-	foreach ( get_intermediate_image_sizes() as $name => $attr )
-		$sizes["$attr"] = $attr;	
 	foreach ( $wpsizes as $name => $attr )
 		$sizes["$name"] = $name;
 	
@@ -228,7 +242,7 @@ function wr2x_wp_generate_attachment_metadata( $meta ) {
 
 function wr2x_generate_images( $meta ) {
 	require('vt_resize.php');
-	$sizes = $meta['sizes'];
+	$sizes = wr2x_get_image_sizes();
 	$originalfile = $meta['file'];
 	$uploads = wp_upload_dir();
 	$pathinfo = pathinfo( $originalfile );
@@ -238,13 +252,23 @@ function wr2x_generate_images( $meta ) {
 		if ( in_array( $name, $ignore ) ) {
 			continue;
 		}
-		$pathinfo = pathinfo( $attr['file'] );
-		$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
-		if ( file_exists( trailingslashit($basepath) . $retina_file ) ) {
+
+		// Is the file related to this size there?
+		$pathinfo = null;
+		$retina_file = null;
+		
+		if ($meta['sizes'][$name] && $meta['sizes'][$name]['file'] ) {
+			$pathinfo = pathinfo( $meta['sizes'][$name]['file'] );
+			$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+		}
+
+		if ( $retina_file && file_exists( trailingslashit($basepath) . $retina_file ) ) {
 			continue;
 		}
-		$crop = isset($attr['crop']) ? $attr['crop'] : false;
-		$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $attr['width'] * 2, $attr['height'] * 2, $crop, $retina_file );
+		if ( $retina_file ) {
+			$crop = isset($attr['crop']) ? $attr['crop'] : false;
+			$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $attr['width'] * 2, $attr['height'] * 2, $crop, $retina_file );
+		}
 	}
 
     return $meta;
@@ -287,12 +311,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
     $meta = wp_get_attachment_metadata($id);
 	$original_width = $meta['width'];
 	$original_height = $meta['height'];
-	
-	// TODO: Would be better to replace this with a WP API function.
-	global $_wp_additional_image_sizes;
-	$sizes = $_wp_additional_image_sizes;
-	$sizes = $meta['sizes'];
-	
+	$sizes = wr2x_get_image_sizes();
 	$required_files = true;
 	$required_pixels = 0;
 	$required_width = 0;
@@ -309,14 +328,20 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 			if ( in_array( $name, $ignore ) ) {
 				continue;
 			}
-			$pathinfo = pathinfo($attr['file']);
-			$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
-			if ( file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
+			
+			// Check if the file related to this size is present
+			$pathinfo = null;
+			$retina_file = null;
+			if ($meta['sizes'][$name] && $meta['sizes'][$name]['file']) {
+				$pathinfo = pathinfo($meta['sizes'][$name]['file']);
+				$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+			}
+
+			if ( $retina_file && file_exists( trailingslashit( $basepath ) . $retina_file ) )
 				continue;
-			}
-			else {
+			else
 				$required_files = false;
-			}
+			
 			if ($attr['width'] * $attr['height'] * 2 > $required_pixels) {
 				$required_width = $attr['width'] * 2;
 				$required_height = $attr['height'] * 2;
@@ -336,8 +361,8 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	else if ($required_width > $original_width || $required_height > $original_height) {
 		
 		echo "<span style='color: red; margin-bottom: 5px; display: block;'>ORIGINAL FILE IS TOO SMALL.</span>";
-		printf( "<span style='font-size: 9px; color: red;'>CURRENT: %d × %d</span><br />", $original_width, $original_height );
-		printf( "<span style='font-size: 9px; color: black;'>REQUIRED: %d × %d</span><br />", $required_width, $required_height );
+		printf( "<span style='font-size: 9px; color: red;'>CURRENT: %dpx × %dpx (%.2fmpx)</span><br />", $original_width, $original_height, ($original_width * $original_height) / 1000000 );
+		printf( "<span style='font-size: 9px; color: black;'>REQUIRED: %dpx × %dpx (%.2fmpx)</span><br />", $required_width, $required_height, ($required_width * $required_height) / 1000000 );
 		if (function_exists( 'enable_media_replace' )) {
 			$_GET["attachment_id"] = $id;
 			$form = enable_media_replace( "" );
