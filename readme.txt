@@ -3,7 +3,7 @@ Contributors: tigroumeow
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 0.1.4
+Stable tag: 0.1.6
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -20,8 +20,11 @@ It handles two different methods (for now) to serves the images to your visitors
 = 0.1 =
 * Very first release.
 
-= 0.4 =
+= 0.1.4 =
 * Fixed a minor bug that was displaying the wrong resolution in the Retina column in the Media Manager.
+
+= 0.1.6 =
+* Simplified the code of the server-side method.
 
 == Installation ==
 

@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smoothly on Retina displays.
-Version: 0.1.4
+Version: 0.1.6
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -65,7 +65,6 @@ function wr2x_get_image_sizes() {
 }
  
 function wr2x_settings_page() {
-
     $settings_api = WeDevs_Settings_API::getInstance();
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
 	echo "<h1>WP Retina 2x</h1>";
@@ -103,7 +102,6 @@ function wr2x_admin_menu() {
 function wr2x_admin_init() {
 
 	require( 'class.settings-api.php' );
-
 	if (delete_transient('wr2x_flush_rules')) {
 		global $wp_rewrite;
 		wr2x_generate_rewrite_rules( $wp_rewrite, true );
@@ -179,7 +177,11 @@ function wr2x_update_option( $option ) {
 function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	$method = wr2x_getoption( "method", "wr2x_advanced", "Retina-Images" );
 	if ($method == "Retina-Images") {
-		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', 'wp-content/plugins/wp-retina-2x/wr2x_image.php', 'top' );		
+		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', 'wp-content/plugins/wp-retina-2x/wr2x_image.php', 'top' );	
+		
+		
+		
+		
 	}
 	if ( $flush == true ) {
 		$wp_rewrite->flush_rules();
