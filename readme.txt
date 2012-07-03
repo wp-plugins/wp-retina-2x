@@ -1,9 +1,10 @@
 === WP Retina 2x ===
-Contributors: tigroumeow
+Contributors: TigrouMeow
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 0.1.6
+Stable tag: 0.1.8
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -25,6 +26,9 @@ It handles two different methods (for now) to serves the images to your visitors
 
 = 0.1.6 =
 * Simplified the code of the server-side method.
+
+= 0.1.8 =
+* Resolved PHP warnings and notices.
 
 == Installation ==
 

@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smoothly on Retina displays.
-Version: 0.1.6
+Version: 0.1.8
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -65,6 +65,7 @@ function wr2x_get_image_sizes() {
 }
  
 function wr2x_settings_page() {
+
     $settings_api = WeDevs_Settings_API::getInstance();
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
 	echo "<h1>WP Retina 2x</h1>";
@@ -102,6 +103,7 @@ function wr2x_admin_menu() {
 function wr2x_admin_init() {
 
 	require( 'class.settings-api.php' );
+
 	if (delete_transient('wr2x_flush_rules')) {
 		global $wp_rewrite;
 		wr2x_generate_rewrite_rules( $wp_rewrite, true );
@@ -177,11 +179,7 @@ function wr2x_update_option( $option ) {
 function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	$method = wr2x_getoption( "method", "wr2x_advanced", "Retina-Images" );
 	if ($method == "Retina-Images") {
-		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', 'wp-content/plugins/wp-retina-2x/wr2x_image.php', 'top' );	
-		
-		
-		
-		
+		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', 'wp-content/plugins/wp-retina-2x/wr2x_image.php', 'top' );		
 	}
 	if ( $flush == true ) {
 		$wp_rewrite->flush_rules();
@@ -279,6 +277,8 @@ function wr2x_generate_images( $meta ) {
 function wr2x_delete_images( $meta )
 {
 	$sizes = $meta['sizes'];
+	if ( !sizes || !is_array( $sizes ) )
+		return $meta;
 	$originalfile = $meta['file'];
 	$pathinfo = pathinfo( $originalfile );
 	$uploads = wp_upload_dir();
@@ -290,7 +290,7 @@ function wr2x_delete_images( $meta )
 			unlink( trailingslashit( $basepath ) . $retina_file );
 		}
 	}
-    return $metadata;
+    return $meta;
 }
 
 /**
@@ -365,7 +365,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 		echo "<span style='color: red; margin-bottom: 5px; display: block;'>ORIGINAL FILE IS TOO SMALL.</span>";
 		printf( "<span style='font-size: 9px; color: red;'>CURRENT: %dpx × %dpx (%.2fmpx)</span><br />", $original_width, $original_height, ($original_width * $original_height) / 1000000 );
 		printf( "<span style='font-size: 9px; color: black;'>REQUIRED: %dpx × %dpx (%.2fmpx)</span><br />", $required_width, $required_height, ($required_width * $required_height) / 1000000 );
-		if (function_exists( 'enable_media_replace' )) {
+		if ( function_exists( 'enable_media_replace' ) ) {
 			$_GET["attachment_id"] = $id;
 			$form = enable_media_replace( "" );
 			echo $form["enable-media-replace"]['html'];
