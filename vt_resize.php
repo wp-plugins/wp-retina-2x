@@ -21,7 +21,7 @@
  * @return array
  */
 if ( !function_exists( 'vt_resize') ) {
-	function vt_resize( $attach_id = null, $img_url = null, $width, $height, $crop = false, $newfile = null ) {
+	function vt_resize( $attach_id = null, $img_url = null, $width, $height, $crop, $newfile = null ) {
 
 		// this is an attachment, so we have the ID
 		if ( $attach_id ) {
