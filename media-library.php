@@ -60,9 +60,15 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 			else
 				$required_files = false;
 			
-			if ($attr['width'] * $attr['height'] * 2 > $required_pixels) {
-				$required_width = $attr['width'] * 2;
-				$required_height = $attr['height'] * 2;
+			if ( !( isset( $meta['sizes'] ) && isset ( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['width'] ) ) ) {
+				// There is a problem in the DB but let's avoid warnings from this
+				// plugin, this is outside the scope of it.
+				continue;
+			}
+			
+			if ( $meta['sizes'][$name]['width'] * $meta['sizes'][$name]['height'] * 2 > $required_pixels) {
+				$required_width = $meta['sizes'][$name]['width'] * 2;
+				$required_height = $meta['sizes'][$name]['height'] * 2;
 				$required_pixels = $required_width * $required_height;
 			}
 		}

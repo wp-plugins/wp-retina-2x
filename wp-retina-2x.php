@@ -102,30 +102,26 @@ function wr2x_retina_info( $id ) {
 				$pathinfo = pathinfo($meta['sizes'][$name]['file']);
 				$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
 			}
-			
 			// The retina file exists
 			if ( $retina_file && file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
 				$result[$name] = 'EXISTS';
 				continue;
 			}
-			
 			// The size file exists
 			else if ( $retina_file ) {
 				$result[$name] = 'PENDING';
 			}
-			
 			// None of the file exist
 			else {
 				$result[$name] = 'MISSING';
 				$required_files = false;
 			}
-			
 			// The retina file exists
-			if ($attr['width'] * $attr['height'] * 2 > $available_pixels) {
-				$required_width = $attr['width'] * 2;
-				$required_height = $attr['height'] * 2;
+			if ($meta['sizes'][$name]['width'] * 2 * $meta['sizes'][$name]['height'] * 2 > $available_pixels) {
+				$required_width = $meta['sizes'][$name]['width'] * 2;
+				$required_height = $meta['sizes'][$name]['height'] * 2;
 				$required_pixels = $required_width * $required_height;
-				$result[$name] = array( 'width' => $attr['width'] * 2, 'height' => $attr['height'] * 2, 'pixels' => $required_pixels );
+				$result[$name] = array( 'width' => $meta['sizes'][$name]['width'] * 2, 'height' => $meta['sizes'][$name]['height'] * 2, 'pixels' => $required_pixels );
 			}
 		}
 	}

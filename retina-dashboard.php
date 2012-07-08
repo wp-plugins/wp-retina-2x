@@ -20,7 +20,7 @@ function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
-	$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => -1 ) );
+	$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => 100 ) );
 	$results = array();
 	foreach ($media_query->posts as $post) {
 		$count++;
@@ -112,7 +112,5 @@ function wpr2x_wp_retina_2x() {
 	</table>
 	</div>
 	<?php
-
 }
-
 ?>
