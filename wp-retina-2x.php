@@ -156,17 +156,17 @@ function wr2x_generate_images( $meta ) {
 		$pathinfo = null;
 		$retina_file = null;
 		
-		if (isset( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['file'] ) ) {
+		if ( isset( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['file'] ) ) {
 			$pathinfo = pathinfo( $meta['sizes'][$name]['file'] );
 			$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
 		}
-
+		
 		if ( $retina_file && file_exists( trailingslashit($basepath) . $retina_file ) ) {
 			continue;
 		}
 		if ( $retina_file ) {
 			$crop = isset($attr['crop']) ? $attr['crop'] : false;
-			$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $attr['width'] * 2, $attr['height'] * 2, $crop, $retina_file );
+			$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
 		}
 	}
     return $meta;

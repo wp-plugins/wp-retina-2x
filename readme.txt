@@ -43,6 +43,7 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: the recommended resolution shown wasn't the most adequate one.
 * Fix: in a few cases, the .htaccess wasn't properly generated.
 * Fix: files were renamed to avoid conflicts.
+* Fix: there was sometimes an issue with vertical images.
 * Added: paging for the Retina Dashboard.
 * Added: 'Generate for all files' handles and shows if there are errors.
 

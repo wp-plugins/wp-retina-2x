@@ -102,7 +102,12 @@ function wr2x_wp_ajax_wr2x_generate_all() {
 	try {
 		$ids = array();
 		$total = 0;
-		$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => -1 ) );
+		$media_query = new WP_Query( array( 
+			'post_type' => 'attachment', 
+			'post_status' => 'inherit',
+			'posts_per_page' => -1,
+			'post_mime_type' => 'image'
+		) );
 		foreach ($media_query->posts as $post) {
 			array_push( $ids, $post->ID );
 			$total++;
