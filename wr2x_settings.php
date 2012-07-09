@@ -9,7 +9,6 @@ add_action( 'admin_init', 'wr2x_admin_init' );
  */
  
 function wr2x_settings_page() {
-
     $settings_api = WeDevs_Settings_API::getInstance();
 	echo '<div class="wrap">';
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
@@ -43,7 +42,7 @@ function wr2x_getoption( $option, $section, $default = '' ) {
  
 function wr2x_admin_init() {
 
-	require( 'class.settings-api.php' );
+	require( 'wr2x_class.settings-api.php' );
 
 	if (delete_transient('wr2x_flush_rules')) {
 		global $wp_rewrite;
@@ -134,7 +133,8 @@ function wr2x_update_option( $option ) {
 function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	$method = wr2x_getoption( "method", "wr2x_advanced", "Retina-Images" );
 	if ($method == "Retina-Images") {
-		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', 'wp-content/plugins/wp-retina-2x/wr2x_image.php', 'top' );		
+		$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
+		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', $handlerurl, 'top' );		
 	}
 	if ( $flush == true ) {
 		$wp_rewrite->flush_rules();

@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.2.1
+Version: 0.2.2
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -38,14 +38,14 @@ add_action( 'wp_ajax_wprx_generate', 'mfrh_wp_ajax_wprx_generate' );
 register_deactivation_hook( __FILE__, 'wr2x_deactivate' );
 register_activation_hook( __FILE__, 'wr2x_activate' );
 
-require('settings.php');
-require('ajax.php');
+require('wr2x_settings.php');
+require('wr2x_ajax.php');
 
 if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
-	require('retina-dashboard.php');
+	require('wr2x_retina-dashboard.php');
 
 if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
-	require('media-library.php');
+	require('wr2x_media-library.php');
 
 /**
  *
@@ -98,9 +98,15 @@ function wr2x_retina_info( $id ) {
 			// Check if the file related to this size is present
 			$pathinfo = null;
 			$retina_file = null;
-			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file'])) {
+			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
 				$pathinfo = pathinfo($meta['sizes'][$name]['file']);
 				$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+			}
+			// None of the file exist
+			else {
+				$result[$name] = 'MISSING';
+				$required_files = false;
+				continue;
 			}
 			// The retina file exists
 			if ( $retina_file && file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
@@ -108,14 +114,9 @@ function wr2x_retina_info( $id ) {
 				continue;
 			}
 			// The size file exists
-			else if ( $retina_file ) {
+			else if ( $retina_file )
 				$result[$name] = 'PENDING';
-			}
-			// None of the file exist
-			else {
-				$result[$name] = 'MISSING';
-				$required_files = false;
-			}
+			
 			// The retina file exists
 			if ($meta['sizes'][$name]['width'] * 2 * $meta['sizes'][$name]['height'] * 2 > $available_pixels) {
 				$required_width = $meta['sizes'][$name]['width'] * 2;
@@ -140,7 +141,7 @@ function wr2x_wp_generate_attachment_metadata( $meta ) {
 }
 
 function wr2x_generate_images( $meta ) {
-	require('vt_resize.php');
+	require('wr2x_vt_resize.php');
 	$sizes = wr2x_get_image_sizes();
 	$originalfile = $meta['file'];
 	$uploads = wp_upload_dir();

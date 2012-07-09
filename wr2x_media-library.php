@@ -31,58 +31,29 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	$original_width = $meta['width'];
 	$original_height = $meta['height'];
 	$sizes = wr2x_get_image_sizes();
+	
 	$required_files = true;
 	$required_pixels = 0;
-	$required_width = 0;
-	$required_height = 0;
-	$originalfile = get_attached_file( $id );
-	$pathinfo = pathinfo($originalfile);
-	$basepath = $pathinfo['dirname'];
-	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
-	
-	// Check if the original size can support the retina size for each size
-	if ( $sizes ) {
-		foreach ($sizes as $name => $attr) {
-			if ( in_array( $name, $ignore ) ) {
-				continue;
-			}
-			
-			// Check if the file related to this size is present
-			$pathinfo = null;
-			$retina_file = null;
-			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file'])) {
-				$pathinfo = pathinfo($meta['sizes'][$name]['file']);
-				$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
-			}
-
-			if ( $retina_file && file_exists( trailingslashit( $basepath ) . $retina_file ) )
-				continue;
-			else
-				$required_files = false;
-			
-			if ( !( isset( $meta['sizes'] ) && isset ( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['width'] ) ) ) {
-				// There is a problem in the DB but let's avoid warnings from this
-				// plugin, this is outside the scope of it.
-				continue;
-			}
-			
-			if ( $meta['sizes'][$name]['width'] * $meta['sizes'][$name]['height'] * 2 > $required_pixels) {
-				$required_width = $meta['sizes'][$name]['width'] * 2;
-				$required_height = $meta['sizes'][$name]['height'] * 2;
-				$required_pixels = $required_width * $required_height;
-			}
+	$info = wr2x_retina_info( $id );
+	foreach ( $info as $name => $attr ) {
+		if ( $attr == "EXISTS" )
+			continue;
+		if ( is_array( $attr ) && $attr['pixels'] > $required_pixels ) {
+			$required_width = $attr['width'];
+			$required_height = $attr['height'];
+			$required_pixels = $attr['pixels'];
+			$required_files = false;
 		}
+		else if ( $attr == 'PENDING' )
+			$required_files = false;
 	}
-
-	// Shows the result
+	
+	// Displays the result
 	echo "<p id='wr2x_attachment_$id' style='margin-bottom: 2px;'>";
-	if ( !$sizes ) {
-		echo "<span style='color: green;'>NO FILES.</span>";
-	}
-	else if ( $required_files ) {
+	if ( $required_files ) {
 		echo "<img style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
 	}
-	else if ($required_width > $original_width || $required_height > $original_height) {
+	else if ( $required_pixels > 0 )  {
 		echo "<img title='Please upload a bigger original image.' style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
 			"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -6px;'>Original too small (< " . $required_width . "×" . $required_height . ")</span>";
 		if ( function_exists( 'enable_media_replace' ) ) {

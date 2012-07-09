@@ -36,7 +36,15 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Resolved more PHP warning and notices.
 
 = 0.2.1 =
-* Removed 'error_reporting' (triggers warnings and notices with other plugins)
+* Removed 'error_reporting' (triggers warnings and notices with other plugins).
+* Fix: on uninstall/disable, the .htaccess will be updated properly.
+
+= 0.2.2
+* Fix: the recommended resolution shown wasn't the most adequate one.
+* Fix: in a few cases, the .htaccess wasn't properly generated.
+* Fix: files were renamed to avoid conflicts.
+* Added: paging for the Retina Dashboard.
+* Added: 'Generate for all files' handles and shows if there are errors.
 
 == Installation ==
 

@@ -1,12 +1,7 @@
 <?php
 
+	/* http://retina-images.complexcompulsions.com */
 	/* Version: 1.3 - now with more cache */
-	
-	define('DEBUG',              false);    // Write debugging information to a log file
-	define('SEND_ETAG',          true);     // You will want to disable this if you load balance multiple servers 
-	define('SEND_EXPIRES',       true);     // 
-	define('SEND_CACHE_CONTROL', true);     // 
-	define('CACHE_TIME',         24*60*60); // default: 1 day
 
 	$document_root  = $_SERVER['DOCUMENT_ROOT'];
 	$requested_uri  = parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH);

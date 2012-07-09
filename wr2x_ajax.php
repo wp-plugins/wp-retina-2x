@@ -36,9 +36,14 @@ function wr2x_admin_head() {
 			jQuery('#wr2x_progression').text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
-				ids = reply.ids;
-				jQuery('#wr2x_progression').html(current + "/" + ids.length);
-				wr2x_process_next();
+				if ((typeof reply.error) == 'string') {
+					jQuery('#wr2x_progression').html('Error: ' + reply.error);
+				}
+				else {
+					ids = reply.ids;
+					jQuery('#wr2x_progression').html(current + "/" + ids.length);
+					wr2x_process_next();
+				}
 			});
 		}
 	
@@ -93,18 +98,26 @@ function wr2x_admin_head() {
  */
 
 function wr2x_wp_ajax_wr2x_generate_all() {
-	$ids = array();
-	$total = 0;
-	$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => -1 ) );
-	foreach ($media_query->posts as $post) {
-		array_push( $ids, $post->ID );
-		$total++;
-	}
 	$reply = array();
-	$reply['ids'] = $ids;
-	$reply['total'] = $total;
-	echo json_encode( $reply );
-	die;
+	try {
+		$ids = array();
+		$total = 0;
+		$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => -1 ) );
+		foreach ($media_query->posts as $post) {
+			array_push( $ids, $post->ID );
+			$total++;
+		}
+		
+		$reply['ids'] = $ids;
+		$reply['total'] = $total;
+		echo json_encode( $reply );
+		die;
+	}
+	catch (Exception $e) {
+		$reply['error'] = $e->getMessage();
+		echo json_encode( $reply );
+		die;
+	}
 }
  
 function wr2x_wp_ajax_wr2x_generate() {

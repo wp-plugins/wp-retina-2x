@@ -18,9 +18,16 @@ function wr2x_admin_menu_dashboard () {
 function wpr2x_wp_retina_2x() {
 
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
+	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
-	$media_query = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'posts_per_page' => 100 ) );
+	$posts_per_page = get_option('posts_per_page');
+	$media_query = new WP_Query( array( 
+		'post_type' => 'attachment', 
+		'post_status' => 'inherit',
+		'posts_per_page' => -1
+		) );
+	
 	$results = array();
 	foreach ($media_query->posts as $post) {
 		$count++;
@@ -35,7 +42,14 @@ function wpr2x_wp_retina_2x() {
 		}
 		if ( $view == 'issues' && $has_issue == false )
 			continue;
-		array_push( $results, array( 'post' => $post, 'info' => $info ) );
+		
+		if ( $view == 'issues' ) {
+			if ( $issues > ( ( $paged - 1 ) * $posts_per_page ) && $issues <= ( ( $paged ) * $posts_per_page ) )
+				array_push( $results, array( 'post' => $post, 'info' => $info ) );
+		} else {
+			if ( $count > ( ( $paged - 1 ) * $posts_per_page ) && $count <= ( ( $paged ) * $posts_per_page ) )
+				array_push( $results, array( 'post' => $post, 'info' => $info ) );
+		}
 	}
 	?>
 	<div class='wrap'>
@@ -44,6 +58,17 @@ function wpr2x_wp_retina_2x() {
 	<p></p>
 	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
 	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button).", 'wp-retina-2x'); ?></p>
+	
+	<div style='float: right; padding-top: 10px;'>
+	<?php
+	$pagescount = (($view == 'issues' ? $issues : $count ) / $posts_per_page) + 1;
+	if ( $pagescount > 2 )
+		for ( $i = 1; $i < $pagescount; $i++ ) {
+			echo '<a href="?page=wp-retina-2x&view=' . $view . '&paged=' . $i  . '"' . ( ( $paged == $i) ? ' style="font-weight: bold; font-decoration:none;"' : ' style="font-decoration:none;"' ) . ' />' . $i . '</a> ';
+		}
+	?>
+	</div>
+	
 	<ul class="subsubsub">
 		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=all'>All</a><span class="count">(<?php echo $count; ?>)</span></li> |
 		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=issues'>Issues</a><span class="count">(<?php echo $issues; ?>)</span></li>
