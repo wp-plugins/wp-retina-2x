@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -39,7 +39,7 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Removed 'error_reporting' (triggers warnings and notices with other plugins).
 * Fix: on uninstall/disable, the .htaccess will be updated properly.
 
-= 0.2.2
+= 0.2.2 =
 * Fix: the recommended resolution shown wasn't the most adequate one.
 * Fix: in a few cases, the .htaccess wasn't properly generated.
 * Fix: files were renamed to avoid conflicts.
