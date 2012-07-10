@@ -3,8 +3,8 @@ Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
-Tested up to: 3.4
-Stable tag: 0.2.2
+Tested up to: 3.4.1
+Stable tag: 0.2.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -46,6 +46,9 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: there was sometimes an issue with vertical images.
 * Added: paging for the Retina Dashboard.
 * Added: 'Generate for all files' handles and shows if there are errors.
+
+= 0.2.4 =
+* Fix: SQL optimization & memory usage huge improvement.
 
 == Installation ==
 

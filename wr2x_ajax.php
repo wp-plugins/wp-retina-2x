@@ -102,17 +102,20 @@ function wr2x_wp_ajax_wr2x_generate_all() {
 	try {
 		$ids = array();
 		$total = 0;
-		$media_query = new WP_Query( array( 
-			'post_type' => 'attachment', 
-			'post_status' => 'inherit',
-			'posts_per_page' => -1,
-			'post_mime_type' => 'image'
-		) );
-		foreach ($media_query->posts as $post) {
-			array_push( $ids, $post->ID );
+		global $wpdb;
+		$postids = $wpdb->get_col( $wpdb->prepare ( "
+			SELECT p.ID
+			FROM $wpdb->posts p
+			WHERE post_status = 'inherit'
+			AND post_type = 'attachment'
+			AND ( post_mime_type = 'image/jpeg' OR
+				post_mime_type = 'image/png' OR
+				post_mime_type = 'image/gif' )
+		" ) );
+		foreach ($postids as $id) {
+			array_push( $ids, $id );
 			$total++;
 		}
-		
 		$reply['ids'] = $ids;
 		$reply['total'] = $total;
 		echo json_encode( $reply );

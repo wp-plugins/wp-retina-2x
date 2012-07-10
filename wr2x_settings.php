@@ -12,6 +12,7 @@ function wr2x_settings_page() {
     $settings_api = WeDevs_Settings_API::getInstance();
 	echo '<div class="wrap">';
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
+	
 	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x</h2>";
 	
 	if ( $method == 'retina.js' ) {

@@ -16,22 +16,28 @@ function wr2x_admin_menu_dashboard () {
 }
  
 function wpr2x_wp_retina_2x() {
-
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
-	$posts_per_page = get_option('posts_per_page');
-	$media_query = new WP_Query( array( 
-		'post_type' => 'attachment', 
-		'post_status' => 'inherit',
-		'posts_per_page' => -1
-		) );
 	
+	$posts_per_page = 10; 
+	// TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
+	
+	global $wpdb;
+	$postids = $wpdb->get_col( $wpdb->prepare ( "
+		SELECT p.ID
+		FROM $wpdb->posts p
+		WHERE post_status = 'inherit'
+		AND post_type = 'attachment'
+		AND ( post_mime_type = 'image/jpeg' OR
+			post_mime_type = 'image/png' OR
+			post_mime_type = 'image/gif' )
+	" ) );
 	$results = array();
-	foreach ($media_query->posts as $post) {
+	foreach ($postids as $id) {
 		$count++;
-		$info = wr2x_retina_info( $post->ID );
+		$info = wr2x_retina_info( $id );
 		$has_issue = false;
 		foreach ($info as $aindex => $aval) {
 			if ( is_array( $aval ) || $aval == 'PENDING' ) {
@@ -42,13 +48,14 @@ function wpr2x_wp_retina_2x() {
 		}
 		if ( $view == 'issues' && $has_issue == false )
 			continue;
-		
 		if ( $view == 'issues' ) {
-			if ( $issues > ( ( $paged - 1 ) * $posts_per_page ) && $issues <= ( ( $paged ) * $posts_per_page ) )
+			if ( $issues > ( ( $paged - 1 ) * $posts_per_page ) && $issues <= ( ( $paged ) * $posts_per_page ) ) {
+				$post = get_post( $id );
 				array_push( $results, array( 'post' => $post, 'info' => $info ) );
-		} else {
-			if ( $count > ( ( $paged - 1 ) * $posts_per_page ) && $count <= ( ( $paged ) * $posts_per_page ) )
-				array_push( $results, array( 'post' => $post, 'info' => $info ) );
+			}
+		} else if ( $count > ( ( $paged - 1 ) * $posts_per_page ) && $count <= ( ( $paged ) * $posts_per_page ) ) {
+			$post = get_post( $id );
+			array_push( $results, array( 'post' => $post, 'info' => $info ) );
 		}
 	}
 	?>
