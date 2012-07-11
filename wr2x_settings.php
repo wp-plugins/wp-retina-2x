@@ -135,7 +135,7 @@ function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	$method = wr2x_getoption( "method", "wr2x_advanced", "Retina-Images" );
 	if ($method == "Retina-Images") {
 		$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
-		add_rewrite_rule( '.*\.(jpe?g|gif|png|bmp)', $handlerurl, 'top' );		
+		add_rewrite_rule( '.*\.(jpg|jpeg|gif|png|bmp)', $handlerurl, 'top' );		
 	}
 	if ( $flush == true ) {
 		$wp_rewrite->flush_rules();
