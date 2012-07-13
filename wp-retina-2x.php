@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
 add_action( 'wp_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
@@ -47,6 +47,67 @@ if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
 if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
 	require('wr2x_media-library.php');
 
+	
+/**
+ *
+ * ISSUES CALCULATION AND FUNCTIONS
+ *
+ */ 
+ 
+function wr2x_get_issues() {
+	$issues = get_transient( 'wr2x_issues' );
+	if ( !$issues || !is_array( $issues ) ) {
+		$issues = array();
+		set_transient( 'wr2x_issues', $issues );
+	}
+	return $issues;
+}
+ 
+// CHECK IF THE 'INFO' OBJECT CONTAINS ISSUE (RETURN TRUE OR FALSE)
+function wr2x_info_has_issues( $info ) {
+	foreach ( $info as $aindex => $aval ) {
+		if ( is_array( $aval ) || $aval == 'PENDING' )
+			return true;
+	}
+	return false;
+}
+ 
+function wr2x_calculate_issues() {
+	global $wpdb;
+	$postids = $wpdb->get_col( $wpdb->prepare ( "
+		SELECT p.ID
+		FROM $wpdb->posts p
+		WHERE post_status = 'inherit'
+		AND post_type = 'attachment'
+		AND ( post_mime_type = 'image/jpeg' OR
+			post_mime_type = 'image/png' OR
+			post_mime_type = 'image/gif' )
+	" ) );
+	$issues = array();
+	foreach ( $postids as $id ) {
+		$info = wr2x_retina_info( $id );
+		if ( wr2x_info_has_issues( $info ) )
+			array_push( $issues, $id );
+	}
+	set_transient( 'wr2x_issues', $issues );
+}
+
+function wr2x_add_issue( $attachmentId ) {
+	$issues = wr2x_get_issues();
+	if ( !in_array( $attachmentId, $issues ) ) {
+		array_push( $issues, $attachmentId );
+		set_transient( 'wr2x_issues', $issues );
+	}
+	return $issues;
+}
+	
+function wr2x_remove_issue( $attachmentId ) {
+	$issues = array_diff( wr2x_get_issues(), array( $attachmentId ) );
+	set_transient( 'wr2x_issues', $issues );
+	return $issues;
+}
+
+	
 /**
  *
  * WP RETINA 2X CORE
@@ -85,16 +146,16 @@ function wr2x_retina_info( $id ) {
 	$sizes = wr2x_get_image_sizes();
 	$required_files = true;
 	$originalfile = get_attached_file( $id );
-	$pathinfo = pathinfo($originalfile);
+	$pathinfo = pathinfo( $originalfile );
 	$basepath = $pathinfo['dirname'];
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 	if ( $sizes ) {
 		foreach ($sizes as $name => $attr) {
+			
 			if ( in_array( $name, $ignore ) ) {
 				$result[$name] = 'IGNORED';
 				continue;
 			}
-			
 			// Check if the file related to this size is present
 			$pathinfo = null;
 			$retina_file = null;
@@ -166,7 +227,18 @@ function wr2x_generate_images( $meta ) {
 		}
 		if ( $retina_file ) {
 			$crop = isset($attr['crop']) ? $attr['crop'] : false;
-			$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+			// Maybe that new image is exactly the size of the original image.
+			// In that case, let's make a copy of it.
+			if ( $meta['sizes'][$name]['width'] * 2 == $meta['width'] && $meta['sizes'][$name]['height'] * 2 == $meta['height'] ) {
+				$originalfile = $meta['file'];
+				$pathinfo = pathinfo( $originalfile );
+				$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
+				$file = trailingslashit( $basepath ) . $pathinfo['filename'] . "." . $pathinfo['extension'];
+				copy ( $file, trailingslashit( $basepath ) . $retina_file );
+			}
+			// Otherwise let's resize.
+			else
+				$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
 		}
 	}
     return $meta;

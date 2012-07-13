@@ -9,7 +9,7 @@ add_action( 'admin_menu', 'wr2x_admin_menu_dashboard' );
  */
 
 function wr2x_admin_menu_dashboard () {
-	$flagged = 0;
+	$flagged = count( wr2x_get_issues() );
 	$warning_title = "Retina files";
 	$menu_label = sprintf( __( 'Retina Dashboard %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
 	add_media_page( 'WP Retina 2x', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
@@ -18,67 +18,75 @@ function wr2x_admin_menu_dashboard () {
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
+	$refresh = isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0;
+	if ( $refresh )
+		wr2x_calculate_issues();
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
-	
-	$posts_per_page = 10; 
-	// TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
-	
-	global $wpdb;
-	$postids = $wpdb->get_col( $wpdb->prepare ( "
-		SELECT p.ID
-		FROM $wpdb->posts p
-		WHERE post_status = 'inherit'
-		AND post_type = 'attachment'
-		AND ( post_mime_type = 'image/jpeg' OR
+	$posts_per_page = 10; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
+	$issues = wr2x_get_issues();
+	if ( $view == 'issues' ) {
+		global $wpdb;
+		$totalcount = $wpdb->get_var( $wpdb->prepare( "
+			SELECT COUNT(*)
+			FROM $wpdb->posts p
+			WHERE post_status = 'inherit'
+			AND post_type = 'attachment'
+			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-	" ) );
-	$results = array();
-	foreach ($postids as $id) {
-		$count++;
-		$info = wr2x_retina_info( $id );
-		$has_issue = false;
-		foreach ($info as $aindex => $aval) {
-			if ( is_array( $aval ) || $aval == 'PENDING' ) {
-				$has_issue = true;
-				$issues++;
-				break;
-			}
-		}
-		if ( $view == 'issues' && $has_issue == false )
-			continue;
-		if ( $view == 'issues' ) {
-			if ( $issues > ( ( $paged - 1 ) * $posts_per_page ) && $issues <= ( ( $paged ) * $posts_per_page ) ) {
-				$post = get_post( $id );
-				array_push( $results, array( 'post' => $post, 'info' => $info ) );
-			}
-		} else if ( $count > ( ( $paged - 1 ) * $posts_per_page ) && $count <= ( ( $paged ) * $posts_per_page ) ) {
-			$post = get_post( $id );
-			array_push( $results, array( 'post' => $post, 'info' => $info ) );
-		}
+		" ) );
+		$postin = count( $issues ) < 1 ? array( -1 ) : $issues;
+		$query = new WP_Query( 
+			array( 
+				'post_status' => 'inherit',
+				'post_type' => 'attachment',
+				'post__in' => $postin
+			)
+		);
+	} 
+	else {
+		$query = new WP_Query( 
+			array( 
+				'post_status' => 'inherit',
+				'post_type' => 'attachment',
+				'post_mime_type' => 'image'
+			)
+		);
+		$totalcount = $query->found_posts;
 	}
+	$results = array();
+	$count = $query->found_posts;
+	$pagescount = $query->max_num_pages;
+	foreach ( $query->posts as $post ) {
+		$info = wr2x_retina_info( $post->ID );
+		array_push( $results, array( 'post' => $post, 'info' => $info ) );		
+	}
+	
 	?>
 	<div class='wrap'>
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>Retina Dashboard</h2>
 	<p></p>
-	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
+	
+	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Scan for issues", 'wp-retina-2x'); ?></a>
+	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
 	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button).", 'wp-retina-2x'); ?></p>
 	
 	<div style='float: right; padding-top: 10px;'>
+	<div class='tablenav-pages'>
 	<?php
-	$pagescount = (($view == 'issues' ? $issues : $count ) / $posts_per_page) + 1;
 	if ( $pagescount > 2 )
 		for ( $i = 1; $i < $pagescount; $i++ ) {
 			echo '<a href="?page=wp-retina-2x&view=' . $view . '&paged=' . $i  . '"' . ( ( $paged == $i) ? ' style="font-weight: bold; font-decoration:none;"' : ' style="font-decoration:none;"' ) . ' />' . $i . '</a> ';
 		}
 	?>
 	</div>
+	</div>
 	
 	<ul class="subsubsub">
-		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=all'>All</a><span class="count">(<?php echo $count; ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=issues'>Issues</a><span class="count">(<?php echo $issues; ?>)</span></li>
+		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=all'>All</a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=issues'>Issues</a><span class="count">(<?php echo count( $issues ); ?>)</span></li>
 	</ul>
 	<table class='wp-list-table widefat fixed media'>
 		<thead><tr>
@@ -88,6 +96,7 @@ function wpr2x_wp_retina_2x() {
 				echo "<th class='manage-column'>" . $name . "</th>";
 			}
 			echo "<th class='manage-column'>Generate</th>";
+			echo "<th class='manage-column'>Ignore</th>";
 			if ( function_exists( 'enable_media_replace' ) ) {
 				echo "<th class='manage-column'>Upload</th>";
 			}
@@ -128,7 +137,7 @@ function wpr2x_wp_retina_2x() {
 					echo "</td>";
 				}
 				echo "<td><a style='position: relative; top: 3px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "Generate", 'wp-retina-2x' ) . "</a></td>";
-				
+				echo "<td><a style='position: relative; top: 3px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "Ignore", 'wp-retina-2x' ) . "</a></td>";
 				if ( function_exists( 'enable_media_replace' ) ) {
 					echo "<td style='padding-top: 5px; padding-bottom: 0px;'>";
 					$_GET["attachment_id"] = $attr['post']->ID;

@@ -76,6 +76,8 @@ if ( !function_exists( 'vt_resize') ) {
 		
 		// checking if the file size is larger than the target size
 		// if it is smaller or the same size, stop right here and return
+		
+		// ADD FOR WP RETINA 2x: WE ACTUALLY WANT A "RESIZE" EVEN IT IF IS THE SAME SIZE
 		if ( $image_src[1] > $width ) {
 
 			// the file is larger, check if the resized version already exists (for $crop = true but will also work for $crop = false if the sizes match)
