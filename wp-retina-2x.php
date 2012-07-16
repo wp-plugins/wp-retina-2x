@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
 add_action( 'wp_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
@@ -71,7 +71,7 @@ function wr2x_info_has_issues( $info ) {
 	}
 	return false;
 }
- 
+
 function wr2x_calculate_issues() {
 	global $wpdb;
 	$postids = $wpdb->get_col( $wpdb->prepare ( "
@@ -100,13 +100,47 @@ function wr2x_add_issue( $attachmentId ) {
 	}
 	return $issues;
 }
-	
+
 function wr2x_remove_issue( $attachmentId ) {
 	$issues = array_diff( wr2x_get_issues(), array( $attachmentId ) );
 	set_transient( 'wr2x_issues', $issues );
 	return $issues;
 }
 
+// IGNORE
+
+function wr2x_get_ignores( $force = false ) {
+	static $ignores = -1;
+	if ( $ignores > -1 && !$force )
+		return $ignores;
+	$ignores = get_transient( 'wr2x_ignores' );
+	if ( !$ignores || !is_array( $ignores ) ) {
+		$ignores = array();
+		set_transient( 'wr2x_ignores', $ignores );
+	}
+	return $ignores;
+}
+
+function wr2x_is_ignore( $attachmentId ) {
+	$ignores = wr2x_get_ignores();
+	return in_array( $attachmentId, wr2x_get_ignores() );
+}
+
+function wr2x_remove_ignore( $attachmentId ) {
+	$ignores = array_diff( wr2x_is_ignore(), array( $attachmentId ) );
+	set_transient( 'wr2x_ignores', $ignores );
+	return $ignores;
+}
+
+function wr2x_add_ignore( $attachmentId ) {
+	$ignores = wr2x_get_ignores();
+	if ( !in_array( $attachmentId, $ignores ) ) {
+		array_push( $ignores, $attachmentId );
+		set_transient( 'wr2x_ignores', $ignores );
+	}
+	wr2x_remove_issue( $attachmentId );
+	return $ignores;
+}
 	
 /**
  *
