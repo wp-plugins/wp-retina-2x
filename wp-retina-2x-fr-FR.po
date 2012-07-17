@@ -1,0 +1,111 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Retina 2x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-11 18:03+0900\n"
+"PO-Revision-Date: 2012-07-12 13:14+0900\n"
+"Last-Translator: Jordy Meow <inscr@meow.fr>\n"
+"Language-Team: Jordy Meow <inscr@meow.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: wr2x_ajax.php:27
+msgid "Done."
+msgstr "Terminé."
+
+#: wr2x_ajax.php:36
+#: wr2x_ajax.php:53
+msgid "Please wait..."
+msgstr "Patientez SVP..."
+
+#: wr2x_ajax.php:85
+msgid "ERROR"
+msgstr "ERREUR"
+
+#: wr2x_media-library.php:68
+msgid "Not created yet."
+msgstr "Pas encore créé."
+
+#: wr2x_media-library.php:69
+#: wr2x_retina-dashboard.php:130
+msgid "Generate"
+msgstr "Générer"
+
+#: wr2x_retina-dashboard.php:14
+#, php-format
+msgid "Retina Dashboard %s"
+msgstr "Retina Dashboard %s"
+
+#: wr2x_retina-dashboard.php:66
+msgid "Generate for all files"
+msgstr "Générer tous les fichiers"
+
+#: wr2x_retina-dashboard.php:67
+msgid "This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button)."
+msgstr "Cet écran vous permet de vérifier pour quels médias les fichiers Retina n'ont pas encore été créés. Vous pouvez ensuite créer les fichiers indépendemment ou pour l'ensemble d'entre-eux."
+
+#: wr2x_settings.php:56
+msgid "Basics"
+msgstr "Basique"
+
+#: wr2x_settings.php:60
+msgid "Advanced"
+msgstr "Avancé"
+
+#: wr2x_settings.php:73
+msgid "Disabled Sizes"
+msgstr "Tailles désactivés"
+
+#: wr2x_settings.php:74
+msgid "The checked sizes will not be generated for Retina displays."
+msgstr "Les tailles sélectionnés ne seront pas prises en compte pour Retina."
+
+#: wr2x_settings.php:80
+msgid "Auto Generate"
+msgstr "Auto-Génération"
+
+#: wr2x_settings.php:81
+msgid "Generate Retina images automatically when images are uploaded to the Media Library."
+msgstr "Génération automatique des fichiers Retina dès que vous uploadez ou upgradez des médias."
+
+#: wr2x_settings.php:89
+msgid "Method"
+msgstr "Méthode"
+
+#: wr2x_settings.php:90
+msgid ""
+"The <b>server-side method</b> is very fast and efficient. However, depending on the cache system you are using (including services like Cloudflare) you might encounter issues. Please contact me if that is the case.\n"
+"                The <b>client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution one will be retrieved if available. This method is not efficient and quite slow."
+msgstr ""
+"La <b>méthode côté serveur</b> est très rapide et optimal. Cependant, selon votre système de caching (et tout particulièrement si vous utilisez Cloudflare), ça ne fonctionnera peut-être pas correctement. Contactez-moi si c'est le cas.\n"
+"                La <b>méthode côté client</b> est très fiable, fonctionne dans tous les cas et utilise seulement un JavaScript. Cependant, dans le cas de l'utilisation d'un écran Retina, les requêtes vers le serveur seront doublées, et la bande passante exagérée. C'est une méthode moins rapide et performante mais c'est cependant la méthode utilisée sur le site d'Apple."
+
+#: wr2x_settings.php:101
+msgid "Debug Mode"
+msgstr "Mode Debug"
+
+#: wr2x_settings.php:102
+msgid "If checked, the client will be always served Retina images. Convenient for testing."
+msgstr "Si sélectionné, les images Retina seront toujours délivrées. Idéal pour vos tests."
+
+#: wr2x_settings.php:108
+msgid "Hide 'Retina' column"
+msgstr "Cacher la colonne 'Retina'"
+
+#: wr2x_settings.php:109
+msgid "Will hide the 'Retina Column' from the Media Library."
+msgstr "La colonne Retina ne s'affichera plus dans la Media Library."
+
+#: wr2x_settings.php:115
+msgid "Hide Retina Dashboard"
+msgstr "Cacher le Retina Dashboard"
+
+#: wr2x_settings.php:116
+msgid "Doesn't show the Retina Dashboard menu and tools."
+msgstr "Le Retina Dashboard ne s'affichera plus dans les menus."
+
