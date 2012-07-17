@@ -9,6 +9,12 @@ add_action( 'admin_menu', 'wr2x_admin_menu_dashboard' );
  */
 
 function wr2x_admin_menu_dashboard () {
+	$refresh = isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0;
+	$ignore = isset ( $_GET[ 'ignore' ] ) ? $_GET[ 'ignore' ] : false;
+	if ( $ignore )
+		wr2x_add_ignore( $ignore );
+	if ( $refresh )
+		wr2x_calculate_issues();
 	$flagged = count( wr2x_get_issues() );
 	$warning_title = "Retina files";
 	$menu_label = sprintf( __( 'Retina 2x %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
@@ -18,12 +24,6 @@ function wr2x_admin_menu_dashboard () {
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
-	$refresh = isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0;
-	$ignore = isset ( $_GET[ 'ignore' ] ) ? $_GET[ 'ignore' ] : false;
-	if ( $ignore )
-		wr2x_add_ignore( $ignore );
-	if ( $refresh )
-		wr2x_calculate_issues();
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
 	$posts_per_page = 10; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
@@ -135,6 +135,12 @@ function wpr2x_wp_retina_2x() {
 			<?php
 			foreach ($results as $index => $attr) {
 				$meta = wp_get_attachment_metadata($attr['post']->ID);
+				
+				// Let's clean the issues status
+				if ( $view != 'issues' ) {
+					wr2x_update_issue_status( $attr['post']->ID, $issues, $attr['info'] );
+				}
+				
 				$original_width = $meta['width'];
 				$original_height = $meta['height'];
 				echo "<tr>";

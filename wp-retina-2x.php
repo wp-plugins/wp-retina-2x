@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.2.6
+Version: 0.2.8
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -33,11 +33,12 @@ add_filter( 'wp_generate_attachment_metadata', 'wr2x_wp_generate_attachment_meta
 add_action( 'delete_attachment', 'wr2x_delete_attachment' );
 add_filter( 'update_option', 'wr2x_update_option' );
 add_filter( 'generate_rewrite_rules', 'wr2x_generate_rewrite_rules' );
-add_action( 'wp_ajax_wprx_generate', 'mfrh_wp_ajax_wprx_generate' );
+add_action( 'wp_ajax_wprx_generate', 'mfrh_wp_ajax_wprx_generate' );	
 
 register_deactivation_hook( __FILE__, 'wr2x_deactivate' );
 register_activation_hook( __FILE__, 'wr2x_activate' );
 
+require('wr2x_functions.php');
 require('wr2x_settings.php');
 require('wr2x_ajax.php');
 
@@ -46,13 +47,30 @@ if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
 
 if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
 	require('wr2x_media-library.php');
-
 	
 /**
  *
  * ISSUES CALCULATION AND FUNCTIONS
  *
  */ 
+
+ 
+// UPDATE THE ISSUE STATUS OF THIS ATTACHMENT
+function wr2x_update_issue_status( $attachmentId, $issues = null, $info = null ) {
+	if ( wr2x_is_ignore( $attachmentId ) )
+		return;
+	if ( $issues == null )
+		$issues = wr2x_get_issues();
+	if ( $info == null )
+		$info = wr2x_retina_info( $attachmentId );
+	$consideredIssue = in_array( $attachmentId, $issues );
+	$realIssue = wr2x_info_has_issues( $info );
+	if ( $consideredIssue && !$realIssue )
+		wr2x_remove_issue( $attachmentId );
+	else if ( !$consideredIssue && $realIssue )
+		wr2x_add_issue( $attachmentId );
+	return $realIssue;
+}
  
 function wr2x_get_issues() {
 	$issues = get_transient( 'wr2x_issues' );
@@ -93,6 +111,8 @@ function wr2x_calculate_issues() {
 }
 
 function wr2x_add_issue( $attachmentId ) {
+	if ( wr2x_is_ignore( $attachmentId ) )
+		return;
 	$issues = wr2x_get_issues();
 	if ( !in_array( $attachmentId, $issues ) ) {
 		array_push( $issues, $attachmentId );
@@ -101,18 +121,17 @@ function wr2x_add_issue( $attachmentId ) {
 	return $issues;
 }
 
-function wr2x_remove_issue( $attachmentId ) {
+function wr2x_remove_issue( $attachmentId, $onlyIgnore = false ) {
 	$issues = array_diff( wr2x_get_issues(), array( $attachmentId ) );
 	set_transient( 'wr2x_issues', $issues );
+	if ( !$onlyIgnore )
+		wr2x_remove_ignore( $attachmentId );
 	return $issues;
 }
 
 // IGNORE
 
 function wr2x_get_ignores( $force = false ) {
-	static $ignores = -1;
-	if ( $ignores > -1 && !$force )
-		return $ignores;
 	$ignores = get_transient( 'wr2x_ignores' );
 	if ( !$ignores || !is_array( $ignores ) ) {
 		$ignores = array();
@@ -127,7 +146,8 @@ function wr2x_is_ignore( $attachmentId ) {
 }
 
 function wr2x_remove_ignore( $attachmentId ) {
-	$ignores = array_diff( wr2x_is_ignore(), array( $attachmentId ) );
+	$ignores = wr2x_get_ignores();
+	$ignores = array_diff( $ignores, array( $attachmentId ) );
 	set_transient( 'wr2x_ignores', $ignores );
 	return $ignores;
 }
@@ -138,7 +158,7 @@ function wr2x_add_ignore( $attachmentId ) {
 		array_push( $ignores, $attachmentId );
 		set_transient( 'wr2x_ignores', $ignores );
 	}
-	wr2x_remove_issue( $attachmentId );
+	wr2x_remove_issue( $attachmentId, true );
 	return $ignores;
 }
 	
@@ -227,6 +247,7 @@ function wr2x_retina_info( $id ) {
 function wr2x_delete_attachment( $attach_id ) {
 	$meta = wp_get_attachment_metadata( $attach_id );
 	wr2x_delete_images( $meta );
+	wr2x_remove_issue( $attach_id );
 }
  
 function wr2x_wp_generate_attachment_metadata( $meta ) {
@@ -243,6 +264,7 @@ function wr2x_generate_images( $meta ) {
 	$pathinfo = pathinfo( $originalfile );
 	$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+	$issue = false;
 	foreach ( $sizes as $name => $attr ) {
 		if ( in_array( $name, $ignore ) ) {
 			continue;
@@ -260,7 +282,7 @@ function wr2x_generate_images( $meta ) {
 			continue;
 		}
 		if ( $retina_file ) {
-			$crop = isset($attr['crop']) ? $attr['crop'] : false;
+			$crop = isset( $attr['crop'] ) ? $attr['crop'] : false;
 			// Maybe that new image is exactly the size of the original image.
 			// In that case, let's make a copy of it.
 			if ( $meta['sizes'][$name]['width'] * 2 == $meta['width'] && $meta['sizes'][$name]['height'] * 2 == $meta['height'] ) {
@@ -271,10 +293,22 @@ function wr2x_generate_images( $meta ) {
 				copy ( $file, trailingslashit( $basepath ) . $retina_file );
 			}
 			// Otherwise let's resize.
-			else
+			else {
 				$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+			}
+			if ( !file_exists( trailingslashit( $basepath ) . $retina_file ) )
+				$issue = true;
 		}
 	}
+	
+	// Checks attachment ID + issues
+	$id = wr2x_get_attachment_id( $meta['file'] );
+	if ( !$id )
+		return $meta;
+	if ( $issue )
+		wr2x_add_issue( $id );
+	else
+		wr2x_remove_issue( $id );
     return $meta;
 }
 

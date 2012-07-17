@@ -49,13 +49,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	}
 	
 	// Let's clean the issues status
-	$issues = wr2x_get_issues();
-	$consideredIssue = in_array( $id, $issues );
-	$realIssue = wr2x_info_has_issues( $info );
-	if ( $consideredIssue && !$realIssue )
-		wr2x_remove_issue( $id );
-	else if ( !$consideredIssue && $realIssue )
-		wr2x_add_issue( $id );
+	wr2x_update_issue_status( $attr['post']->ID, null, $info );
 	
 	// Displays the result
 	echo "<p id='wr2x_attachment_$id' style='margin-bottom: 2px;'>";

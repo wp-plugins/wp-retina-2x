@@ -10,7 +10,6 @@ add_action( 'wp_ajax_wr2x_generate_all', 'wr2x_wp_ajax_wr2x_generate_all' );
  */
 
 function wr2x_admin_head() {
-	
 	?>
 	<script type="text/javascript" >
 	
