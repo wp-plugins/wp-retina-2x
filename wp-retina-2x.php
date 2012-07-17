@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.2.8
+Version: 0.2.9
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -233,7 +233,7 @@ function wr2x_retina_info( $id ) {
 				$result[$name] = 'PENDING';
 			
 			// The retina file exists
-			if ($meta['sizes'][$name]['width'] * 2 * $meta['sizes'][$name]['height'] * 2 > $available_pixels) {
+			if ( $meta['sizes'][$name]['width'] * 2 >= $original_width || $meta['sizes'][$name]['height'] * 2 >= $original_height ) {
 				$required_width = $meta['sizes'][$name]['width'] * 2;
 				$required_height = $meta['sizes'][$name]['height'] * 2;
 				$required_pixels = $required_width * $required_height;
@@ -294,7 +294,7 @@ function wr2x_generate_images( $meta ) {
 			}
 			// Otherwise let's resize.
 			else {
-				$image = vt_resize( null, trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+				$image = wr2x_vt_resize( trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
 			}
 			if ( !file_exists( trailingslashit( $basepath ) . $retina_file ) )
 				$issue = true;

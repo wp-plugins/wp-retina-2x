@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4
-Stable tag: 0.2.8
+Stable tag: 0.2.9
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -51,6 +51,9 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Added: optimization and enhancement of the issues management.
 * Added: a little counter icon to show the number of issues.
 * Added: an 'IGNORE' button to hide issues that should not be.
+
+= 0.2.9 =
+* Fix: in a few cases, the retina images were not generated (for no apparent reasons).
 
 == Installation ==
 

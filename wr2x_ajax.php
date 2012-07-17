@@ -52,7 +52,7 @@ function wr2x_admin_head() {
 			jQuery('#wr2x_generate_button_' + attachmentId).text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				if (retinaDashboard) {
-					jQuery('#wr2x_generate_button_' + attachmentId).html("Generate");
+					jQuery('#wr2x_generate_button_' + attachmentId).html("GENERATE");
 					var reply = jQuery.parseJSON(response);
 					jQuery.each(reply, function (index, sizes) {
 						var index = index;
@@ -66,7 +66,7 @@ function wr2x_admin_head() {
 							else if (rsize == 'IGNORED')
 								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'prohibition-small.png'; ?>' />");
 							else if (jQuery.isPlainObject(rsize))
-								jQuery('#wr2x_' + size + '_' + index).html("<img title='Please upload a bigger original image.' style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'exclamation.png'; ?>' /><span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'>< " + rsize.width + "×" + rsize.height + "</span>");
+								jQuery('#wr2x_' + size + '_' + index).html("<img title='Please upload a bigger original image.' style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'exclamation.png'; ?>' /><span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " + rsize.width + "×" + rsize.height + "</span>");
 							else {
 								jQuery('#wr2x_' + size + '_' + index).html(rsize);
 							}

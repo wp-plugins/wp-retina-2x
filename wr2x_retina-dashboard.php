@@ -120,14 +120,15 @@ function wpr2x_wp_retina_2x() {
 	<table class='wp-list-table widefat fixed media'>
 		<thead><tr>
 			<?php
-			echo "<th class='manage-column'>Title</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana;'>Title</th>";
 			foreach ($sizes as $name => $attr) {
-				echo "<th class='manage-column'>" . $name . "</th>";
+				echo "<th style='font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
 			}
-			echo "<th class='manage-column'>Generate</th>";
-			echo "<th class='manage-column'>Ignore</th>";
+			
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>Actions</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 62px;'></th>";
 			if ( function_exists( 'enable_media_replace' ) ) {
-				echo "<th class='manage-column'>Upload</th>";
+				echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
 			}
 			?>
 		</tr></thead>
@@ -152,7 +153,7 @@ function wpr2x_wp_retina_2x() {
 					echo "<td id='wr2x_" . $aindex .  "_" . $attr['post']->ID . "'>";
 					if ( is_array( $aval ) ) {
 						echo "<img title='Please upload a bigger original image.' style='margin-top: 3px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
-						"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'>< " . $aval['width'] . "×" . $aval['height'] . "</span>";
+						"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " . $aval['width'] . "×" . $aval['height'] . "</span>";
 					}
 					else if ( $aval == 'EXISTS' ) {
 						echo "<img style='margin-top: 3px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
@@ -171,13 +172,13 @@ function wpr2x_wp_retina_2x() {
 					}
 					echo "</td>";
 				}
-				echo "<td><a style='position: relative; top: 3px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "Generate", 'wp-retina-2x' ) . "</a></td>";
-				echo "<td><a style='position: relative; top: 3px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "Ignore", 'wp-retina-2x' ) . "</a></td>";
+				echo "<td><a style='position: relative; top: 3px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a></td>";
+				echo "<td><a style='position: relative; top: 3px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a></td>";
 				if ( function_exists( 'enable_media_replace' ) ) {
 					echo "<td style='padding-top: 5px; padding-bottom: 0px;'>";
 					$_GET["attachment_id"] = $attr['post']->ID;
 					$form = enable_media_replace( "" );
-					echo str_replace( "Upload a new file", "Upload", $form["enable-media-replace"]['html'] );
+					echo str_replace( "Upload a new file", "UPLOAD", $form["enable-media-replace"]['html'] );
 					echo "</td>";
 				}
 				
