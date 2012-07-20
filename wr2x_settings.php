@@ -11,15 +11,21 @@ add_action( 'admin_init', 'wr2x_admin_init' );
 function wr2x_settings_page() {
     $settings_api = WeDevs_Settings_API::getInstance();
 	echo '<div class="wrap">';
-	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
+	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	
 	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x</h2>";
 	
 	if ( $method == 'retina.js' ) {
-		echo "<p><span style='color: orange;'>Current method: <u>Client-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.</p>";
+		echo "<p><span style='color: blue;'>Current method: <u>Client-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.</p>";
 	}
 	if ( $method == 'Retina-Images' ) {
-		echo "<p><span style='color: green;'>Current method: Server-side.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.</p>";
+		echo "<p><span style='color: blue;'>Current method: <u>Server-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.";
+		if ( defined( 'MULTISITE' ) && MULTISITE == true  )
+			echo " <span style='color: red;'>By the way, you are also using a <b>WordPress Network installation</b>. The server-side might not work for you, so <b>please try the client-side method instead</b>. If you really want to use this method, you will have to work on your .htaccess manually.</span>";
+		echo "</p>";
+		
+		if ( !get_option('permalink_structure') )
+		echo "<p><span style='color: red;'>The permalinks are not enabled. They need to be enabled in order to use the server-side method.</span>";
 	}
 	
 	if ( !function_exists( 'enable_media_replace' ) ) {
@@ -90,7 +96,7 @@ function wr2x_admin_init() {
                 'desc' => __( 'The <b>server-side method</b> is very fast and efficient. However, depending on the cache system you are using (including services like Cloudflare) you might encounter issues. Please contact me if that is the case.
                 The <b>client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution one will be retrieved if available. This method is not efficient and quite slow.', 'wp-retina-2x' ),
                 'type' => 'radio',
-                'default' => 'Retina-Images',
+                'default' => 'retina.js',
                 'options' => array(
 					'Retina-Images' => 'Server-side: Retina-Images (https://github.com/Retina-Images/Retina-Images)',
 					'retina.js' => 'Client-side: Retina.js (http://retinajs.com/)'
@@ -132,7 +138,8 @@ function wr2x_update_option( $option ) {
 }
 
 function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
-	$method = wr2x_getoption( "method", "wr2x_advanced", "Retina-Images" );
+	global $wp_rewrite;
+	$method = wr2x_getoption( "method", "wr2x_advanced", "retina.js" );
 	if ($method == "Retina-Images") {
 		$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
 		add_rewrite_rule( '.*\.(jpg|jpeg|gif|png|bmp)', $handlerurl, 'top' );		

@@ -49,7 +49,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	}
 	
 	// Let's clean the issues status
-	wr2x_update_issue_status( $attr['post']->ID, null, $info );
+	wr2x_update_issue_status( $id, null, $info );
 	
 	// Displays the result
 	echo "<p id='wr2x_attachment_$id' style='margin-bottom: 2px;'>";

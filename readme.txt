@@ -3,8 +3,8 @@ Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
-Tested up to: 3.4
-Stable tag: 0.2.9
+Tested up to: 3.4.1
+Stable tag: 0.3.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -54,6 +54,12 @@ It handles two different methods to serves the images to your visitors. Pick the
 
 = 0.2.9 =
 * Fix: in a few cases, the retina images were not generated (for no apparent reasons).
+
+= 0.3.0 =
+* Fix: was not generating the images properly on multisite WordPress installs.
+* Added: warning message if using the server-side method without the pretty permalinks.
+* Added: warning message if using the server-side method on a multisite WordPress install.
+* Changed: the client-method (retina.js) is now used by default.
 
 == Installation ==
 

@@ -34,7 +34,6 @@
 			}
 		}
 
-
 		// Send cache headers
 		if (SEND_CACHE_CONTROL) {
 			header('Cache-Control: private, max-age='.CACHE_TIME, true);  

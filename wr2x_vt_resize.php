@@ -6,37 +6,14 @@
  * Modified by Jordy Meow for WP Retina 2x
  */
 
-function wr2x_vt_resize( $img_url, $width, $height, $crop, $newfile ) {
-	$file_path = parse_url( $img_url );
-	$file_path = $_SERVER['DOCUMENT_ROOT'] . $file_path['path'];
-	// Look for Multisite Path
-	if(file_exists($file_path) === false){
-		global $blog_id;
-		$file_path = parse_url( $img_url );
-		if (preg_match("/files/", $file_path['path'])) {
-			$path = explode('/',$file_path['path']);
-			foreach($path as $k=>$v){
-				if($v == 'files'){
-					$path[$k-1] = 'wp-content/blogs.dir/'.$blog_id;
-				}
-			}
-			$path = implode('/',$path);
-		}
-		$file_path = $_SERVER['DOCUMENT_ROOT'].$path;
-	}
+function wr2x_vt_resize( $file_path, $width, $height, $crop, $newfile ) {
+
 	$orig_size = getimagesize( $file_path );
-	$image_src[0] = $img_url;
+	$image_src[0] = $file_path;
 	$image_src[1] = $orig_size[0];
 	$image_src[2] = $orig_size[1];
 
-
 	$file_info = pathinfo( $file_path );
-
-	// check if file exists
-	$base_file = $file_info['dirname'].'/'.$file_info['filename'].'.'.$file_info['extension'];
-	if ( !file_exists($base_file) )
-	 return;
-
 	$extension = '.'. $file_info['extension'];
 
 	// the image path without the extension
@@ -48,16 +25,20 @@ function wr2x_vt_resize( $img_url, $width, $height, $crop, $newfile ) {
 	if ( $img_size[0] <= $width ) $width = $img_size[0];
 	
 	// Check if GD Library installed
-	if (!function_exists ('imagecreatetruecolor')) {
-		echo 'GD Library Error: imagecreatetruecolor does not exist - please contact your webhost and ask them to install the GD library';
+	if ( !function_exists ( 'imagecreatetruecolor' ) ) {
+		wr2x_log( 'GD Library Error: imagecreatetruecolor does not exist - please contact your webhost and ask them to install the GD library' );
 		return;
 	}
-
+	
 	$new_img_path = image_resize( $file_path, $width, $height, $crop, $width.'x'.$height."-wr2x-tmp" );
-	if ( is_object( $new_img_path ))
+	
+	if ( is_wp_error( $new_img_path ) ) {
+		wr2x_log( "  image_resize error with {$file_path}: " . htmlspecialchars_decode( $new_img_path->get_error_message() ) );
 		return false;
-	if (rename($new_img_path, dirname($new_img_path) . DIRECTORY_SEPARATOR . $newfile)) {
-		$new_img_path = dirname($new_img_path) . DIRECTORY_SEPARATOR . $newfile;
+	}
+
+	if ( rename( $new_img_path, $newfile ) ) {
+		$new_img_path = $newfile;
 	}
 
 	$new_img_size = getimagesize( $new_img_path );

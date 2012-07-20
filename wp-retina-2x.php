@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.2.9
+Version: 0.2.6
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -191,6 +191,22 @@ function wr2x_get_image_sizes() {
 	return $sizes;
 }
 
+function wr2x_is_debug() {
+	static $debug = -1;
+	if ( $debug == -1 ) {
+		$debug = wr2x_getoption( "debug", "wr2x_advanced", false );
+	}
+	return $debug;
+}
+
+function wr2x_log( $data ) {
+	if ( wr2x_is_debug() ) {
+		$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
+		fwrite($fh, "{$data}\n");
+		fclose($fh);
+	}
+}
+
 function wr2x_retina_info( $id ) {
 	$result = array();
     $meta = wp_get_attachment_metadata($id);
@@ -205,7 +221,6 @@ function wr2x_retina_info( $id ) {
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 	if ( $sizes ) {
 		foreach ($sizes as $name => $attr) {
-			
 			if ( in_array( $name, $ignore ) ) {
 				$result[$name] = 'IGNORED';
 				continue;
@@ -213,9 +228,11 @@ function wr2x_retina_info( $id ) {
 			// Check if the file related to this size is present
 			$pathinfo = null;
 			$retina_file = null;
+			
 			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
-				$pathinfo = pathinfo($meta['sizes'][$name]['file']);
-				$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
+				$pathinfo = pathinfo( $normal_file ) ;
+				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
 			}
 			// None of the file exist
 			else {
@@ -223,8 +240,9 @@ function wr2x_retina_info( $id ) {
 				$required_files = false;
 				continue;
 			}
+			
 			// The retina file exists
-			if ( $retina_file && file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
+			if ( $retina_file && file_exists( $retina_file ) ) {
 				$result[$name] = 'EXISTS';
 				continue;
 			}
@@ -238,7 +256,8 @@ function wr2x_retina_info( $id ) {
 				$required_height = $meta['sizes'][$name]['height'] * 2;
 				$required_pixels = $required_width * $required_height;
 				$result[$name] = array( 'width' => $meta['sizes'][$name]['width'] * 2, 'height' => $meta['sizes'][$name]['height'] * 2, 'pixels' => $required_pixels );
-			}
+				
+			}			
 		}
 	}
 	return $result;
@@ -262,11 +281,15 @@ function wr2x_generate_images( $meta ) {
 	$originalfile = $meta['file'];
 	$uploads = wp_upload_dir();
 	$pathinfo = pathinfo( $originalfile );
+	$original_basename = $pathinfo['basename'];
 	$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 	$issue = false;
+	wr2x_log("** RETINA INFO FOR ATTACHMENT '{$meta['file']}' **");
+	wr2x_log( "- Original: {$original_basename}" );
 	foreach ( $sizes as $name => $attr ) {
 		if ( in_array( $name, $ignore ) ) {
+			wr2x_log( "- {$name} => IGNORED" );
 			continue;
 		}
 		// Is the file related to this size there?
@@ -274,30 +297,38 @@ function wr2x_generate_images( $meta ) {
 		$retina_file = null;
 		
 		if ( isset( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['file'] ) ) {
-			$pathinfo = pathinfo( $meta['sizes'][$name]['file'] );
-			$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+			$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
+			$pathinfo = pathinfo( $normal_file ) ;
+			$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
 		}
 		
-		if ( $retina_file && file_exists( trailingslashit($basepath) . $retina_file ) ) {
+		if ( $retina_file && file_exists( $retina_file ) ) {
+			wr2x_log( "- {$name}: {$normal_file } -> {$retina_file} => EXISTS" );
 			continue;
 		}
 		if ( $retina_file ) {
 			$crop = isset( $attr['crop'] ) ? $attr['crop'] : false;
+			$originalfile = trailingslashit( $pathinfo['dirname'] ) . $original_basename;
+			
 			// Maybe that new image is exactly the size of the original image.
 			// In that case, let's make a copy of it.
 			if ( $meta['sizes'][$name]['width'] * 2 == $meta['width'] && $meta['sizes'][$name]['height'] * 2 == $meta['height'] ) {
-				$originalfile = $meta['file'];
-				$pathinfo = pathinfo( $originalfile );
-				$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
-				$file = trailingslashit( $basepath ) . $pathinfo['filename'] . "." . $pathinfo['extension'];
-				copy ( $file, trailingslashit( $basepath ) . $retina_file );
+				wr2x_log( "- {$name}: {$originalfile } -> {$retina_file} => COPY" );
+				copy ( $originalfile, $retina_file );
 			}
 			// Otherwise let's resize.
 			else {
-				$image = wr2x_vt_resize( trailingslashit($uploads['baseurl']) . $meta['file'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
 			}
-			if ( !file_exists( trailingslashit( $basepath ) . $retina_file ) )
+			if ( !file_exists( $retina_file ) ) {
+				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => FAIL" );
 				$issue = true;
+			}
+			else {
+				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => RESIZE" );
+			}
+		} else {
+			wr2x_log( "- {$name} => MISSING" );
 		}
 	}
 	
@@ -349,9 +380,8 @@ function wr2x_deactivate() {
  */
 
 function wr2x_wp_enqueue_scripts () {
-	$debug = wr2x_getoption( "debug", "wr2x_advanced", false );
-	$method = wr2x_getoption( "method", "wr2x_advanced", 'Retina-Images' );
-	if ($debug)
+	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
+	if ( wr2x_is_debug() )
 		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), '0.1', false );
 	if ($method == "Retina-Images")
 		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-images.js', __FILE__ ), array(), '0.1', false );
