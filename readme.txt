@@ -20,20 +20,20 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Very first release.
 
 = 0.1.4 =
-* Fixed a minor bug that was displaying the wrong resolution in the Retina column in the Media Manager.
+* Fixed: the wrong resolution was displayed in the Retina column of the Media Manager.
 
 = 0.1.6 =
-* Simplified the code of the server-side method.
+* Changed: simplified the code of the server-side method.
 
 = 0.1.8 =
-* Resolved PHP warnings and notices.
+* Fix: resolved PHP warnings and notices.
 
 = 0.2 =
-* New feature: the Retina Dashboard.
-* Can now generate Retina files in bulk.
+* Added: the Retina Dashboard.
+* Added: can now generate Retina files in bulk.
 * Fixed: the cropped images were not 'cropped'.
-* The Retina Dashboard and the Media Library's column can be disabled via the settings.
-* Resolved more PHP warning and notices.
+* Added: The Retina Dashboard and the Media Library's column can be disabled via the settings.
+* Fix: resolved more PHP warning and notices.
 
 = 0.2.1 =
 * Removed 'error_reporting' (triggers warnings and notices with other plugins).
@@ -45,6 +45,13 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: files were renamed to avoid conflicts.
 * Added: paging for the Retina Dashboard.
 * Added: 'Generate for all files' handles and shows if there are errors.
+
+= 0.2.4 =
+* Fix: SQL optimization & memory usage huge improvement.
+
+= 0.2.6 =
+* Fix: simplified version of the .htaccess directive.
+* Fix: new version of the client-side method (Retina.js), works 100x faster.
 
 = 0.2.8 =
 * Fix: the retina image was not being generated if equal to the resolution of the original image.
