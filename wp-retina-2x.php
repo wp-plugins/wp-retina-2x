@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.3
+Version: 0.3.1
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -307,7 +307,6 @@ function wr2x_generate_images( $meta ) {
 			continue;
 		}
 		if ( $retina_file ) {
-			$crop = isset( $attr['crop'] ) ? $attr['crop'] : false;
 			$originalfile = trailingslashit( $pathinfo['dirname'] ) . $original_basename;
 			
 			// Maybe that new image is exactly the size of the original image.
@@ -316,9 +315,10 @@ function wr2x_generate_images( $meta ) {
 				wr2x_log( "- {$name}: {$originalfile } -> {$retina_file} => COPY" );
 				copy ( $originalfile, $retina_file );
 			}
-			// Otherwise let's resize.
-			else {
-				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+			// Otherwise let's resize (if the original size is big enough).
+			else if ( $meta['sizes'][$name]['width'] * 2 <= $meta['width'] && $meta['sizes'][$name]['height'] * 2 <= $meta['height'] ) {
+				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2, 
+					$meta['sizes'][$name]['height'] * 2, $retina_file );
 			}
 			if ( !file_exists( $retina_file ) ) {
 				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => FAIL" );

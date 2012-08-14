@@ -68,6 +68,9 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Added: warning message if using the server-side method on a multisite WordPress install.
 * Changed: the client-method (retina.js) is now used by default.
 
+= 0.3.1 =
+* Fix: there were situations where the retina images wasn't exactly twice the size.
+
 == Installation ==
 
 Quick and easy installation:
@@ -99,16 +102,19 @@ I tried it on a few High-DPI mobile devices and it works fine.
 = I use a Responsive (or another kind of) theme, but the logo I uploaded is not displayed as Retina, why? =
 The plugin can transform the images that go through the WordPress API and the 'Image Sizes' properly. Themes often uses a one-time customized size for the logo, and for that reason the image wouldn't be taken care of by the plugin. The easiest way to go around this is to create the Retina image by yourself. For example, if you are logo is 200x100 and named 'logo.png', upload a 400x200 version of that logo named 'logo@2x.png' next to the other one. It should them work immediately.
 
+= I am using a slideshow / sliders plugin, and I have scaling issues! =
+That is unfortunately one of the main issues to expect with all this "Retina" technology thing. It is not related to WP Retina 2x at all and the person that can help you the best is the developer of the slideshow/sliders plugin. Of course if I can do something to help or enhance WP Retina 2x is some way I will definitely do it. 
+
 = It doesn't work, what should I check? =
 * Are the images created? Check the Retina Dasboard (under Media).
 * Are you using an "Image Size" in your posts that is NOT "Full Size"? The plugin generates Retina images for all your images except (obviously) the "Full Sizes" and the ones you opted-out in the Settings.
-* Are you using Cloudflare? The Cloudflare cache is too "powerful" at the moment, so please switch the plugin to use the Client-side method.
+* Are you using Cloudflare? The Cloudflare cache is too "powerful" at the moment, so please set the plugin to use the Client-side method.
 
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.
 
 = This plugin is cool, how can I thank you? =
-Thanks for asking! :p Please visit Totoro Times (http://www.totorotimes.com), and please talk about this plugin and this website to your friends :) That would definitely be cool.
+Thanks for asking! :p Please visit Totoro Times (http://www.totorotimes.com), and please talk about this plugin and this website to your friends :) That would definitely be cool. You can also make a donation, that already happened and got me very surprised, and I will send you a postcard from Japan if you like ^^
 
 = I still don't understand a thing! =
 Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.
