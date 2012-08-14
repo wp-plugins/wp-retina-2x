@@ -68,7 +68,7 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Added: warning message if using the server-side method on a multisite WordPress install.
 * Changed: the client-method (retina.js) is now used by default.
 
-= 0.3.1 =
+= IN PROGRESS =
 * Fix: there were situations where the retina images wasn't exactly twice the size.
 
 == Installation ==
