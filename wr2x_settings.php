@@ -19,17 +19,18 @@ function wr2x_settings_page() {
 		echo "<p><span style='color: blue;'>Current method: <u>Client-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.</p>";
 	}
 	if ( $method == 'Retina-Images' ) {
-		echo "<p><span style='color: blue;'>Current method: <u>Server-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.";
+		echo "<p><span style='color: blue;'>" . __("Current method: <u>Server-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.", 'wp-retina-2x');
 		if ( defined( 'MULTISITE' ) && MULTISITE == true  )
-			echo " <span style='color: red;'>By the way, you are also using a <b>WordPress Network installation</b>. The server-side might not work for you, so <b>please try the client-side method instead</b>. If you really want to use this method, you will have to work on your .htaccess manually.</span>";
+			echo " <span style='color: red;'>" . __("By the way, you are also using a <b>WordPress Network installation</b>. The server-side might not work for you, so <b>please try the client-side method instead</b>. If you really want to use this method, you will have to work on your .htaccess manually.", 'wp-retina-2x')
+			. "</span>";
 		echo "</p>";
 		
 		if ( !get_option('permalink_structure') )
-		echo "<p><span style='color: red;'>The permalinks are not enabled. They need to be enabled in order to use the server-side method.</span>";
+		echo "<p><span style='color: red;'>" . __("The permalinks are not enabled. They need to be enabled in order to use the server-side method.", 'wp-retina-2x') . "</span>";
 	}
 	
 	if ( !function_exists( 'enable_media_replace' ) ) {
-		echo "<p style='color: green;'>This plugin supports and uses the <a href='http://wordpress.org/extend/plugins/enable-media-replace/'>Enable Media Replace</a> plugin if available. A 'Replace' button will appear in case your images are too small. It is strongly recommended to install it.</p>";
+		echo "<p style='color: green;'>" . __("This plugin supports and uses the <a href='http://wordpress.org/extend/plugins/enable-media-replace/'>Enable Media Replace</a> plugin if available. A 'Replace' button will appear in case your images are too small. It is strongly recommended to install it.", 'wp-retina-2x') . "</p>";
 	}
 	
     
@@ -37,7 +38,7 @@ function wr2x_settings_page() {
     $settings_api->show_navigation();
     $settings_api->show_forms();
     echo '</div>';
-	echo "<center><p>This plugin is actively developped and maintained by <a href='https://plus.google.com/106075761239802324012'>Jordy Meow</a>.<br />Please visit me at <a href='http://www.totorotimes.com'>Totoro Times</a>, a website about Japan, photography and abandoned places.<br />And thanks for linking us on <a href='https://www.facebook.com/totorotimes'>Facebook</a> and <a href='https://plus.google.com/106832157268594698217'>Google+</a> :)</p></center>";
+	echo "<center><p>" . __("This plugin is actively developped and maintained by <a href='https://plus.google.com/106075761239802324012'>Jordy Meow</a>.<br />Please visit me at <a href='http://www.totorotimes.com'>Totoro Times</a>, a website about Japan, photography and abandoned places.<br />And thanks for linking us on <a href='https://www.facebook.com/totorotimes'>Facebook</a> and <a href='https://plus.google.com/106832157268594698217'>Google+</a> :)", 'wp-retina-2x') . "</p></center>";
 }
 
 function wr2x_getoption( $option, $section, $default = '' ) {

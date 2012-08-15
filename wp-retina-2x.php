@@ -33,7 +33,7 @@ add_filter( 'wp_generate_attachment_metadata', 'wr2x_wp_generate_attachment_meta
 add_action( 'delete_attachment', 'wr2x_delete_attachment' );
 add_filter( 'update_option', 'wr2x_update_option' );
 add_filter( 'generate_rewrite_rules', 'wr2x_generate_rewrite_rules' );
-add_action( 'wp_ajax_wprx_generate', 'mfrh_wp_ajax_wprx_generate' );	
+add_action( 'plugins_loaded', 'wr2x_init' );
 
 register_deactivation_hook( __FILE__, 'wr2x_deactivate' );
 register_activation_hook( __FILE__, 'wr2x_activate' );
@@ -47,7 +47,11 @@ if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
 
 if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
 	require('wr2x_media-library.php');
-	
+
+function wr2x_init() {
+	load_plugin_textdomain( 'wp-retina-2x', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+
 /**
  *
  * ISSUES CALCULATION AND FUNCTIONS
