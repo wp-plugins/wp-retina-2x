@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -68,11 +68,13 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Added: warning message if using the server-side method on a multisite WordPress install.
 * Changed: the client-method (retina.js) is now used by default.
 
-= IN PROGRESS =
+= 0.3.1 =
 * Fix: there were situations where the retina images wasn't exactly twice the size.
 * Added: @2x icons for the Retina dashboard.
 * Added: french translation.
 
+= 0.3.2 =
+* Added: support for the devices that are not exactly 2x (but more than 1x) such as the Google Nexus 7.
 
 == Installation ==
 
