@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4.1
-Stable tag: 0.3.2
+Stable tag: 0.3.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -68,13 +68,12 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Added: warning message if using the server-side method on a multisite WordPress install.
 * Changed: the client-method (retina.js) is now used by default.
 
-= 0.3.1 =
-* Fix: there were situations where the retina images wasn't exactly twice the size.
-* Added: @2x icons for the Retina dashboard.
-* Added: french translation.
-
-= 0.3.2 =
-* Added: support for the devices that are not exactly 2x (but more than 1x) such as the Google Nexus 7.
+= 0.3.4 =
+* Changed: Retina.js updated to its last version (should be slighlty faster).
+* Changed: Retina-Images updated to its last version (now handles 404 error, yay!).
+* Fix: using a Retina display, the Retina Dashboard was not looking very nice.
+* Fix: the "ignored" media for retina are handled in a better way.
+* Changed: the FAQ was improved.
 
 == Installation ==
 
@@ -107,6 +106,9 @@ I tried it on a few High-DPI mobile devices and it works fine.
 = I use a Responsive (or another kind of) theme, but the logo I uploaded is not displayed as Retina, why? =
 The plugin can transform the images that go through the WordPress API and the 'Image Sizes' properly. Themes often uses a one-time customized size for the logo, and for that reason the image wouldn't be taken care of by the plugin. The easiest way to go around this is to create the Retina image by yourself. For example, if you are logo is 200x100 and named 'logo.png', upload a 400x200 version of that logo named 'logo@2x.png' next to the other one. It should them work immediately.
 
+= My logo / images appeared twice bigger on Retina, and blurry! =
+Let's say you have a logo which is 200x400. The retina logo would be 400*800, but it should STILL be shown as a 200x400 image relatively to the rest of your website. The workaround is to keep it simple and neat: always set the (normal) width and the height for all your images (in HTML directly or via CSS).
+
 = I am using a slideshow / sliders plugin, and I have scaling issues! =
 That is unfortunately one of the main issues to expect with all this "Retina" technology thing. It is not related to WP Retina 2x at all and the person that can help you the best is the developer of the slideshow/sliders plugin. Of course if I can do something to help or enhance WP Retina 2x is some way I will definitely do it. 
 
@@ -114,6 +116,9 @@ That is unfortunately one of the main issues to expect with all this "Retina" te
 * Are the images created? Check the Retina Dasboard (under Media).
 * Are you using an "Image Size" in your posts that is NOT "Full Size"? The plugin generates Retina images for all your images except (obviously) the "Full Sizes" and the ones you opted-out in the Settings.
 * Are you using Cloudflare? The Cloudflare cache is too "powerful" at the moment, so please set the plugin to use the Client-side method.
+
+= It's not working with subdomains + the server-method, what can I do? =
+Use the client-method. You can also go to the "Retina-Images" github and ask the developers to do something about it: https://github.com/Retina-Images/Retina-Images/issues?state=open.
 
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.
