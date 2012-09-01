@@ -24,9 +24,8 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	if ( $column_name != 'Retina' )
 		return;
 	
-	print_r(wr2x_get_ignores());
 	if ( wr2x_is_ignore( $id ) ) {
-		echo "<img style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
+		echo "<img style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
 		return;
 	}
 		
@@ -61,10 +60,10 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	// Displays the result
 	echo "<p id='wr2x_attachment_$id' style='margin-bottom: 2px;'>";
 	if ( $required_files ) {
-		echo "<img style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
+		echo "<img style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
 	}
 	else if ( $required_pixels > 0 )  {
-		echo "<img title='Please upload a bigger original image.' style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
+		echo "<img title='Please upload a bigger original image.' style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
 			"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -6px;'>Original too small (< " . $required_width . "×" . $required_height . ")</span>";
 		if ( function_exists( 'enable_media_replace' ) ) {
 			$_GET["attachment_id"] = $id;
@@ -73,7 +72,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 		}
 	}
 	else {
-		echo "<img title='Click on \"Generate\".' style='margin-top: -2px; margin-bottom: 2px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "clock.png' />" .
+		echo "<img title='Click on \"Generate\".' style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "clock.png' />" .
 			"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -6px;'>" . __("Not created yet.", 'wp-retina-2x') . "</span><br />";
 		echo "<a onclick='wr2x_generate($id)' id='wr2x_generate_button_$id' class='button-secondary'>" . __("Generate", 'wp-retina-2x') . "</a>";
 		
