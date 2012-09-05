@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4.1
-Stable tag: 0.3.4
+Stable tag: 0.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -12,7 +12,7 @@ Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
 This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will now look beautiful and smooth on every device.
 
-It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment.
+It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. Support was added for WordPress Multi-site.
 
 == Changelog ==
 
@@ -39,7 +39,7 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Removed 'error_reporting' (triggers warnings and notices with other plugins).
 * Fix: on uninstall/disable, the .htaccess will be updated properly.
 
-= 0.2.2
+= 0.2.2 =
 * Fix: the recommended resolution shown wasn't the most adequate one.
 * Fix: in a few cases, the .htaccess wasn't properly generated.
 * Fix: files were renamed to avoid conflicts.
@@ -74,6 +74,9 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: using a Retina display, the Retina Dashboard was not looking very nice.
 * Fix: the "ignored" media for retina are handled in a better way.
 * Changed: the FAQ was improved.
+
+= 0.4 =
+* Fix: support for Network install (multi-side). Thanks to Jeremy (Retina-Images).
 
 == Installation ==
 
@@ -117,8 +120,8 @@ That is unfortunately one of the main issues to expect with all this "Retina" te
 * Are you using an "Image Size" in your posts that is NOT "Full Size"? The plugin generates Retina images for all your images except (obviously) the "Full Sizes" and the ones you opted-out in the Settings.
 * Are you using Cloudflare? The Cloudflare cache is too "powerful" at the moment, so please set the plugin to use the Client-side method.
 
-= It's not working with subdomains + the server-method, what can I do? =
-Use the client-method. You can also go to the "Retina-Images" github and ask the developers to do something about it: https://github.com/Retina-Images/Retina-Images/issues?state=open.
+= It's not working with multisite + subdomains + the server-method, what can I do? =
+Jeremy the creator of "Retina-Images" helped me with this issue. Thanks to him, it nows work perfectly since WP Retina 2x 0.4! Although you will have to do edit the .htaccess file by yourself, and to add the RewriteRule "^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]" as the first RewriteRule.
 
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.

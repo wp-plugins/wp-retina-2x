@@ -21,7 +21,7 @@ function wr2x_settings_page() {
 	if ( $method == 'Retina-Images' ) {
 		echo "<p><span style='color: blue;'>" . __("Current method: <u>Server-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.", 'wp-retina-2x');
 		if ( defined( 'MULTISITE' ) && MULTISITE == true  )
-			echo " <span style='color: red;'>" . __("By the way, you are also using a <b>WordPress Network installation</b>. The server-side might not work for you, so <b>please try the client-side method instead</b>. If you really want to use this method, you will have to work on your .htaccess manually.", 'wp-retina-2x')
+			echo " <span style='color: red;'>" . __("By the way, you are using a <b>WordPress Multi-Site installation</b>! You must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the first RewriteRule if you want the server-side to work.", 'wp-retina-2x')
 			. "</span>";
 		echo "</p>";
 		
