@@ -2,13 +2,60 @@
 
   var root = (typeof exports == 'undefined' ? window : exports);
 
+  var config = {
+    // Ensure Content-Type is an image before trying to load @2x image
+    // https://github.com/imulus/retinajs/pull/45)
+    check_mime_type: true
+  };
+
+
+
+  root.Retina = Retina;
+
+  function Retina() {}
+
+  Retina.configure = function(options) {
+    if (options == null) options = {};
+    for (var prop in options) config[prop] = options[prop];
+  };
+
+  Retina.init = function(context) {
+    if (context == null) context = root;
+
+    var existing_onload = context.onload || new Function;
+
+    context.onload = function() {
+      var images = document.getElementsByTagName("img"), retinaImages = [], i, image;
+      for (i = 0; i < images.length; i++) {
+        image = images[i];
+        retinaImages.push(new RetinaImage(image));
+      }
+      existing_onload();
+    }
+  };
+
+  Retina.isRetina = function(){
+    var mediaQuery = "(-webkit-min-device-pixel-ratio: 1.5),\
+                      (min--moz-device-pixel-ratio: 1.5),\
+                      (-o-min-device-pixel-ratio: 3/2),\
+                      (min-resolution: 1.5dppx)";
+
+    if (root.devicePixelRatio > 1)
+      return true;
+
+    if (root.matchMedia && root.matchMedia(mediaQuery).matches)
+      return true;
+
+    return false;
+  };
+
+
+  root.RetinaImagePath = RetinaImagePath;
 
   function RetinaImagePath(path) {
     this.path = path;
     this.at_2x_path = path.replace(/\.\w+$/, function(match) { return "@2x" + match; });
   }
-
-  root.RetinaImagePath = RetinaImagePath;
 
   RetinaImagePath.confirmed_paths = [];
 
@@ -31,6 +78,13 @@
         }
 
         if (http.status >= 200 && http.status <= 399) {
+          if (config.check_mime_type) {
+            var type = http.getResponseHeader('Content-Type');
+            if (type == null || !type.match(/^image/i)) {
+              return callback(false);
+            }
+          }
+
           RetinaImagePath.confirmed_paths.push(that.at_2x_path);
           return callback(true);
         } else {
@@ -40,6 +94,7 @@
       http.send();
     }
   }
+
 
 
   function RetinaImage(el) {
@@ -71,14 +126,9 @@
 
 
 
-  if (root.devicePixelRatio > 1) {
-    window.onload = function() {
-      var images = document.getElementsByTagName("img"), retinaImages = [], i, image;
-      for (i = 0; i < images.length; i++) {
-        image = images[i];
-        retinaImages.push(new RetinaImage(image));
-      }
-    }
+
+  if (Retina.isRetina()) {
+    Retina.init(root);
   }
 
 })();

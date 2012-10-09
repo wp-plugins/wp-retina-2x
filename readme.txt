@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
 Tested up to: 3.4.1
-Stable tag: 0.4
+Stable tag: 0.4.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -77,6 +77,10 @@ It handles two different methods to serves the images to your visitors. Pick the
 
 = 0.4 =
 * Fix: support for Network install (multi-side). Thanks to Jeremy (Retina-Images).
+
+= 0.4.2 =
+* Updated: to the new version of Retina.js (client-method).
+* Fix: updated rewrite-rule (server-method) that works with multi-site.
 
 == Installation ==
 

@@ -142,7 +142,12 @@ function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	global $wp_rewrite;
 	$method = wr2x_getoption( "method", "wr2x_advanced", "retina.js" );
 	if ($method == "Retina-Images") {
-		$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
+		
+		
+		// MODIFICATION PROPOSED BY DOCWHAT
+		//$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
+		$handlerurl = str_replace( trailingslashit(site_url()), '', plugins_url( 'wr2x_image.php', __FILE__ ) );
+		
 		add_rewrite_rule( '.*\.(jpg|jpeg|gif|png|bmp)', $handlerurl, 'top' );		
 	}
 	if ( $flush == true ) {
