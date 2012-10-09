@@ -3,7 +3,7 @@ Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.4
-Tested up to: 3.4.1
+Tested up to: 3.4.2
 Stable tag: 0.4.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
