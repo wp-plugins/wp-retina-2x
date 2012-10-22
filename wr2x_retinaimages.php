@@ -3,7 +3,7 @@
     /* Version: 1.4.0 - now with more fours and a zero */
 	
 	// Check for Multisite WP install
-	if ($_GET['ms'] && $_GET['ms'] === 'true') {
+	if (isset($_GET['ms']) && $_GET['ms'] === 'true') {
 		define('SHORTINIT', true);
 		require_once(dirname(dirname(dirname(dirname( __FILE__ )))).'/wp-load.php');
 		$file            = rtrim(str_replace('\\', '/', BLOGUPLOADDIR), '/').'/'.str_replace('..', '', $_GET['file']);
