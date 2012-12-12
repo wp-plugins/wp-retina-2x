@@ -39,7 +39,7 @@ function wpr2x_wp_retina_2x() {
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-		" ) );
+		", 0, 0 ) );
 		$postin = count( $issues ) < 1 ? array( -1 ) : $issues;
 		$query = new WP_Query( 
 			array( 
@@ -61,7 +61,7 @@ function wpr2x_wp_retina_2x() {
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-		" ) );
+		", 0, 0 ) );
 		$postin = count( $ignored ) < 1 ? array( -1 ) : $ignored;
 		$query = new WP_Query( 
 			array( 
@@ -95,11 +95,20 @@ function wpr2x_wp_retina_2x() {
 	?>
 	<div class='wrap'>
 	<div id="icon-upload" class="icon32"><br></div>
-	<h2>Retina Dashboard</h2>
+	<h2>WP Retina 2x &#8226; Dashboard</h2>
 	<p></p>
 	
-	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Scan for issues", 'wp-retina-2x'); ?></a>
+	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
 	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
+	
+	<?php 
+		if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
+			echo "<p style='color: green;'>";
+			_e( "Issues has been refreshed.", 'wp-retina-2x' );
+			echo "</p>";
+		}
+	?>
+	
 	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button).", 'wp-retina-2x'); ?></p>
 
 	<style>
@@ -217,5 +226,6 @@ function wpr2x_wp_retina_2x() {
 	</table>
 	</div>
 	<?php
+	jordy_meow_footer();
 }
 ?>

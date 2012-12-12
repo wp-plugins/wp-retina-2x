@@ -2,9 +2,9 @@
 Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
-Requires at least: 3.4
-Tested up to: 3.4.2
-Stable tag: 0.4.2
+Requires at least: 3.5
+Tested up to: 3.5
+Stable tag: 0.8
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -82,6 +82,10 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Updated: to the new version of Retina.js (client-method).
 * Fix: updated rewrite-rule (server-method) that works with multi-site.
 
+= 0.8 =
+* Fix: Works with WP 3.5.
+
+
 == Installation ==
 
 Quick and easy installation:
@@ -135,6 +139,9 @@ Thanks for asking! :p Please visit Totoro Times (http://www.totorotimes.com), an
 
 = I still don't understand a thing! =
 Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.
+
+= Can I contact you? =
+Yes, sure, you can! But since the plugin got popular, I get many emails everyday which consume almost 10% of my whole lifetime (not kidding! + it's rarely issues coming from the plugin itself). So now I ask you to visit my website <a href='http://www.totorotimes.com'>Totoro Times</a>, pick a page you like, and share it on Facebook, Twitter or your own website. I hope you understand :) Thanks a lot!
 
 == Screenshots ==
 

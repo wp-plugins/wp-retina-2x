@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 0.4.2
+Version: 0.8
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -41,6 +41,7 @@ register_activation_hook( __FILE__, 'wr2x_activate' );
 require('wr2x_functions.php');
 require('wr2x_settings.php');
 require('wr2x_ajax.php');
+require('jordy_meow_footer.php');
 
 if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
 	require('wr2x_retina-dashboard.php');
@@ -104,7 +105,7 @@ function wr2x_calculate_issues() {
 		AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-	" ) );
+	", 0, 0 ) );
 	$issues = array();
 	foreach ( $postids as $id ) {
 		$info = wr2x_retina_info( $id );
@@ -276,7 +277,9 @@ function wr2x_delete_attachment( $attach_id ) {
  
 function wr2x_wp_generate_attachment_metadata( $meta ) {
 	if (wr2x_getoption( "auto_generate", "wr2x_basics", false ) == true)
-		wr2x_generate_images( $meta );
+		// Check if the attachment is an image
+		if ( $meta && isset( $meta['width'] ) && isset( $meta['height'] ) )
+			wr2x_generate_images( $meta );
     return $meta;
 }
 
@@ -348,10 +351,11 @@ function wr2x_generate_images( $meta ) {
     return $meta;
 }
 
-function wr2x_delete_images( $meta )
-{
+function wr2x_delete_images( $meta ) {
+	if ( !isset( $meta['sizes'] ) )
+		return $meta;
 	$sizes = $meta['sizes'];
-	if ( !sizes || !is_array( $sizes ) )
+	if ( !$sizes || !is_array( $sizes ) )
 		return $meta;
 	$originalfile = $meta['file'];
 	$pathinfo = pathinfo( $originalfile );

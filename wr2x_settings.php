@@ -38,7 +38,7 @@ function wr2x_settings_page() {
     $settings_api->show_navigation();
     $settings_api->show_forms();
     echo '</div>';
-	echo "<center><p>" . __("This plugin is actively developped and maintained by <a href='https://plus.google.com/106075761239802324012'>Jordy Meow</a>.<br />Please visit me at <a href='http://www.totorotimes.com'>Totoro Times</a>, a website about Japan, photography and abandoned places.<br />And thanks for linking us on <a href='https://www.facebook.com/totorotimes'>Facebook</a> and <a href='https://plus.google.com/106832157268594698217'>Google+</a> :)", 'wp-retina-2x') . "</p></center>";
+	jordy_meow_footer();
 }
 
 function wr2x_getoption( $option, $section, $default = '' ) {

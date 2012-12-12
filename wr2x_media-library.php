@@ -30,10 +30,12 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	}
 		
     $meta = wp_get_attachment_metadata($id);
-	if ( $meta == null ) {
-		echo "<span style='color: orange;'>NOT RECOGNIZED.</span>";
+	
+	// Check if the attachment is an image
+	if ( !($meta && isset( $meta['width'] ) && isset( $meta['height'] )) ) {
 		return;
 	}
+	
 	$original_width = $meta['width'];
 	$original_height = $meta['height'];
 	$sizes = wr2x_get_image_sizes();

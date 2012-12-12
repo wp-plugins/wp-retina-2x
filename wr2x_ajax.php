@@ -110,7 +110,7 @@ function wr2x_wp_ajax_wr2x_generate_all() {
 			AND ( post_mime_type = 'image/jpeg' OR
 				post_mime_type = 'image/png' OR
 				post_mime_type = 'image/gif' )
-		" ) );
+		", 0, 0 ) );
 		foreach ($postids as $id) {
 			array_push( $ids, $id );
 			$total++;
