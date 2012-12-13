@@ -7,8 +7,8 @@
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example settings-api.php How to use the class
  */
-if ( !class_exists( 'WeDevs_Settings_API' ) ):
-    class WeDevs_Settings_API {
+if ( !class_exists( 'wr2x_WeDevs_Settings_API' ) ):
+    class wr2x_WeDevs_Settings_API {
 
     /**
      * settings sections array
@@ -37,7 +37,7 @@ if ( !class_exists( 'WeDevs_Settings_API' ) ):
 
     public static function getInstance() {
         if ( !self::$_instance ) {
-            self::$_instance = new WeDevs_Settings_API();
+            self::$_instance = new wr2x_WeDevs_Settings_API();
         }
 
         return self::$_instance;

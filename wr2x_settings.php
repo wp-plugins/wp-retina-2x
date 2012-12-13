@@ -9,7 +9,7 @@ add_action( 'admin_init', 'wr2x_admin_init' );
  */
  
 function wr2x_settings_page() {
-    $settings_api = WeDevs_Settings_API::getInstance();
+    $settings_api = wr2x_WeDevs_Settings_API::getInstance();
 	echo '<div class="wrap">';
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	
@@ -33,8 +33,7 @@ function wr2x_settings_page() {
 		echo "<p style='color: green;'>" . __("This plugin supports and uses the <a href='http://wordpress.org/extend/plugins/enable-media-replace/'>Enable Media Replace</a> plugin if available. A 'Replace' button will appear in case your images are too small. It is strongly recommended to install it.", 'wp-retina-2x') . "</p>";
 	}
 	
-    
-    settings_errors();
+    //settings_errors();
     $settings_api->show_navigation();
     $settings_api->show_forms();
     echo '</div>';
@@ -126,7 +125,7 @@ function wr2x_admin_init() {
             )
 		)
     );
-	$settings_api = WeDevs_Settings_API::getInstance();
+	$settings_api = wr2x_WeDevs_Settings_API::getInstance();
     $settings_api->set_sections( $sections );
     $settings_api->set_fields( $fields );
     $settings_api->admin_init();
