@@ -29,10 +29,6 @@ function wr2x_settings_page() {
 		echo "<p><span style='color: red;'>" . __("The permalinks are not enabled. They need to be enabled in order to use the server-side method.", 'wp-retina-2x') . "</span>";
 	}
 	
-	if ( !function_exists( 'enable_media_replace' ) ) {
-		echo "<p style='color: green;'>" . __("This plugin supports and uses the <a href='http://wordpress.org/extend/plugins/enable-media-replace/'>Enable Media Replace</a> plugin if available. A 'Replace' button will appear in case your images are too small. It is strongly recommended to install it.", 'wp-retina-2x') . "</p>";
-	}
-	
     //settings_errors();
     $settings_api->show_navigation();
     $settings_api->show_forms();

@@ -131,6 +131,7 @@ function wr2x_wp_ajax_wr2x_generate() {
 	$attachmentId = intval( $_POST['attachmentId'] );
 	$retinaDashboard = $_POST['retinaDashboard'];
 
+	wr2x_delete_attachment( $attachmentId );
 	$meta = wp_get_attachment_metadata( $attachmentId );
 	wr2x_generate_images( $meta );
 	

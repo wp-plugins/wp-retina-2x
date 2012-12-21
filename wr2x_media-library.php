@@ -67,11 +67,10 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 	else if ( $required_pixels > 0 )  {
 		echo "<img title='Please upload a bigger original image.' style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
 			"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -6px;'>Original too small (< " . $required_width . "×" . $required_height . ")</span>";
-		if ( function_exists( 'enable_media_replace' ) ) {
-			$_GET["attachment_id"] = $id;
-			$form = enable_media_replace( "" );
-			echo $form["enable-media-replace"]['html'];
-		}
+		$_GET["attachment_id"] = $id;
+		$url = "?page=wp-retina-2x&view=upload&pview=&paged=&attachment_id=" . $id;
+		$url = wp_nonce_url( $url, "wr2x" );
+		print "<br /><a style='position: relative; top: 2px;' class='button-secondary' href='" . $url . "'>UPLOAD</a>";
 	}
 	else {
 		echo "<img title='Click on \"Generate\".' style='margin-top: -2px; margin-bottom: 2px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "clock.png' />" .
@@ -80,6 +79,7 @@ function wr2x_manage_media_custom_column( $column_name, $id ) {
 		
 	}
 	echo "</p>";
+	
 }
 
 ?>

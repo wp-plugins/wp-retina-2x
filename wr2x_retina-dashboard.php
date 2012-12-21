@@ -29,6 +29,22 @@ function wpr2x_wp_retina_2x() {
 	$posts_per_page = 10; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
+	
+	?>
+	<div class='wrap'>
+	<div id="icon-upload" class="icon32"><br></div>
+	<h2>WP Retina 2x &#8226; Dashboard</h2>
+	<p></p>
+	
+	<?php 
+	if ( $view == 'upload' ) {
+		require('wr2x_upload.php');
+		return;
+	}
+	if ( $view == 'replace' ) {
+		require('wr2x_replace.php');
+		return;
+	}
 	if ( $view == 'issues' ) {
 		global $wpdb;
 		$totalcount = $wpdb->get_var( $wpdb->prepare( "
@@ -93,11 +109,6 @@ function wpr2x_wp_retina_2x() {
 	}
 		
 	?>
-	<div class='wrap'>
-	<div id="icon-upload" class="icon32"><br></div>
-	<h2>WP Retina 2x &#8226; Dashboard</h2>
-	<p></p>
-	
 	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
 	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
 	
@@ -155,14 +166,12 @@ function wpr2x_wp_retina_2x() {
 			<?php
 			echo "<th style='font-size: 11px; font-family: Verdana;'>Title</th>";
 			foreach ($sizes as $name => $attr) {
-				echo "<th style='font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
+				echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
 			}
 			
 			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>Actions</th>";
 			echo "<th style='font-size: 11px; font-family: Verdana; width: 62px;'></th>";
-			if ( function_exists( 'enable_media_replace' ) ) {
-				echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
-			}
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
 			?>
 		</tr></thead>
 		<tbody>
@@ -205,19 +214,18 @@ function wpr2x_wp_retina_2x() {
 					}
 					echo "</td>";
 				}
-				echo "<td><a style='position: relative; top: 3px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a></td>";
+				echo "<td><a style='position: relative; top: 0px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a></td>";
 				
 				if ( !wr2x_is_ignore( $attr['post']->ID ) ) {
-					echo "<td><a style='position: relative; top: 3px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a></td>";
+					echo "<td><a style='position: relative; top: 0px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a></td>";
 				}
-				
-				if ( function_exists( 'enable_media_replace' ) ) {
-					echo "<td style='padding-top: 5px; padding-bottom: 0px;'>";
-					$_GET["attachment_id"] = $attr['post']->ID;
-					$form = enable_media_replace( "" );
-					echo str_replace( "Upload a new file", "UPLOAD", $form["enable-media-replace"]['html'] );
-					echo "</td>";
-				}
+
+				echo "<td style='padding-top: 2px; padding-bottom: 0px;'>";
+				$_GET["attachment_id"] = $attr['post']->ID;
+				$url = "?page=wp-retina-2x&view=upload&pview=$view&paged=$paged&attachment_id=" . $attr['post']->ID;
+				$url = wp_nonce_url( $url, "wr2x" );
+				print "<a style='position: relative; top: 2px;' class='button-secondary' href='" . $url . "'>UPLOAD</a>";
+				echo "</td>";
 				
 				echo "</tr>";
 			}
