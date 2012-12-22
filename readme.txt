@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 0.9
+Stable tag: 0.9.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -76,7 +76,7 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Changed: the FAQ was improved.
 
 = 0.4 =
-* Fix: support for Network install (multi-side). Thanks to Jeremy (Retina-Images).
+* Fix: support for Network install (multi-site). Thanks to Jeremy (Retina-Images).
 
 = 0.4.2 =
 * Updated: to the new version of Retina.js (client-method).
@@ -88,6 +88,9 @@ It handles two different methods to serves the images to your visitors. Pick the
 = 0.9 =
 * Fix: code cleaning.
 * Fix: no more notices in case there are weird/unsupported/broken image files.
+
+= 0.9.2 =
+* Changed: Media Replace is not used anymore, the code has been embedded in the plugin directly.
 
 == Installation ==
 
