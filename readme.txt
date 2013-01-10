@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 0.9.2
+Stable tag: 0.9.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -16,57 +16,26 @@ It handles two different methods to serves the images to your visitors. Pick the
 
 == Changelog ==
 
-= 0.1 =
-* Very first release.
+= 0.9.4 =
+* Fix: esthetical issue related to the icons in the Retina dashboard.
+* Fix: warnings when uploading/replacing an image file.
 
-= 0.1.4 =
-* Fixed: the wrong resolution was displayed in the Retina column of the Media Manager.
+= 0.9.2 =
+* Changed: Media Replace is not used anymore, the code has been embedded in the plugin directly.
 
-= 0.1.6 =
-* Changed: simplified the code of the server-side method.
+= 0.9 =
+* Fix: code cleaning.
+* Fix: no more notices in case there are weird/unsupported/broken image files.
 
-= 0.1.8 =
-* Fix: resolved PHP warnings and notices.
+= 0.8 =
+* Fix: Works with WP 3.5.
 
-= 0.2 =
-* Added: the Retina Dashboard.
-* Added: can now generate Retina files in bulk.
-* Fixed: the cropped images were not 'cropped'.
-* Added: The Retina Dashboard and the Media Library's column can be disabled via the settings.
-* Fix: resolved more PHP warning and notices.
+= 0.4.2 =
+* Updated: to the new version of Retina.js (client-method).
+* Fix: updated rewrite-rule (server-method) that works with multi-site.
 
-= 0.2.1 =
-* Removed 'error_reporting' (triggers warnings and notices with other plugins).
-* Fix: on uninstall/disable, the .htaccess will be updated properly.
-
-= 0.2.2 =
-* Fix: the recommended resolution shown wasn't the most adequate one.
-* Fix: in a few cases, the .htaccess wasn't properly generated.
-* Fix: files were renamed to avoid conflicts.
-* Added: paging for the Retina Dashboard.
-* Added: 'Generate for all files' handles and shows if there are errors.
-
-= 0.2.4 =
-* Fix: SQL optimization & memory usage huge improvement.
-
-= 0.2.6 =
-* Fix: simplified version of the .htaccess directive.
-* Fix: new version of the client-side method (Retina.js), works 100x faster.
-
-= 0.2.8 =
-* Fix: the retina image was not being generated if equal to the resolution of the original image.
-* Added: optimization and enhancement of the issues management.
-* Added: a little counter icon to show the number of issues.
-* Added: an 'IGNORE' button to hide issues that should not be.
-
-= 0.2.9 =
-* Fix: in a few cases, the retina images were not generated (for no apparent reasons).
-
-= 0.3.0 =
-* Fix: was not generating the images properly on multisite WordPress installs.
-* Added: warning message if using the server-side method without the pretty permalinks.
-* Added: warning message if using the server-side method on a multisite WordPress install.
-* Changed: the client-method (retina.js) is now used by default.
+= 0.4 =
+* Fix: support for Network install (multi-site). Thanks to Jeremy (Retina-Images).
 
 = 0.3.4 =
 * Changed: Retina.js updated to its last version (should be slighlty faster).
@@ -75,22 +44,57 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: the "ignored" media for retina are handled in a better way.
 * Changed: the FAQ was improved.
 
-= 0.4 =
-* Fix: support for Network install (multi-site). Thanks to Jeremy (Retina-Images).
+= 0.3.0 =
+* Fix: was not generating the images properly on multisite WordPress installs.
+* Added: warning message if using the server-side method without the pretty permalinks.
+* Added: warning message if using the server-side method on a multisite WordPress install.
+* Changed: the client-method (retina.js) is now used by default.
 
-= 0.4.2 =
-* Updated: to the new version of Retina.js (client-method).
-* Fix: updated rewrite-rule (server-method) that works with multi-site.
+= 0.2.9 =
+* Fix: in a few cases, the retina images were not generated (for no apparent reasons).
 
-= 0.8 =
-* Fix: Works with WP 3.5.
+= 0.2.8 =
+* Fix: the retina image was not being generated if equal to the resolution of the original image.
+* Added: optimization and enhancement of the issues management.
+* Added: a little counter icon to show the number of issues.
+* Added: an 'IGNORE' button to hide issues that should not be.
 
-= 0.9 =
-* Fix: code cleaning.
-* Fix: no more notices in case there are weird/unsupported/broken image files.
+= 0.2.6 =
+* Fix: simplified version of the .htaccess directive.
+* Fix: new version of the client-side method (Retina.js), works 100x faster.
 
-= 0.9.2 =
-* Changed: Media Replace is not used anymore, the code has been embedded in the plugin directly.
+= 0.2.4 =
+* Fix: SQL optimization & memory usage huge improvement.
+
+= 0.2.2 =
+* Fix: the recommended resolution shown wasn't the most adequate one.
+* Fix: in a few cases, the .htaccess wasn't properly generated.
+* Fix: files were renamed to avoid conflicts.
+* Added: paging for the Retina Dashboard.
+* Added: 'Generate for all files' handles and shows if there are errors.
+
+= 0.2.1 =
+* Removed 'error_reporting' (triggers warnings and notices with other plugins).
+* Fix: on uninstall/disable, the .htaccess will be updated properly.
+
+= 0.2 =
+* Added: the Retina Dashboard.
+* Added: can now generate Retina files in bulk.
+* Fixed: the cropped images were not 'cropped'.
+* Added: The Retina Dashboard and the Media Library's column can be disabled via the settings.
+* Fix: resolved more PHP warning and notices.
+
+= 0.1.8 =
+* Fix: resolved PHP warnings and notices.
+
+= 0.1.6 =
+* Changed: simplified the code of the server-side method.
+
+= 0.1.4 =
+* Fixed: the wrong resolution was displayed in the Retina column of the Media Manager.
+
+= 0.1 =
+* Very first release.
 
 == Installation ==
 

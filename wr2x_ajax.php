@@ -58,15 +58,15 @@ function wr2x_admin_head() {
 						var index = index;
 						jQuery.each(sizes, function (size, rsize) {
 							if (rsize == 'EXISTS')
-								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'tick-circle.png'; ?>' />");
+								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'tick-circle.png'; ?>' />");
 							else if (rsize == 'MISSING')
-								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'cross-small.png'; ?>' />");
+								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'cross-small.png'; ?>' />");
 							else if (rsize == 'PENDING')
-								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'clock.png'; ?>' />");
+								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'clock.png'; ?>' />");
 							else if (rsize == 'IGNORED')
-								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'prohibition-small.png'; ?>' />");
+								jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'prohibition-small.png'; ?>' />");
 							else if (jQuery.isPlainObject(rsize))
-								jQuery('#wr2x_' + size + '_' + index).html("<img title='Please upload a bigger original image.' style='margin-top: 3px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'exclamation.png'; ?>' /><span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " + rsize.width + "×" + rsize.height + "</span>");
+								jQuery('#wr2x_' + size + '_' + index).html("<img title='Please upload a bigger original image.' style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'exclamation.png'; ?>' /><span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " + rsize.width + "×" + rsize.height + "</span>");
 							else {
 								jQuery('#wr2x_' + size + '_' + index).html(rsize);
 							}
