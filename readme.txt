@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 0.9.4
+Stable tag: 0.9.6
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays.
 
@@ -15,6 +15,9 @@ This plugin creates the image files required by the Retina (high-DPI) displays a
 It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. Support was added for WordPress Multi-site.
 
 == Changelog ==
+
+= 0.9.6 =
+= Fix: warnings when uploading/replacing an image file.
 
 = 0.9.4 =
 * Fix: esthetical issue related to the icons in the Retina dashboard.

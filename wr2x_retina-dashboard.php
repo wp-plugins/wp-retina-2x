@@ -30,21 +30,23 @@ function wpr2x_wp_retina_2x() {
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
 	
+	if ( $view == 'replace' ) {
+		require('wr2x_replace.php');
+		return;
+	}
+	
 	?>
 	<div class='wrap'>
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>WP Retina 2x &#8226; Dashboard</h2>
 	<p></p>
-	
 	<?php 
+	
 	if ( $view == 'upload' ) {
 		require('wr2x_upload.php');
 		return;
 	}
-	if ( $view == 'replace' ) {
-		require('wr2x_replace.php');
-		return;
-	}
+
 	if ( $view == 'issues' ) {
 		global $wpdb;
 		$totalcount = $wpdb->get_var( $wpdb->prepare( "
