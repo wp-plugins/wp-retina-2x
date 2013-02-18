@@ -103,6 +103,7 @@ function wr2x_calculate_issues() {
 		WHERE post_status = 'inherit'
 		AND post_type = 'attachment'
 		AND ( post_mime_type = 'image/jpeg' OR
+			post_mime_type = 'image/jpg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
 	", 0, 0 ) );

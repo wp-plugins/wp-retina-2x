@@ -1,4 +1,7 @@
 <?php
+
+// REPLACE BASED ON "ENABLE MEDIA REPLACE 2.8.2" BY MUNGOBBQ
+
 if (!current_user_can('upload_files'))
 	wp_die(__('You do not have permission to upload files.'));
 
@@ -37,12 +40,12 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 	$new_filename = $_FILES["userfile"]["name"];
 	$new_filesize = $_FILES["userfile"]["size"];
 	$new_filetype = $filedata["type"];
-
-	// Delete the current Retina files
-	wr2x_delete_attachment( $attachmentId );
 	
 	// Drop-in replace and we don't even care if you uploaded something that is the wrong file-type.
 	// That's your own fault, because we warned you!
+
+	// Delete the current Retina files
+	wr2x_delete_attachment( (int) $_POST["ID"] );
 
 	// Delete old file
 	unlink($current_file);
@@ -59,7 +62,9 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			$thisfile = $thissize["file"];
 			if (strlen($thisfile)) {
 				$thisfile = $current_path . "/" . $thissize["file"];
-				unlink($thisfile);
+				if (file_exists($thisfile)) {
+					unlink($thisfile);
+				}
 			}
 		}
 		// Old (brutal) method, left here for now
@@ -77,16 +82,16 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 	wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $current_file ) );
 
 	// Generate the new Retina images
-	$meta = wp_get_attachment_metadata( $attachmentId );
+	$meta = wp_get_attachment_metadata( (int) $_POST["ID"] );
 	wr2x_generate_images( $meta );
-	if ( pview == "" )
+	if ( pview != "" )
 		$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php?page=wp-retina-2x&view=$view&paged=$paged";
 	else
 		$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php";
 } else {
 	//TODO Better error handling when no file is selected.
 	//For now just go back to media management
-	if ( pview == "" )
+	if ( pview != "" )
 		$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php?page=wp-retina-2x&view=$view&paged=$paged";
 	else
 		$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php";
@@ -96,7 +101,6 @@ if (FORCE_SSL_ADMIN) {
 	$returnurl = str_replace("http:", "https:", $returnurl);
 }
 
-// save redirection
+//save redirection
 wp_redirect($returnurl);
-
 ?>
