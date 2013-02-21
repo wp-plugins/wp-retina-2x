@@ -330,6 +330,11 @@ function wr2x_generate_images( $meta ) {
 		if ( $retina_file ) {
 			$originalfile = trailingslashit( $pathinfo['dirname'] ) . $original_basename;
 			
+			if ( !file_exists( $originalfile ) ) {
+				wr2x_log( "- The Original File '{$originalfile}' cannot be found." );
+				return $meta;
+			}
+
 			// Maybe that new image is exactly the size of the original image.
 			// In that case, let's make a copy of it.
 			if ( $meta['sizes'][$name]['width'] * 2 == $meta['width'] && $meta['sizes'][$name]['height'] * 2 == $meta['height'] ) {
