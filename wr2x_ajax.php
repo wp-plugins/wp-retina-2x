@@ -206,11 +206,16 @@ function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
 				post_mime_type = 'image/png' OR
 				post_mime_type = 'image/gif' )
 		" );
+		$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 		foreach ($postids as $id) {
+			if ( wr2x_is_ignore( $id ) )
+				continue;
 			if ( $issuesOnly ) {
 				$info = wr2x_retina_info( $id );
 				$toAdd = false;
 				foreach ( $info as $name => $attr ) {
+					if ( in_array( $name, $ignore ) )
+						continue;
 					if ( $attr == 'PENDING' ) {
 						$toAdd = true;
 						break;
@@ -337,9 +342,12 @@ function wr2x_wp_ajax_wr2x_replace() {
 				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 				$pathinfo = pathinfo( $normal_file );
 				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
-				if ( file_exists($normal_file) )
+				
+				// Test if the file exists and if it is actually a file (and not a dir)
+				// Some old WordPress Media Library are sometimes broken and link to directories
+				if ( file_exists( $normal_file ) && is_file( $normal_file ) )
 					unlink( $normal_file );
-				if ( file_exists($retina_file) )
+				if ( file_exists( $retina_file ) && is_file( $retina_file ) )
 					unlink( $retina_file );
 			}
 		}
