@@ -1,7 +1,8 @@
 <?php
 
 add_action( 'wp_ajax_wr2x_generate', 'wr2x_wp_ajax_wr2x_generate' );
-add_action( 'wp_ajax_wr2x_generate_all', 'wr2x_wp_ajax_wr2x_generate_all' );
+add_action( 'wp_ajax_wr2x_delete', 'wr2x_wp_ajax_wr2x_delete' );
+add_action( 'wp_ajax_wr2x_list_all', 'wr2x_wp_ajax_wr2x_list_all' );
 add_action( 'wp_ajax_wr2x_replace', 'wr2x_wp_ajax_wr2x_replace' );
 add_action( 'admin_head', 'wr2x_admin_head' );
 
@@ -19,35 +20,55 @@ function wr2x_admin_head() {
 
 		var current;
 		var ids = [];
+		var ajax_action = "generate"; // generate | delete
 	
-		function wr2x_process_next () {
-			var data = { action: 'wr2x_generate', attachmentId: ids[current - 1] };
+		function wr2x_do_next () {
+			var data = { action: 'wr2x_' + ajax_action, attachmentId: ids[current - 1] };
 			jQuery('#wr2x_progression').text(current + "/" + ids.length);
 			jQuery.post(ajaxurl, data, function (response) {
+				reply = jQuery.parseJSON(response);
+				if (reply.success = false) {
+					alert('Error: ' + reply.message);
+					return;
+				}
+				wr2x_refresh_dashboard(reply.results);
 				if (++current <= ids.length)
-					wr2x_process_next();
+					wr2x_do_next();
 				else {
 					jQuery('#wr2x_progression').text("<?php echo __( "Done.", 'wp-retina-2x' ); ?>");
 				}
 			});
 		}
-	
-		function wr2x_generate_all () {
+
+		function wr2x_do_all () {
 			current = 1;
 			ids = [];
-			var data = { action: 'wr2x_generate_all' };
+			var data = { action: 'wr2x_list_all', issuesOnly: (ajax_action == "generate" ? 1 : 0) };
 			jQuery('#wr2x_progression').text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
-				if ((typeof reply.error) == 'string') {
-					jQuery('#wr2x_progression').html('Error: ' + reply.error);
+				if (reply.success = false) {
+					alert('Error: ' + reply.message);
+					return;
 				}
-				else {
-					ids = reply.ids;
-					jQuery('#wr2x_progression').html(current + "/" + ids.length);
-					wr2x_process_next();
+				if (reply.total == 0) {
+					jQuery('#wr2x_progression').text("<?php echo __( "Done.", 'wp-retina-2x' ); ?>");
+					return;
 				}
+				ids = reply.ids;
+				jQuery('#wr2x_progression').html(current + "/" + ids.length);
+				wr2x_do_next();
 			});
+		}
+
+		function wr2x_delete_all () {
+			ajax_action = 'delete';
+			wr2x_do_all();
+		}
+
+		function wr2x_generate_all () {
+			ajax_action = 'generate';
+			wr2x_do_all();
 		}
 	
 		// Refresh the dashboard with the results from the Ajax operation (Replace or Generate)
@@ -73,26 +94,16 @@ function wr2x_admin_head() {
 		}
 
 		function wr2x_generate (attachmentId, retinaDashboard) {
-			retinaDashboard = typeof retinaDashboard !== 'undefined' ? retinaDashboard : 0;
-			var data = { action: 'wr2x_generate', attachmentId: attachmentId, retinaDashboard: retinaDashboard };
+			var data = { action: 'wr2x_generate', attachmentId: attachmentId };
 			jQuery('#wr2x_generate_button_' + attachmentId).text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
-				if (retinaDashboard) {
-					jQuery('#wr2x_generate_button_' + attachmentId).html("GENERATE");
-					var reply = jQuery.parseJSON(response);
-					wr2x_refresh_dashboard(reply);
+				var reply = jQuery.parseJSON(response);
+				if (!reply.success) {
+					alert(reply.message);
+					return;
 				}
-				else {
-					jQuery('#wr2x_generate_button_' + attachmentId).remove();
-					if (response == 1) {
-						// 1: SUCCESS
-						jQuery('#wr2x_attachment_' + attachmentId).html("<img style='margin-top: -2px; margin-bottom: 2px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'tick-circle.png' ?>' />");
-					}
-					else {
-						// 0: ERROR
-						jQuery('#wr2x_attachment_' + attachmentId).html("<?php echo "<span style='text-align: center; color: red; font-weight: bold;'>" . __("ERROR", 'wp-retina-2x') . "</span>"; ?>");
-					}
-				}
+				jQuery('#wr2x_generate_button_' + attachmentId).html("GENERATE");
+				wr2x_refresh_dashboard(reply.results);
 			});
 		}
 
@@ -179,7 +190,8 @@ function wr2x_admin_head() {
  *
  */
 
-function wr2x_wp_ajax_wr2x_generate_all() {
+function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
+	$issuesOnly = intval( $_POST['issuesOnly'] );
 	$reply = array();
 	try {
 		$ids = array();
@@ -195,39 +207,79 @@ function wr2x_wp_ajax_wr2x_generate_all() {
 				post_mime_type = 'image/gif' )
 		" );
 		foreach ($postids as $id) {
-			array_push( $ids, $id );
-			$total++;
+			if ( $issuesOnly ) {
+				$info = wr2x_retina_info( $id );
+				$toAdd = false;
+				foreach ( $info as $name => $attr ) {
+					if ( $attr == 'PENDING' ) {
+						$toAdd = true;
+						break;
+					}
+				}
+				if ($toAdd) {
+					array_push( $ids, $id );
+					$total++;
+				}
+			}
+			else {
+				array_push( $ids, $id );
+				$total++;
+			}
+			
 		}
-		$reply['ids'] = $ids;
-		$reply['total'] = $total;
-		echo json_encode( $reply );
+		echo json_encode( 
+			array(
+				'success' => true,
+				'message' => "List of id's.",
+				'ids' => $ids,
+				'total' => $total
+		) );
 		die;
 	}
 	catch (Exception $e) {
-		$reply['error'] = $e->getMessage();
-		echo json_encode( $reply );
+		echo json_encode( 
+			array(
+				'success' => false,
+				'message' => $e->getMessage()
+		) );
 		die;
 	}
 }
- 
+
+function wr2x_wp_ajax_wr2x_delete() {
+	$attachmentId = intval( $_POST['attachmentId'] );
+	wr2x_delete_attachment( $attachmentId );
+	$meta = wp_get_attachment_metadata( $attachmentId );
+	
+	// RESULTS FOR RETINA DASHBOARD
+	$info = wr2x_retina_info( $attachmentId );
+	$results[$attachmentId] = $info;
+	echo json_encode( 
+		array(
+			'results' => $results,
+			'success' => true,
+			'message' => "Retina files deleted."
+		)
+	);
+	die();
+}
+
 function wr2x_wp_ajax_wr2x_generate() {
 	$attachmentId = intval( $_POST['attachmentId'] );
-	$retinaDashboard = $_POST['retinaDashboard'];
-
 	wr2x_delete_attachment( $attachmentId );
 	$meta = wp_get_attachment_metadata( $attachmentId );
 	wr2x_generate_images( $meta );
 	
 	// RESULTS FOR RETINA DASHBOARD
-	if ( $retinaDashboard ) {
-		$info = wr2x_retina_info( $attachmentId );
-		$results[$attachmentId] = $info;
-		echo json_encode( $results );
-	}
-	// RESULTS FOR MEDIA LIBRARY
-	else {
-		echo 1;
-	}
+	$info = wr2x_retina_info( $attachmentId );
+	$results[$attachmentId] = $info;
+	echo json_encode( 
+		array(
+			'results' => $results,
+			'success' => true,
+			'message' => "Retina files generated."
+		)
+	);
 	die();
 }
 
@@ -235,27 +287,13 @@ function wr2x_wp_ajax_wr2x_replace() {
 
 	if ( !current_user_can('upload_files') ) {
 		echo json_encode( array(
-			'success'  => false,
+			'success' => false,
 			'message' => "You do not have permission to upload files."
 		));
 		die();
 	}
 	
-	// Clean the data by removing the type
 	$data = $_POST['data'];
-	//$data = preg_replace( '/^data:.*;base64,/', '', $_POST['data'], 1 );
-	/*
-	$data = $data.substr($data.indexOf('base64') + 7);
-
-	if (preg_last_error() == PREG_BACKTRACK_LIMIT_ERROR) {
-		echo json_encode( array(
-			'success' => false,
-			'message' => "Backtrack limit was exhausted."
-		));
-		die();
-	}
-	*/
-
 
 	// Create the file as a TMP
 	$tmpfname = tempnam( "/tmp", "wr2x_up_" );

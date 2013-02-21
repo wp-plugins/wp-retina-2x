@@ -265,12 +265,13 @@ function wr2x_retina_info( $id ) {
 			else if ( $retina_file )
 				$result[$name] = 'PENDING';
 			
+			$required_width = $meta['sizes'][$name]['width'] * 2;
+			$required_height = $meta['sizes'][$name]['height'] * 2;
+
 			// The retina file exists
-			if ( $meta['sizes'][$name]['width'] * 2 >= $original_width || $meta['sizes'][$name]['height'] * 2 >= $original_height ) {
-				$required_width = $meta['sizes'][$name]['width'] * 2;
-				$required_height = $meta['sizes'][$name]['height'] * 2;
+			if ( $required_width > $original_width || $required_height > $original_height ) {
 				$required_pixels = $required_width * $required_height;
-				$result[$name] = array( 'width' => $meta['sizes'][$name]['width'] * 2, 'height' => $meta['sizes'][$name]['height'] * 2, 'pixels' => $required_pixels );
+				$result[$name] = array( 'width' => $required_width, 'height' => $required_height, 'pixels' => $required_pixels );
 				
 			}			
 		}

@@ -17,16 +17,17 @@ function wr2x_admin_menu_dashboard () {
 		wr2x_calculate_issues();
 	$flagged = count( wr2x_get_issues() );
 	$warning_title = "Retina files";
-	$menu_label = sprintf( __( 'Retina 2x %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
+	$menu_label = sprintf( __( 'WP Retina 2x %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
 	add_media_page( 'WP Retina 2x', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
 }
  
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
+	$s = isset ( $_GET[ 's' ] ) ? $_GET[ 's' ] : null;
 	$issues = $count = 0;
 	$sizes = wr2x_get_image_sizes();
-	$posts_per_page = 10; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
+	$posts_per_page = 15; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
 	
@@ -40,15 +41,16 @@ function wpr2x_wp_retina_2x() {
 	
 	if ( $view == 'issues' ) {
 		global $wpdb;
-		$totalcount = $wpdb->get_var( "
+		$totalcount = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*)
 			FROM $wpdb->posts p
 			WHERE post_status = 'inherit'
 			AND post_type = 'attachment'
+			AND post_title LIKE %s
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-		" );
+		", '%' . $s . '%' ) );
 		$postin = count( $issues ) < 1 ? array( -1 ) : $issues;
 		$query = new WP_Query( 
 			array( 
@@ -56,22 +58,24 @@ function wpr2x_wp_retina_2x() {
 				'post_type' => 'attachment',
 				'post__in' => $postin,
 				'paged' => $paged,
-				'posts_per_page' => $posts_per_page
+				'posts_per_page' => $posts_per_page,
+				's' => $s
 			)
 		);
 	} 
 	else if ( $view == 'ignored' ) {
 		global $wpdb;
-		$totalcount = $wpdb->get_var( "
+		$totalcount = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*)
 			FROM $wpdb->posts p
 			WHERE post_status = 'inherit'
 			AND post_type = 'attachment'
+			AND post_title LIKE %s
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/jpg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-		" );
+		", '%' . $s . '%' ) );
 		$postin = count( $ignored ) < 1 ? array( -1 ) : $ignored;
 		$query = new WP_Query( 
 			array( 
@@ -79,19 +83,25 @@ function wpr2x_wp_retina_2x() {
 				'post_type' => 'attachment',
 				'post__in' => $postin,
 				'paged' => $paged,
-				'posts_per_page' => $posts_per_page
+				'posts_per_page' => $posts_per_page,
+				's' => $s
 			)
 		);
 	} 
 	else {
+
 		$query = new WP_Query( 
 			array( 
 				'post_status' => 'inherit',
 				'post_type' => 'attachment',
 				'post_mime_type' => 'image/jpeg,image/gif,image/jpg,image/png',
-				'paged' => $paged
+				'paged' => $paged,
+				'posts_per_page' => $posts_per_page,
+				's' => $s
 			)
 		);
+
+		//$s
 		$totalcount = $query->found_posts;
 	}
 	$results = array();
@@ -103,9 +113,21 @@ function wpr2x_wp_retina_2x() {
 	}
 	?>
 
-	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
-	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
-	
+	<form id="posts-filter" action="upload.php" method="get">
+		<p class="search-box" style='margin-top: -40px;'>
+			<input type="search" name="s" value="<?php echo $s ? $s : ""; ?>">
+			<input type="hidden" name="page" value="wp-retina-2x">
+			<input type="hidden" name="view" value="<?php echo $view; ?>">
+			<input type="hidden" name="paged" value="<?php echo $paged; ?>">
+			<input type="submit" class="button" value="Search">
+		</p>
+	</form>
+
+	<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button-secondary' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
+	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
+	<a id='wr2x_refresh' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-secondary' style=''><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
+	<span style='margin-left: 15px; font-size: 15px;' id='wr2x_progression'></span>	
+
 	<?php 
 		if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
 			echo "<div class='updated' style='margin-top: 20px;'><p>";
@@ -114,12 +136,12 @@ function wpr2x_wp_retina_2x() {
 		}
 	?>
 	
-	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button).", 'wp-retina-2x'); ?></p>
+	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media or for all of them. You can also upload and replace the images by drag & drop them on the grid.", 'wp-retina-2x'); ?></p>
 
 	<div id='wr2x-pages'>
 	<?php
 	echo paginate_links(array(  
-	  'base' => '?page=wp-retina-2x&view=' . $view . '%_%',
+	  'base' => '?page=wp-retina-2x&s=' . $s . '&view=' . $view . '%_%',
       'current' => $paged,
       'format' => '&paged=%#%',
       'total' => $pagescount,
@@ -129,9 +151,9 @@ function wpr2x_wp_retina_2x() {
 	</div>
 	
 	<ul class="subsubsub">
-		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=all'>All</a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=issues'>Issues</a><span class="count">(<?php echo count( $issues ); ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&view=ignored'>Ignored</a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
+		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=all'>All</a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'>Issues</a><span class="count">(<?php echo count( $issues ); ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=ignored'>Ignored</a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
 	</ul>
 	<table class='wp-list-table widefat fixed media'>
 		<thead><tr>
