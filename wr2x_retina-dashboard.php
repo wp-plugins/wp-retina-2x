@@ -30,23 +30,14 @@ function wpr2x_wp_retina_2x() {
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
 	
-	if ( $view == 'replace' ) {
-		require('wr2x_replace.php');
-		return;
-	}
-	
 	?>
 	<div class='wrap'>
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>WP Retina 2x &#8226; Dashboard</h2>
+
 	<p></p>
 	<?php 
 	
-	if ( $view == 'upload' ) {
-		require('wr2x_upload.php');
-		return;
-	}
-
 	if ( $view == 'issues' ) {
 		global $wpdb;
 		$totalcount = $wpdb->get_var( "
@@ -65,7 +56,7 @@ function wpr2x_wp_retina_2x() {
 				'post_type' => 'attachment',
 				'post__in' => $postin,
 				'paged' => $paged,
-				'posts_per_page' => 10
+				'posts_per_page' => $posts_per_page
 			)
 		);
 	} 
@@ -88,7 +79,7 @@ function wpr2x_wp_retina_2x() {
 				'post_type' => 'attachment',
 				'post__in' => $postin,
 				'paged' => $paged,
-				'posts_per_page' => 10
+				'posts_per_page' => $posts_per_page
 			)
 		);
 	} 
@@ -110,43 +101,20 @@ function wpr2x_wp_retina_2x() {
 		$info = wr2x_retina_info( $post->ID );
 		array_push( $results, array( 'post' => $post, 'info' => $info ) );		
 	}
-	$pagescount = count($results);
-
 	?>
+
 	<a id='wr2x_generate_button_all' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-primary' style='float: right;'><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
 	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate for all files", 'wp-retina-2x'); ?></a> <span id='wr2x_progression'></span>
 	
 	<?php 
 		if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
-			echo "<p style='color: green;'>";
+			echo "<div class='updated' style='margin-top: 20px;'><p>";
 			_e( "Issues has been refreshed.", 'wp-retina-2x' );
-			echo "</p>";
+			echo "</p></div>";
 		}
 	?>
 	
 	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media ('Generate' button) or for all of them ('Generate for all the files' button).", 'wp-retina-2x'); ?></p>
-
-	<style>
-		#wr2x-pages {
-			float: right;
-			position: relative;
-			top: 12px;
-		}
-	
-		#wr2x-pages a {
-			text-decoration: none;
-			border: 1px solid black;
-			padding: 2px 5px;
-			border-radius: 4px;
-			background: #E9E9E9;
-			color: lightslategrey;
-			border-color: #BEBEBE;
-		}
-		
-		#wr2x-pages .current {
-			font-weight: bold;
-		}
-	</style>
 
 	<div id='wr2x-pages'>
 	<?php
@@ -170,12 +138,14 @@ function wpr2x_wp_retina_2x() {
 			<?php
 			echo "<th style='width: 64px;''></th>";
 			echo "<th style='font-size: 11px; font-family: Verdana;'>Title</th>";
+
+			$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 			foreach ($sizes as $name => $attr) {
-				echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
+				if ( !in_array( $name, $ignore_cols ) )
+					echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
 			}
 			
 			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>Actions</th>";
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 62px;'></th>";
 			echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
 			?>
 		</tr></thead>
@@ -187,20 +157,24 @@ function wpr2x_wp_retina_2x() {
 				if ( $view != 'issues' ) {
 					wr2x_update_issue_status( $attr['post']->ID, $issues, $attr['info'] );
 				}
-				if (!isset($meta) || !isset($meta['width'])) {
-					// No meta information, probably a BMP
-					continue;
+				if ( isset( $meta ) && isset( $meta['width'] ) ) {
+					$original_width = $meta['width'];
+					$original_height = $meta['height'];
 				}
-				$original_width = $meta['width'];
-				$original_height = $meta['height'];
+				
 				$attachmentsrc = wp_get_attachment_image_src( $attr['post']->ID, 'thumbnail' );
-				echo "<tr>";
-				echo "<td><img style='max-width: 64px; height: 32px;' src='" . $attachmentsrc[0] . "' /></td>";
-				echo "<td><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $attr['post']->ID . "&action=edit'>" . 
+				echo "<tr class='wr2x-file-row' postId='" . $attr['post']->ID . "'>";
+				echo "<td class='wr2x-image'><img style='max-width: 64px; height: 32px;' src='" . $attachmentsrc[0] . "' /></td>";
+				echo "<td class='wr2x-title'><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $attr['post']->ID . "&action=edit'>" . 
 					$attr['post']->post_title . '<br />' .
 					"<span style='font-size: 9px; line-height: 10px; display: block;'>" . $original_width . "×" . $original_height . "</span>";
 					"</a></td>";
-				foreach ($attr['info'] as $aindex => $aval) {
+
+				foreach ($sizes as $aindex => $aval) {
+					if ( in_array( $aindex, $ignore_cols ) )
+						continue;
+
+					$aval = ( isset( $attr['info'] ) && isset( $attr['info'][$aindex] ) ) ? $attr['info'][$aindex] : null;
 					echo "<td id='wr2x_" . $aindex .  "_" . $attr['post']->ID . "'>";
 					if ( is_array( $aval ) ) {
 						echo "<img title='Please upload a bigger original image.' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
@@ -228,13 +202,6 @@ function wpr2x_wp_retina_2x() {
 				if ( !wr2x_is_ignore( $attr['post']->ID ) ) {
 					echo "<td><a style='position: relative; top: 0px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a></td>";
 				}
-
-				echo "<td style='padding-top: 2px; padding-bottom: 0px;'>";
-				$_GET["attachment_id"] = $attr['post']->ID;
-				$url = "?page=wp-retina-2x&view=upload&pview=$view&paged=$paged&attachment_id=" . $attr['post']->ID;
-				$url = wp_nonce_url( $url, "wr2x" );
-				print "<a style='position: relative; top: 2px;' class='button-secondary' href='" . $url . "'>UPLOAD</a>";
-				echo "</td>";
 				
 				echo "</tr>";
 			}
@@ -242,6 +209,7 @@ function wpr2x_wp_retina_2x() {
 		</tbody>
 	</table>
 	</div>
+
 	<?php
 	jordy_meow_footer();
 }

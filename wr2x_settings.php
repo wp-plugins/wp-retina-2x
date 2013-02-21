@@ -89,8 +89,8 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'method',
                 'label' => __( 'Method', 'wp-retina-2x' ),
-                'desc' => __( 'The <b>server-side method</b> is very fast and efficient. However, depending on the cache system you are using (including services like Cloudflare) you might encounter issues. Please contact me if that is the case.
-                The <b>client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution one will be retrieved if available. This method is not efficient and quite slow.', 'wp-retina-2x' ),
+                'desc' => __( '<br />The <b>server-side method</b> is very fast and efficient. However, depending on the hosting and cache system you are using (including services like Cloudflare) you might encounter issues.
+                <br /><br />The <b>client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution one will be retrieved if available. Most websites (Apple for instance) use this method.', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(

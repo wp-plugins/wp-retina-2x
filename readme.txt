@@ -6,25 +6,37 @@ Requires at least: 3.5
 Tested up to: 3.5
 Stable tag: 0.9.6
 
-Make your website look beautiful and smooth on Retina (high-DPI) displays.
+Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPads.
 
 == Description ==
 
-This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will now look beautiful and smooth on every device.
+This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
 
-It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. Support was added for WordPress Multi-site.
+It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well.
+
+Quickstart:
+
+* Set your option (for instance, you probably don't need retina images for every sizes set-up in your WP).
+* Generate the retina images (required only the first time, then images are generated automatically).
+* Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
 
+= 0.9.7 =
+* Change: hide the columns to ignore in the Retina dashboard.
+* Change: upload is now HTML5, by drag and drop in the Retina Dashboard.
+* Fix: performance boost!
+* Fix: random little fixes.
+
 = 0.9.6 =
-= Fix: warnings when uploading/replacing an image file.
+* Fix: warnings when uploading/replacing an image file.
 
 = 0.9.4 =
 * Fix: esthetical issue related to the icons in the Retina dashboard.
 * Fix: warnings when uploading/replacing an image file.
 
 = 0.9.2 =
-* Changed: Media Replace is not used anymore, the code has been embedded in the plugin directly.
+* Change: Media Replace is not used anymore, the code has been embedded in the plugin directly.
 
 = 0.9 =
 * Fix: code cleaning.
@@ -34,33 +46,33 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: Works with WP 3.5.
 
 = 0.4.2 =
-* Updated: to the new version of Retina.js (client-method).
+* Update: to the new version of Retina.js (client-method).
 * Fix: updated rewrite-rule (server-method) that works with multi-site.
 
 = 0.4 =
 * Fix: support for Network install (multi-site). Thanks to Jeremy (Retina-Images).
 
 = 0.3.4 =
-* Changed: Retina.js updated to its last version (should be slighlty faster).
-* Changed: Retina-Images updated to its last version (now handles 404 error, yay!).
+* Change: Retina.js updated to its last version (should be slighlty faster).
+* Change: Retina-Images updated to its last version (now handles 404 error, yay!).
 * Fix: using a Retina display, the Retina Dashboard was not looking very nice.
 * Fix: the "ignored" media for retina are handled in a better way.
-* Changed: the FAQ was improved.
+* Change: the FAQ was improved.
 
 = 0.3.0 =
 * Fix: was not generating the images properly on multisite WordPress installs.
-* Added: warning message if using the server-side method without the pretty permalinks.
-* Added: warning message if using the server-side method on a multisite WordPress install.
-* Changed: the client-method (retina.js) is now used by default.
+* Add: warning message if using the server-side method without the pretty permalinks.
+* Add: warning message if using the server-side method on a multisite WordPress install.
+* Change: the client-method (retina.js) is now used by default.
 
 = 0.2.9 =
 * Fix: in a few cases, the retina images were not generated (for no apparent reasons).
 
 = 0.2.8 =
 * Fix: the retina image was not being generated if equal to the resolution of the original image.
-* Added: optimization and enhancement of the issues management.
-* Added: a little counter icon to show the number of issues.
-* Added: an 'IGNORE' button to hide issues that should not be.
+* Add: optimization and enhancement of the issues management.
+* Add: a little counter icon to show the number of issues.
+* Add: an 'IGNORE' button to hide issues that should not be.
 
 = 0.2.6 =
 * Fix: simplified version of the .htaccess directive.
@@ -73,28 +85,28 @@ It handles two different methods to serves the images to your visitors. Pick the
 * Fix: the recommended resolution shown wasn't the most adequate one.
 * Fix: in a few cases, the .htaccess wasn't properly generated.
 * Fix: files were renamed to avoid conflicts.
-* Added: paging for the Retina Dashboard.
-* Added: 'Generate for all files' handles and shows if there are errors.
+* Add: paging for the Retina Dashboard.
+* Add: 'Generate for all files' handles and shows if there are errors.
 
 = 0.2.1 =
 * Removed 'error_reporting' (triggers warnings and notices with other plugins).
 * Fix: on uninstall/disable, the .htaccess will be updated properly.
 
 = 0.2 =
-* Added: the Retina Dashboard.
-* Added: can now generate Retina files in bulk.
-* Fixed: the cropped images were not 'cropped'.
-* Added: The Retina Dashboard and the Media Library's column can be disabled via the settings.
+* Add: the Retina Dashboard.
+* Add: can now generate Retina files in bulk.
+* Fix: the cropped images were not 'cropped'.
+* Add: The Retina Dashboard and the Media Library's column can be disabled via the settings.
 * Fix: resolved more PHP warning and notices.
 
 = 0.1.8 =
 * Fix: resolved PHP warnings and notices.
 
 = 0.1.6 =
-* Changed: simplified the code of the server-side method.
+* Change: simplified the code of the server-side method.
 
 = 0.1.4 =
-* Fixed: the wrong resolution was displayed in the Retina column of the Media Manager.
+* Fix: the wrong resolution was displayed in the Retina column of the Media Manager.
 
 = 0.1 =
 * Very first release.
@@ -144,17 +156,35 @@ That is unfortunately one of the main issues to expect with all this "Retina" te
 = It's not working with multisite + subdomains + the server-method, what can I do? =
 Jeremy the creator of "Retina-Images" helped me with this issue. Thanks to him, it nows work perfectly since WP Retina 2x 0.4! Although you will have to do edit the .htaccess file by yourself, and to add the RewriteRule "^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]" as the first RewriteRule.
 
+= I use a CDN and it doesn't work =
+The retina files have to be sent to the CDN, then the plugin should work fine (using the client-method). The plugin in charge of sending the files to the CDN is not the WP Retina 2x plugin, and cannot. The developer of the other plugin has to implement support for the Retina files. It should be very easy! In order to help those developers, I created two WordPress actions (when a retina file is added or removed) and they both send two arguments: the attachment id and the full path to the retina file.
+* wr2x_retina_file_added
+* wr2x_retina_file_removed
+
+= When re-uploading, WordPress stops responding =
+Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values this way:
+
+In the PHP configuration:
+php_value memory_limit = "128M";
+max_execution_time = 360;
+
+Or anywhere in your file (in the 'wp-settings.php' ideally):
+ini_set('memory_limit', '512M');
+ini_set('max_execution_time', 300);
+
+Please note that it doesn't work with some cheap web hosts, as they don't want you do to that instead. The real issue can also be tracked in the PHP error logs.
+
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.
 
-= This plugin is cool, how can I thank you? =
-Thanks for asking! :p Please visit Totoro Times (http://www.totorotimes.com), and please talk about this plugin and this website to your friends :) That would definitely be cool. You can also make a donation, that already happened and got me very surprised, and I will send you a postcard from Japan if you like ^^
-
 = I still don't understand a thing! =
-Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.
+Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>. You can have a look at the WordPress forums.
+
+= This plugin is cool, how can I thank you? =
+Thanks for asking! :p Please visit <a href='http://www.totorotimes.com'>Totoro Times</a>, and please talk about this plugin and this website to your friends :) That would definitely be nice! You can also make <a href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U'>a donation</a>. Thanks to those who did it already, this is awesome and really helps!
 
 = Can I contact you? =
-Yes, sure, you can! But since the plugin got popular, I get many emails everyday which consume almost 10% of my whole lifetime (not kidding! + it's rarely issues coming from the plugin itself). So now I ask you to visit my website <a href='http://www.totorotimes.com'>Totoro Times</a>, pick a page you like, and share it on Facebook, Twitter or your own website. I hope you understand :) Thanks a lot!
+Yes, sure, you can! But since the plugin got popular, I get many emails everyday which consume almost 10% of my whole lifetime (not kidding! + it's rarely issues coming from the plugin itself). So now I ask you to visit my website <a href='http://www.totorotimes.com'>Totoro Times</a>, pick a page you like, and share it on Facebook, Twitter or your own website. If you have a commercial website maybe you should consider making a donation. Then you can contact me using <a href='http://www.totorotimes.com/about/'>this page</a>. Thanks a lot!
 
 == Screenshots ==
 
@@ -162,7 +192,3 @@ Yes, sure, you can! But since the plugin got popular, I get many emails everyday
 2. Basic Settings
 3. Advanced Settings
 4. Retina Dashboard
-
-== Wishlist ==
-
-Do you have suggestions? Feel free to contact me at http://www.totorotimes.com.

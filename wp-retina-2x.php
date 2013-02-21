@@ -24,16 +24,18 @@ Originally developed for two of my websites:
  *
  */
 
-//error_reporting(E_ALL);
+$wr2x_version = '0.9.6';
+$wr2x_retinajs = '2013.02.06';
+$wr2x_retina_image = '1.4.0';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
 add_action( 'wp_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
-add_action( 'admin_head', 'wr2x_admin_head' );
+add_action( 'admin_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
 add_filter( 'wp_generate_attachment_metadata', 'wr2x_wp_generate_attachment_metadata' );
 add_action( 'delete_attachment', 'wr2x_delete_attachment' );
 add_filter( 'update_option', 'wr2x_update_option' );
 add_filter( 'generate_rewrite_rules', 'wr2x_generate_rewrite_rules' );
-add_action( 'plugins_loaded', 'wr2x_init' );
+add_action( 'init', 'wr2x_init' );
 
 register_deactivation_hook( __FILE__, 'wr2x_deactivate' );
 register_activation_hook( __FILE__, 'wr2x_activate' );
@@ -51,6 +53,10 @@ if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
 
 function wr2x_init() {
 	load_plugin_textdomain( 'wp-retina-2x', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	if ( is_admin() ) {
+		wp_register_style( 'wr2x-admin-css', plugins_url( '/wr2x_admin.css', __FILE__ ) );
+		wp_enqueue_style( 'wr2x-admin-css' );
+	}
 }
 
 /**
@@ -97,16 +103,15 @@ function wr2x_info_has_issues( $info ) {
 
 function wr2x_calculate_issues() {
 	global $wpdb;
-	$postids = $wpdb->get_col( $wpdb->prepare ( "
-		SELECT p.ID
-		FROM $wpdb->posts p
+	$postids = $wpdb->get_col( "
+		SELECT p.ID FROM $wpdb->posts p
 		WHERE post_status = 'inherit'
 		AND post_type = 'attachment'
 		AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/jpg' OR
 			post_mime_type = 'image/png' OR
 			post_mime_type = 'image/gif' )
-	", 0, 0 ) );
+	" );
 	$issues = array();
 	foreach ( $postids as $id ) {
 		$info = wr2x_retina_info( $id );
@@ -297,8 +302,11 @@ function wr2x_generate_images( $meta ) {
 	$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 	$issue = false;
+	$id = wr2x_get_attachment_id( $meta['file'] );
+	
 	wr2x_log("** RETINA INFO FOR ATTACHMENT '{$meta['file']}' **");
 	wr2x_log( "- Original: {$original_basename}" );
+
 	foreach ( $sizes as $name => $attr ) {
 		if ( in_array( $name, $ignore ) ) {
 			wr2x_log( "- {$name} => IGNORED" );
@@ -337,6 +345,7 @@ function wr2x_generate_images( $meta ) {
 				$issue = true;
 			}
 			else {
+				do_action( 'wr2x_retina_file_added', $id, $retina_file );
 				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => RESIZE" );
 			}
 		} else {
@@ -345,7 +354,6 @@ function wr2x_generate_images( $meta ) {
 	}
 	
 	// Checks attachment ID + issues
-	$id = wr2x_get_attachment_id( $meta['file'] );
 	if ( !$id )
 		return $meta;
 	if ( $issue )
@@ -362,6 +370,7 @@ function wr2x_delete_images( $meta ) {
 	if ( !$sizes || !is_array( $sizes ) )
 		return $meta;
 	$originalfile = $meta['file'];
+	$id = wr2x_get_attachment_id( $originalfile );
 	$pathinfo = pathinfo( $originalfile );
 	$uploads = wp_upload_dir();
 	$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
@@ -370,6 +379,7 @@ function wr2x_delete_images( $meta ) {
 		$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
 		if ( file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
 			unlink( trailingslashit( $basepath ) . $retina_file );
+			do_action( 'wr2x_retina_file_removed', $id, $retina_file );
 		}
 	}
     return $meta;
@@ -393,13 +403,15 @@ function wr2x_deactivate() {
  */
 
 function wr2x_wp_enqueue_scripts () {
+	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image;
+	
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	if ( wr2x_is_debug() )
-		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), '0.1', false );
+		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
 	if ($method == "Retina-Images")
-		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-images.js', __FILE__ ), array(), '1.4.0', false );
+		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-images.js', __FILE__ ), array(), $wr2x_retina_image, false );
 	else if ($method == "retina.js")
-		wp_enqueue_script( 'retinajs', plugins_url( '/js/retina.js', __FILE__ ), array(), '2012.10.09', true );
+		wp_enqueue_script( 'retinajs', plugins_url( '/js/retina.js', __FILE__ ), array(), $wr2x_retinajs, true );
 }
 
 ?>
