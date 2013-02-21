@@ -297,6 +297,9 @@ function wr2x_generate_images( $meta ) {
 	require('wr2x_vt_resize.php');
 	$sizes = wr2x_get_image_sizes();
 	$originalfile = $meta['file'];
+	if ( !file_exists( $originalfile ) ) {
+		return $meta;
+	}
 	$uploads = wp_upload_dir();
 	$pathinfo = pathinfo( $originalfile );
 	$original_basename = $pathinfo['basename'];
