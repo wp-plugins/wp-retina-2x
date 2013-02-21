@@ -125,7 +125,7 @@ function wpr2x_wp_retina_2x() {
 
 	<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button-secondary' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
 	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
-	<a id='wr2x_refresh' href='?page=wp-retina-2x&view=<?php echo $view; ?>&refresh=true' class='button-secondary' style=''><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
+	<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button-secondary' style=''><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
 	<span style='margin-left: 15px; font-size: 15px;' id='wr2x_progression'></span>	
 
 	<?php 
@@ -141,7 +141,7 @@ function wpr2x_wp_retina_2x() {
 	<div id='wr2x-pages'>
 	<?php
 	echo paginate_links(array(  
-	  'base' => '?page=wp-retina-2x&s=' . $s . '&view=' . $view . '%_%',
+	  'base' => '?page=wp-retina-2x&s=' . urlencode($s) . '&view=' . $view . '%_%',
       'current' => $paged,
       'format' => '&paged=%#%',
       'total' => $pagescount,
