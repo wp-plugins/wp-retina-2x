@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 0.9.6
+Stable tag: 0.9.8
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPads.
 
@@ -22,9 +22,11 @@ Quickstart:
 
 == Changelog ==
 
-= 0.9.7 =
+= 0.9.8 =
+* Change: upload is now HTML5, by drag and drop in the Retina Dashboard!
+* Add: delete all retina files button.
 * Change: hide the columns to ignore in the Retina dashboard.
-* Change: upload is now HTML5, by drag and drop in the Retina Dashboard.
+* Change: generate button only generates pending items (images).
 * Fix: performance boost!
 * Fix: random little fixes.
 
