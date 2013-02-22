@@ -35,7 +35,12 @@ function wr2x_admin_head() {
 				if (++current <= ids.length)
 					wr2x_do_next();
 				else {
-					jQuery('#wr2x_progression').text("<?php echo __( "Done.", 'wp-retina-2x' ); ?>");
+					if ( ajax_action == "generate" ) {
+						jQuery('#wr2x_progression').html("<?php echo __( "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page.", 'wp-retina-2x' ); ?>");
+					}
+					else {
+						jQuery('#wr2x_progression').html("<?php echo __( "Done. You might want to <a href='?page=wp-retina-2x&view=issues&refresh=true'>refresh</a> the issues.", 'wp-retina-2x' ); ?>");	
+					}
 				}
 			});
 		}
@@ -43,7 +48,7 @@ function wr2x_admin_head() {
 		function wr2x_do_all () {
 			current = 1;
 			ids = [];
-			var data = { action: 'wr2x_list_all', issuesOnly: (ajax_action == "generate" ? 1 : 0) };
+			var data = { action: 'wr2x_list_all', issuesOnly: ( ajax_action == "generate" ? 1 : 0 ) };
 			jQuery('#wr2x_progression').text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
@@ -52,7 +57,7 @@ function wr2x_admin_head() {
 					return;
 				}
 				if (reply.total == 0) {
-					jQuery('#wr2x_progression').text("<?php echo __( "Done.", 'wp-retina-2x' ); ?>");
+					jQuery('#wr2x_progression').html("<?php echo __( "Nothing to do ;)", 'wp-retina-2x' ); ?>");
 					return;
 				}
 				ids = reply.ids;
@@ -190,8 +195,20 @@ function wr2x_admin_head() {
  *
  */
 
+// Using issuesOnly, only the IDs with a PENDING status will be processed
 function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
 	$issuesOnly = intval( $_POST['issuesOnly'] );
+	if ( $issuesOnly == 1 ) {
+		$ids = wr2x_get_issues();
+		echo json_encode( 
+			array(
+				'success' => true,
+				'message' => "List of issues only.",
+				'ids' => $ids,
+				'total' => count( $ids )
+		) );
+		die;
+	}
 	$reply = array();
 	try {
 		$ids = array();
@@ -210,32 +227,13 @@ function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
 		foreach ($postids as $id) {
 			if ( wr2x_is_ignore( $id ) )
 				continue;
-			if ( $issuesOnly ) {
-				$info = wr2x_retina_info( $id );
-				$toAdd = false;
-				foreach ( $info as $name => $attr ) {
-					if ( in_array( $name, $ignore ) )
-						continue;
-					if ( $attr == 'PENDING' ) {
-						$toAdd = true;
-						break;
-					}
-				}
-				if ($toAdd) {
-					array_push( $ids, $id );
-					$total++;
-				}
-			}
-			else {
-				array_push( $ids, $id );
-				$total++;
-			}
-			
+			array_push( $ids, $id );
+			$total++;
 		}
 		echo json_encode( 
 			array(
 				'success' => true,
-				'message' => "List of id's.",
+				'message' => "List of everything.",
 				'ids' => $ids,
 				'total' => $total
 		) );

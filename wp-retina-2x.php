@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '0.9.8';
+$wr2x_version = '1.0.0';
 $wr2x_retinajs = '2013.02.06';
 $wr2x_retina_image = '1.4.0';
 
@@ -117,6 +117,7 @@ function wr2x_calculate_issues() {
 		$info = wr2x_retina_info( $id );
 		if ( wr2x_info_has_issues( $info ) )
 			array_push( $issues, $id );
+		
 	}
 	set_transient( 'wr2x_ignores', array() );
 	set_transient( 'wr2x_issues', $issues );
@@ -221,7 +222,7 @@ function wr2x_log( $data ) {
 
 function wr2x_retina_info( $id ) {
 	$result = array();
-    $meta = wp_get_attachment_metadata($id);
+    $meta = wp_get_attachment_metadata( $id );
 	if ( !isset( $meta, $meta['width'], $meta['height'] ) ) {
 		return $result;
 	}

@@ -36,7 +36,6 @@ function wpr2x_wp_retina_2x() {
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>WP Retina 2x &#8226; Dashboard</h2>
 
-	<p></p>
 	<?php 
 	
 	if ( $view == 'issues' ) {
@@ -89,7 +88,6 @@ function wpr2x_wp_retina_2x() {
 		);
 	} 
 	else {
-
 		$query = new WP_Query( 
 			array( 
 				'post_status' => 'inherit',
@@ -104,6 +102,20 @@ function wpr2x_wp_retina_2x() {
 		//$s
 		$totalcount = $query->found_posts;
 	}
+
+	$issues_count = count( $issues );
+
+	// If 'search', then we need to clean-up the issues count
+	if ( $s && $issues_count > 0 ) {
+		global $wpdb;
+		$issues_count = $wpdb->get_var( $wpdb->prepare( "
+			SELECT COUNT(*)
+			FROM $wpdb->posts p
+			WHERE id IN ( " . implode( ',', $issues ) . " )
+			AND post_title LIKE %s
+		", '%' . $s . '%' ) );
+	}
+
 	$results = array();
 	$count = $query->found_posts;
 	$pagescount = $query->max_num_pages;
@@ -113,20 +125,21 @@ function wpr2x_wp_retina_2x() {
 	}
 	?>
 
-	<form id="posts-filter" action="upload.php" method="get">
-		<p class="search-box" style='margin-top: -40px;'>
-			<input type="search" name="s" value="<?php echo $s ? $s : ""; ?>">
-			<input type="hidden" name="page" value="wp-retina-2x">
-			<input type="hidden" name="view" value="<?php echo $view; ?>">
-			<input type="hidden" name="paged" value="<?php echo $paged; ?>">
-			<input type="submit" class="button" value="Search">
-		</p>
-	</form>
-
-	<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button-secondary' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
-	<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
-	<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button-secondary' style=''><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
-	<span style='margin-left: 15px; font-size: 15px;' id='wr2x_progression'></span>	
+	<div style='margin-top: 12px; background: #EEE; padding: 5px; border-radius: 4px; height: 24px; box-shadow: 0px 0px 3px #575757;'>
+		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
+		<form id="posts-filter" action="upload.php" method="get">
+			<p class="search-box" style='margin-left: 5px; float: left;'>
+				<input type="search" name="s" value="<?php echo $s ? $s : ""; ?>">
+				<input type="hidden" name="page" value="wp-retina-2x">
+				<input type="hidden" name="view" value="<?php echo $view; ?>">
+				<input type="hidden" name="paged" value="<?php echo $paged; ?>">
+				<input type="submit" class="button" value="Search">
+			</p>
+		</form>
+		<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button-secondary' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
+		<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button-secondary' style='float: right; margin-right: 5px;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
+		<span style='margin-left: 12px; font-size: 12px; top: 5px; position: relative; color: #9C9C9C;' id='wr2x_progression'></span>	
+	</div>
 
 	<?php 
 		if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
@@ -152,7 +165,7 @@ function wpr2x_wp_retina_2x() {
 	
 	<ul class="subsubsub">
 		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=all'>All</a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'>Issues</a><span class="count">(<?php echo count( $issues ); ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'>Issues</a><span class="count">(<?php echo $issues_count; ?>)</span></li> |
 		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=ignored'>Ignored</a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
 	</ul>
 	<table class='wp-list-table widefat fixed media'>

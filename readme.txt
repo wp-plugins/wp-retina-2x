@@ -1,12 +1,12 @@
 === WP Retina 2x ===
 Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
-Tags: retina, iphone, macbookpro, apple, images, admin, attachment, media, files
+Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 Requires at least: 3.5
 Tested up to: 3.5
 Stable tag: 0.9.8
 
-Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPads.
+Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
 == Description ==
 
@@ -14,13 +14,19 @@ This plugin creates the image files required by the Retina (high-DPI) displays a
 
 It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well.
 
-Quickstart:
+= Quickstart =
 
-* Set your option (for instance, you probably don't need retina images for every sizes set-up in your WP).
-* Generate the retina images (required only the first time, then images are generated automatically).
-* Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
+1. Set your option (for instance, you probably don't need retina images for every sizes set-up in your WP).
+2. Generate the retina images (required only the first time, then images are generated automatically).
+3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.0.0 =
+* Change: enhancement of the Retina Dashboard.
+* Change: better management of the 'issues'.
+* Change: handle images with technical problems.
+* Fix: random little fixes again.
 
 = 0.9.8 =
 * Change: upload is now HTML5, by drag and drop in the Retina Dashboard!
@@ -120,8 +126,7 @@ Quick and easy installation:
 1. Upload the folder `wp-retina-2x` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Check the settings of WP Retina 2x in the WordPress administration screen.
-4. Check your Media Library where you can find the new 'Retina' column.
-5. Check the Retina Dashboard.
+4. Check the Retina Dashboard.
 6. Read the tutorial about the plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.
 
 == Frequently Asked Questions ==
@@ -167,12 +172,12 @@ The retina files have to be sent to the CDN, then the plugin should work fine (u
 Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values this way:
 
 In the PHP configuration:
-php_value memory_limit = "128M";
-max_execution_time = 360;
+* php_value memory_limit = "128M";
+* max_execution_time = 360;
 
 Or anywhere in your file (in the 'wp-settings.php' ideally):
-ini_set('memory_limit', '512M');
-ini_set('max_execution_time', 300);
+* ini_set('memory_limit', '512M');
+* ini_set('max_execution_time', 300);
 
 Please note that it doesn't work with some cheap web hosts, as they don't want you do to that instead. The real issue can also be tracked in the PHP error logs.
 
