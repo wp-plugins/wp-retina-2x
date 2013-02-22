@@ -1,0 +1,44 @@
+#wr2x-pages {
+	float: right;
+	position: relative;
+	top: 12px;
+}
+
+.wr2x-hover-drop {
+	background: rgb(243, 243, 243);
+}
+
+.wr2x-hover-drop .wr2x-title {
+	background: url('./img/replace.png');
+	background-position: 5px 4px;
+	background-repeat: no-repeat;
+}
+
+.wr2x-loading-file {
+	background: rgb(243, 243, 243);
+}
+
+.wr2x-loading-file .wr2x-title {
+	background: url('./img/loading.gif');
+	background-position: 5px 1px;
+	background-repeat: no-repeat;
+}
+
+.wr2x-loading-file .wr2x-title a, .wr2x-loading-file .wr2x-title span,
+.wr2x-hover-drop .wr2x-title a, .wr2x-hover-drop .wr2x-title span {
+	opacity: 0.0;
+}
+
+#wr2x-pages a {
+	text-decoration: none;
+	border: 1px solid black;
+	padding: 2px 5px;
+	border-radius: 4px;
+	background: #E9E9E9;
+	color: lightslategrey;
+	border-color: #BEBEBE;
+}
+
+#wr2x-pages .current {
+	font-weight: bold;
+}
