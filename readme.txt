@@ -195,7 +195,4 @@ Yes, sure, you can! But since the plugin got popular, I get many emails everyday
 
 == Screenshots ==
 
-1. A new column in the Media Library.
-2. Basic Settings
-3. Advanced Settings
-4. Retina Dashboard
+1. The Retina Dashboard
