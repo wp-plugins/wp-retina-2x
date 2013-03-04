@@ -2,6 +2,7 @@
 Contributors: TigrouMeow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
+License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.5
 Stable tag: 1.0.0
@@ -164,18 +165,21 @@ That is unfortunately one of the main issues to expect with all this "Retina" te
 Jeremy the creator of "Retina-Images" helped me with this issue. Thanks to him, it nows work perfectly since WP Retina 2x 0.4! Although you will have to do edit the .htaccess file by yourself, and to add the RewriteRule "^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]" as the first RewriteRule.
 
 = I use a CDN and it doesn't work =
-The retina files have to be sent to the CDN, then the plugin should work fine (using the client-method). The plugin in charge of sending the files to the CDN is not the WP Retina 2x plugin, and cannot. The developer of the other plugin has to implement support for the Retina files. It should be very easy! In order to help those developers, I created two WordPress actions (when a retina file is added or removed) and they both send two arguments: the attachment id and the full path to the retina file.
-- wr2x_retina_file_added
-- wr2x_retina_file_removed
+The retina files have to be sent to the CDN, then the plugin should work fine (using the client-method). The plugin in charge of sending the files to the CDN is not the WP Retina 2x plugin, and cannot. 
+
+The developer of the other plugin has to implement support for the Retina files. It should be very easy! In order to help those developers, I created two WordPress actions (when a retina file is added or removed) and they both send two arguments: the attachment id and the full path to the retina file.
+
+* wr2x_retina_file_added
+* wr2x_retina_file_removed
 
 = When re-uploading, WordPress stops responding =
-Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values using, for example, one of these two ways:
+Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values using the PHP Configuration File (php.ini):
 
-== php.ini (PHP Configuration File) ==
 * php_value memory_limit = "128M";
 * max_execution_time = 360;
 
-== wp-settings.php (or somewhere in WP/plugin code)
+... or by modifying the WordPress PHP files (wp-settings.php ideally):
+
 * ini_set('memory_limit', '512M');
 * ini_set('max_execution_time', 300);
 
