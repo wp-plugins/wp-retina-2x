@@ -165,17 +165,17 @@ Jeremy the creator of "Retina-Images" helped me with this issue. Thanks to him, 
 
 = I use a CDN and it doesn't work =
 The retina files have to be sent to the CDN, then the plugin should work fine (using the client-method). The plugin in charge of sending the files to the CDN is not the WP Retina 2x plugin, and cannot. The developer of the other plugin has to implement support for the Retina files. It should be very easy! In order to help those developers, I created two WordPress actions (when a retina file is added or removed) and they both send two arguments: the attachment id and the full path to the retina file.
-* wr2x_retina_file_added
-* wr2x_retina_file_removed
+- wr2x_retina_file_added
+- wr2x_retina_file_removed
 
 = When re-uploading, WordPress stops responding =
-Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values this way:
+Maybe you don't have enough memory allocated to PHP or the script takes longer than the maximum execution time limit. You can change those values using, for example, one of these two ways:
 
-In the PHP configuration:
+== php.ini (PHP Configuration File) ==
 * php_value memory_limit = "128M";
 * max_execution_time = 360;
 
-Or anywhere in your file (in the 'wp-settings.php' ideally):
+== wp-settings.php (or somewhere in WP/plugin code)
 * ini_set('memory_limit', '512M');
 * ini_set('max_execution_time', 300);
 
@@ -195,7 +195,4 @@ Yes, sure, you can! But since the plugin got popular, I get many emails everyday
 
 == Screenshots ==
 
-1. A new column in the Media Library.
-2. Basic Settings
-3. Advanced Settings
-4. Retina Dashboard
+1. The Retina Dashboard
