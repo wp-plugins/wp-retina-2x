@@ -16,8 +16,8 @@ function wr2x_admin_menu_dashboard () {
 	if ( $refresh )
 		wr2x_calculate_issues();
 	$flagged = count( wr2x_get_issues() );
-	$warning_title = "Retina files";
-	$menu_label = sprintf( __( 'WP Retina 2x %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
+	$warning_title = __( "Retina images", 'wp-retina-2x' );
+	$menu_label = sprintf( __( 'Retina %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
 	add_media_page( 'WP Retina 2x', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
 }
  
@@ -33,8 +33,9 @@ function wpr2x_wp_retina_2x() {
 	
 	?>
 	<div class='wrap'>
+	<?php jordy_meow_donation(); ?>
 	<div id="icon-upload" class="icon32"><br></div>
-	<h2>WP Retina 2x &#8226; Dashboard</h2>
+	<h2>WP Retina 2x</h2>
 
 	<?php 
 	
@@ -164,15 +165,15 @@ function wpr2x_wp_retina_2x() {
 	</div>
 	
 	<ul class="subsubsub">
-		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=all'>All</a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'>Issues</a><span class="count">(<?php echo $issues_count; ?>)</span></li> |
-		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=ignored'>Ignored</a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
+		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=all'><?php _e( "All", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'><?php _e( "Issues", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo $issues_count; ?>)</span></li> |
+		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=ignored'><?php _e( "Ignored", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
 	</ul>
 	<table class='wp-list-table widefat fixed media'>
 		<thead><tr>
 			<?php
 			echo "<th style='width: 64px;''></th>";
-			echo "<th style='font-size: 11px; font-family: Verdana;'>Title</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Titre", 'wp-retina-2x' ) . "</th>";
 
 			$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 			foreach ($sizes as $name => $attr) {
@@ -180,7 +181,7 @@ function wpr2x_wp_retina_2x() {
 					echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
 			}
 			
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>Actions</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>" . __( "Actions", 'wp-retina-2x' ) . "</th>";
 			echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
 			?>
 		</tr></thead>

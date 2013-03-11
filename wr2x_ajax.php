@@ -36,10 +36,10 @@ function wr2x_admin_head() {
 					wr2x_do_next();
 				else {
 					if ( ajax_action == "generate" ) {
-						jQuery('#wr2x_progression').html("<?php echo __( "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page.", 'wp-retina-2x' ); ?>");
+						jQuery('#wr2x_progression').html("<?php echo _e( "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page.", 'wp-retina-2x' ); ?>");
 					}
 					else {
-						jQuery('#wr2x_progression').html("<?php echo __( "Done. You might want to <a href='?page=wp-retina-2x&view=issues&refresh=true'>refresh</a> the issues.", 'wp-retina-2x' ); ?>");	
+						jQuery('#wr2x_progression').html("<?php echo _e( "Done. You might want to <a href='?page=wp-retina-2x&view=issues&refresh=true'>refresh</a> the issues.", 'wp-retina-2x' ); ?>");	
 					}
 				}
 			});
@@ -49,7 +49,7 @@ function wr2x_admin_head() {
 			current = 1;
 			ids = [];
 			var data = { action: 'wr2x_list_all', issuesOnly: ( ajax_action == "generate" ? 1 : 0 ) };
-			jQuery('#wr2x_progression').text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
+			jQuery('#wr2x_progression').text("<?php _e( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
 				if (reply.success = false) {
@@ -57,7 +57,7 @@ function wr2x_admin_head() {
 					return;
 				}
 				if (reply.total == 0) {
-					jQuery('#wr2x_progression').html("<?php echo __( "Nothing to do ;)", 'wp-retina-2x' ); ?>");
+					jQuery('#wr2x_progression').html("<?php _e( "Nothing to do ;)", 'wp-retina-2x' ); ?>");
 					return;
 				}
 				ids = reply.ids;
@@ -107,7 +107,7 @@ function wr2x_admin_head() {
 					alert(reply.message);
 					return;
 				}
-				jQuery('#wr2x_generate_button_' + attachmentId).html("GENERATE");
+				jQuery('#wr2x_generate_button_' + attachmentId).html("<?php echo __( "GENERATE", 'wp-retina-2x' ); ?>");
 				wr2x_refresh_dashboard(reply.results);
 			});
 		}
@@ -261,7 +261,7 @@ function wr2x_wp_ajax_wr2x_delete() {
 		array(
 			'results' => $results,
 			'success' => true,
-			'message' => "Retina files deleted."
+			'message' => __( "Retina files deleted.", 'wp-retina-2x' )
 		)
 	);
 	die();
@@ -280,7 +280,7 @@ function wr2x_wp_ajax_wr2x_generate() {
 		array(
 			'results' => $results,
 			'success' => true,
-			'message' => "Retina files generated."
+			'message' => __( "Retina files generated.", 'wp-retina-2x' )
 		)
 	);
 	die();
@@ -291,7 +291,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 	if ( !current_user_can('upload_files') ) {
 		echo json_encode( array(
 			'success' => false,
-			'message' => "You do not have permission to upload files."
+			'message' => __( "You do not have permission to upload files.", 'wp-retina-2x' )
 		));
 		die();
 	}
@@ -310,7 +310,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 		unlink( $tmpfname );
 		echo json_encode( array(
 			'success' => false,
-			'message' => "The file is not an image or the upload went wrong."
+			'message' => __( "The file is not an image or the upload went wrong.", 'wp-retina-2x' )
 		));
 		die();
 	}
@@ -320,7 +320,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 		unlink( $current_file );
 		echo json_encode( array(
 			'success' => false,
-			'message' => "You cannot use this file (wrong extension? wrong type?)."
+			'message' => __( "You cannot use this file (wrong extension? wrong type?).", 'wp-retina-2x' )
 		));
 		die();
 	}
@@ -369,7 +369,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 	echo json_encode( array(
 		'success' => true,
 		'results' => $results,
-		'message' => "Replaced successfuly."
+		'message' => __( "Replaced successfully.", 'wp-retina-2x' )
 	));
 	die();
 }

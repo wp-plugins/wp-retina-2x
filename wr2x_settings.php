@@ -12,21 +12,17 @@ function wr2x_settings_page() {
     $settings_api = wr2x_WeDevs_Settings_API::getInstance();
 	echo '<div class="wrap">';
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
-	
 	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x</h2>";
-	
 	if ( $method == 'retina.js' ) {
-		echo "<p><span style='color: blue;'>Current method: <u>Client-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.</p>";
+		echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
 	}
 	if ( $method == 'Retina-Images' ) {
-		echo "<p><span style='color: blue;'>" . __("Current method: <u>Server-side</u>.</span> Oh, and don't forget to check the tutorial of this plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.", 'wp-retina-2x');
+		echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
 		if ( defined( 'MULTISITE' ) && MULTISITE == true  )
-			echo " <span style='color: red;'>" . __("By the way, you are using a <b>WordPress Multi-Site installation</b>! You must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the first RewriteRule if you want the server-side to work.", 'wp-retina-2x')
-			. "</span>";
+			echo " <span style='color: red;'>" . __( "By the way, you are using a <b>WordPress Multi-Site installation</b>! You must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the first RewriteRule if you want the server-side to work.", 'wp-retina-2x' ) . "</span>";
 		echo "</p>";
-		
 		if ( !get_option('permalink_structure') )
-		echo "<p><span style='color: red;'>" . __("The permalinks are not enabled. They need to be enabled in order to use the server-side method.", 'wp-retina-2x') . "</span>";
+			echo "<p><span style='color: red;'>" . __( "The permalinks are not enabled. They need to be enabled in order to use the server-side method.", 'wp-retina-2x' ) . "</span>";
 	}
 	
     //settings_errors();
@@ -47,7 +43,7 @@ function wr2x_admin_init() {
 
 	require( 'wr2x_class.settings-api.php' );
 
-	if (delete_transient('wr2x_flush_rules')) {
+	if ( delete_transient( 'wr2x_flush_rules' ) ) {
 		global $wp_rewrite;
 		wr2x_generate_rewrite_rules( $wp_rewrite, true );
 	}
@@ -94,8 +90,8 @@ function wr2x_admin_init() {
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
-					'Retina-Images' => 'Server-side: Retina-Images (https://github.com/Retina-Images/Retina-Images)',
-					'retina.js' => 'Client-side: Retina.js (http://retinajs.com/)'
+					'Retina-Images' => __( "Server side", 'wp-retina-2x' ) . ': Retina-Images (https://github.com/Retina-Images/Retina-Images)',
+					'retina.js' => __( "Client side", 'wp-retina-2x' ) . ': Retina.js (http://retinajs.com/)'
                 )
             ),
 			array(
