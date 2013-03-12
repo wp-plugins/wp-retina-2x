@@ -1,7 +1,7 @@
 <?php
 
-    /* Version: 1.4.0 - now with more fours and a zero */
-	
+    /* Version: 1.4.1 - now with case insensitivity */
+
 	// Check for Multisite WP install
 	if (isset($_GET['ms']) && $_GET['ms'] === 'true') {
 		define('SHORTINIT', true);
@@ -15,6 +15,7 @@
 	
     $document_root   = $_SERVER['DOCUMENT_ROOT'];
     //$requested_uri   = parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH);
+    $requested_file  = basename($requested_uri);
     $requested_file  = basename($requested_uri);
     $source_file     = $document_root.$requested_uri;
     $source_ext      = strtolower(pathinfo($source_file, PATHINFO_EXTENSION));
@@ -59,9 +60,9 @@
         }
 
         // Check if we can shrink a larger version of the image
-        if (!file_exists($source_file) && DOWNSIZE_NOT_FOUND && ($source_file !== $retina_file)) {
+        if ( !file_exists( $source_file ) && DOWNSIZE_NOT_FOUND && ( $source_file !== $retina_file ) ) {
             // Check if retina image exists
-            if (file_exists($retina_file)) {
+            if ( file_exists( $retina_file ) ) {
                 $source_file = $retina_file;
             }
         }
@@ -140,3 +141,4 @@
 
     // Respond with an empty content
     header('HTTP/1.1 204 No Content', true);
+?>

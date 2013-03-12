@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.0.0
+Version: 1.2.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '1.0.0';
+$wr2x_version = '1.2.0';
 $wr2x_retinajs = '2013.02.06';
-$wr2x_retina_image = '1.4.0';
+$wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
 add_action( 'wp_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
@@ -57,6 +57,51 @@ function wr2x_init() {
 		wp_register_style( 'wr2x-admin-css', plugins_url( '/wr2x_admin.css', __FILE__ ) );
 		wp_enqueue_style( 'wr2x-admin-css' );
 	}
+
+	// If HTML Rewrite + Retina (or debug), add special actions
+	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
+	if ( $method == 'HTML Rewrite' ) {
+		$is_retina = false;
+		if ( isset( $_COOKIE['devicePixelRatio'] ) ) {
+			$is_retina = ceil( floatval( $_COOKIE['devicePixelRatio'] ) ) > 1;
+		}
+		if ( $is_retina || wr2x_is_debug() ) {
+			add_action( 'wp_head', 'wr2x_buffer_start' );
+			add_action( 'wp_footer', 'wr2x_buffer_end' );
+		}
+	}
+}
+
+/**
+ *
+ * HTML REWRITE
+ *
+ */ 
+
+function wr2x_buffer_start () {
+	ob_start( "wr2x_html_rewrite" );
+}
+
+function wr2x_buffer_end () {
+	ob_end_flush();
+}
+
+// Replace the images by retina images (if available)
+function wr2x_html_rewrite( $buffer ) {
+	$doc = new DOMDocument();
+	$doc->loadHTML( $buffer );
+	$imageTags = $doc->getElementsByTagName('img');
+	foreach( $imageTags as $tag ) {
+		$img_info = parse_url( $tag->getAttribute('src') );
+		$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$filepath = trailingslashit( $_SERVER['DOCUMENT_ROOT'] ) . $img_pathinfo;
+		$potential_retina = wr2x_get_retina( $filepath );
+		if ( $potential_retina != null ) {
+			$retina_pathinfo = ltrim( str_replace( $_SERVER['DOCUMENT_ROOT'], "", $potential_retina ), '/' );
+			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
+		}
+	}
+	return $buffer;
 }
 
 /**
@@ -65,7 +110,6 @@ function wr2x_init() {
  *
  */ 
 
- 
 // UPDATE THE ISSUE STATUS OF THIS ATTACHMENT
 function wr2x_update_issue_status( $attachmentId, $issues = null, $info = null ) {
 	if ( wr2x_is_ignore( $attachmentId ) )
@@ -217,6 +261,18 @@ function wr2x_log( $data ) {
 		$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
 		fwrite($fh, "{$data}\n");
 		fclose($fh);
+	}
+}
+
+// Return the retina file if there is any
+function wr2x_get_retina( $file ) {
+	$pathinfo = pathinfo( $file ) ;
+	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+	if ( file_exists( $retina_file ) ) {
+		return $retina_file;
+	}
+	else {
+		return null;
 	}
 }
 
@@ -411,13 +467,23 @@ function wr2x_deactivate() {
 
 function wr2x_wp_enqueue_scripts () {
 	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image;
-	
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
+	
+	// Debug + HTML Rewrite = No JS!
+	if ( wr2x_is_debug() && $method == "HTML Rewrite" ) {
+		return;
+	}
+
+	// Debug mode, we force the devicePixelRatio to be Retina
 	if ( wr2x_is_debug() )
 		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
-	if ($method == "Retina-Images")
+
+	// Retina-Images and HTML Rewrite both need the devicePixelRatio cookie on the server-side
+	if ( $method == "Retina-Images" || $method == "HTML Rewrite" )
 		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-images.js', __FILE__ ), array(), $wr2x_retina_image, false );
-	else if ($method == "retina.js")
+	
+	// Retina.js only needs itself
+	if ($method == "retina.js")
 		wp_enqueue_script( 'retinajs', plugins_url( '/js/retina.js', __FILE__ ), array(), $wr2x_retinajs, true );
 }
 

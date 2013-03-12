@@ -90,8 +90,10 @@ function wr2x_admin_init() {
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
-					'Retina-Images' => __( "Server side", 'wp-retina-2x' ) . ': Retina-Images (https://github.com/Retina-Images/Retina-Images)',
-					'retina.js' => __( "Client side", 'wp-retina-2x' ) . ': Retina.js (http://retinajs.com/)'
+                	'HTML Rewrite' => __( "HTML Rewrite", 'wp-retina-2x' ),
+                	'retina.js' => __( "Client side", 'wp-retina-2x' ) . ': <a href=\'http://retinajs.com/\'>Retina.js</a>',
+					'Retina-Images' => __( "Server side", 'wp-retina-2x' ) . ': <a href=\'https://github.com/Retina-Images/Retina-Images\'>Retina-Images</a>',
+					'none' => __( "None", 'wp-retina-2x' )
                 )
             ),
 			array(
@@ -133,13 +135,17 @@ function wr2x_generate_rewrite_rules( $wp_rewrite, $flush = false ) {
 	global $wp_rewrite;
 	$method = wr2x_getoption( "method", "wr2x_advanced", "retina.js" );
 	if ($method == "Retina-Images") {
+
+		// MODIFICATION: docwhat
+		// get_home_url() -> trailingslashit(site_url())
+		// REFERENCE: http://wordpress.org/support/topic/plugin-wp-retina-2x-htaccess-generated-with-incorrect-rewriterule
 		
+		// MODIFICATION BY h4ir9 
+		// .*\.(jpg|jpeg|gif|png|bmp) -> (.+.(?:jpe?g|gif|png))
+		// REFERENCE: http://wordpress.org/support/topic/great-but-needs-a-little-update
 		
-		// MODIFICATION PROPOSED BY DOCWHAT
-		//$handlerurl = ltrim( str_replace( get_home_url(), '', plugins_url( 'wr2x_image.php', __FILE__ ) ), '/' );
 		$handlerurl = str_replace( trailingslashit(site_url()), '', plugins_url( 'wr2x_image.php', __FILE__ ) );
-		
-		add_rewrite_rule( '.*\.(jpg|jpeg|gif|png|bmp)', $handlerurl, 'top' );		
+		add_rewrite_rule( '(.+.(?:jpe?g|gif|png))', $handlerurl, 'top' );		
 	}
 	if ( $flush == true ) {
 		$wp_rewrite->flush_rules();

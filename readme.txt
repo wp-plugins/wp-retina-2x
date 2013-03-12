@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.5
-Stable tag: 1.0.0
+Stable tag: 1.2.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -13,7 +13,7 @@ Make your website look beautiful and smooth on Retina (high-DPI) displays such a
 
 This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
 
-It handles two different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well.
+It handles three different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well.
 
 Languages: English, French.
 
@@ -24,6 +24,14 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.2.0 =
+* Add: new method called "HTML Rewrite".
+* Change: .htaccess regex for images.
+* Add: donation button (can be removed, check the FAQ).
+* Change: new icons.
+* Add: french translation.
+* Fix: little fixes.
 
 = 1.0.0 =
 * Change: enhancement of the Retina Dashboard.
