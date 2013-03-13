@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Retina 2x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-11 16:38+0900\n"
-"PO-Revision-Date: 2013-03-11 16:38+0900\n"
+"POT-Creation-Date: 2013-03-13 11:32+0900\n"
+"PO-Revision-Date: 2013-03-13 11:37+0900\n"
 "Last-Translator: Jordy Meow <work@meow.fr>\n"
 "Language-Team: Jordy Meow <work@meow.fr>\n"
 "Language: fr_FR\n"
@@ -131,25 +131,26 @@ msgstr "IGNORER"
 msgid "Current method:"
 msgstr "Methode utilisée :"
 
-#: wr2x_settings.php:17 wr2x_settings.php:94
+#: wr2x_settings.php:17 wr2x_settings.php:98
 msgid "Client side"
 msgstr "Client side"
 
-#: wr2x_settings.php:20 wr2x_settings.php:93
+#: wr2x_settings.php:20 wr2x_settings.php:99
 msgid "Server side"
 msgstr "Server side"
 
 #: wr2x_settings.php:22
 msgid ""
 "By the way, you are using a <b>WordPress Multi-Site installation</b>! You "
-"must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-"
-"content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the "
-"first RewriteRule if you want the server-side to work."
+"must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+.(?:jpe?"
+"g|gif|png)) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 "
+"[L]</b>' as the first RewriteRule if you want the server-side to work."
 msgstr ""
 "Vous avez une <b>installation Multi-Site de WordPress</b> ! Vous devez "
-"éditer votre .htaccess manuellement et rajouter '<b>RewriteRule ^files/(.+) "
-"wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' en "
-"tant que première RewriteRule si vous voulez que le Client side fonctionne."
+"éditer votre .htaccess manuellement et rajouter '<b>RewriteRule ^files/(.+."
+"(?:jpe?g|gif|png)) wp-content/plugins/wp-retina-2x/wr2x_image.php?"
+"ms=true&file=$1 [L]</b>' en tant que première RewriteRule si vous voulez que "
+"le Client side fonctionne."
 
 #: wr2x_settings.php:25
 msgid ""
@@ -191,30 +192,47 @@ msgstr ""
 msgid "Method"
 msgstr "Méthode"
 
-#: wr2x_settings.php:88
+#: wr2x_settings.php:89
 msgid ""
-"<br />The <b>server-side method</b> is very fast and efficient. However, "
-"depending on the hosting and cache system you are using (including services "
-"like Cloudflare) you might encounter issues.\n"
-"                <br /><br />The <b>client-side method</b> is fail-safe and "
-"only uses a JavaScript file. When a Retina Display is detected, requests for "
-"every images on the page will be sent to the server and a high resolution "
-"one will be retrieved if available. Most websites (Apple for instance) use "
-"this method."
+"<br />\n"
+"                \t\tThe <b>HTML Rewrite method</b> is probably the best, "
+"especially when used with Cloudflare or Google PageSpeed Service! You cannot "
+"use a basic HTML caching plugin with it (or you have to hack the options "
+"properly). <br /><br />\n"
+"                \t\tThe <b>Server-side method</b> is very fast and "
+"efficient. However, depending on the hosting and cache system you are using "
+"(including services like Cloudflare) you might encounter issues.<br /><br /"
+">\n"
+"                \t\tThe <b>Client-side method</b> is fail-safe and only uses "
+"a JavaScript file. When a Retina Display is detected, requests for every "
+"images on the page will be sent to the server and a high resolution image "
+"will be retrieved if available. It requires more bandwidth and it is quite "
+"slow. However, Apple.com uses this method.\n"
+"                \t"
 msgstr ""
-"La <b>méthode côté serveur</b> est très rapide et optimal. Cependant, selon "
-"votre système de caching (et tout particulièrement si vous utilisez "
-"Cloudflare), ça ne fonctionnera peut-être pas correctement.\n"
-"                La <b>méthode côté client</b> est très fiable, fonctionne "
-"dans tous les cas et utilise seulement un JavaScript. C'est une méthode "
-"moins rapide et performante mais c'est la méthode utilisée sur le site "
-"d'Apple."
+"La <b>méthode HTML Rewrite</b> est la meilleure, surtout si utilisée "
+"conjointement à Cloudflare ou encore mieux, du Google PageSpeed Service. "
+"Désactivez vos plugins de cache HTML (ou alors il vous faudra hacker les "
+"options).<br /><br />La <b>méthode côté serveur</b> est rapide et optimale. "
+"Cependant, selon votre système de caching (Cloudflare inclus), ça ne "
+"fonctionnera peut-être pas correctement.<br /><br />La <b>méthode côté "
+"client</b> est fiable, fonctionne dans tous les cas et utilise seulement un "
+"JavaScript. C'est une méthode moins rapide et performante mais néanmoins la "
+"méthode utilisée sur le site d'Apple."
 
-#: wr2x_settings.php:99
+#: wr2x_settings.php:97
+msgid "HTML Rewrite"
+msgstr ""
+
+#: wr2x_settings.php:100
+msgid "None"
+msgstr ""
+
+#: wr2x_settings.php:105
 msgid "Debug Mode"
 msgstr "Mode Debug"
 
-#: wr2x_settings.php:100
+#: wr2x_settings.php:106
 msgid ""
 "If checked, the client will be always served Retina images. Convenient for "
 "testing."
@@ -222,19 +240,19 @@ msgstr ""
 "Si sélectionné, les images Retina seront toujours délivrées. Idéal pour vos "
 "tests."
 
-#: wr2x_settings.php:106
+#: wr2x_settings.php:112
 msgid "Hide 'Retina' column"
 msgstr "Cacher la colonne 'Retina'"
 
-#: wr2x_settings.php:107
+#: wr2x_settings.php:113
 msgid "Will hide the 'Retina Column' from the Media Library."
 msgstr "La colonne Retina ne s'affichera plus dans la Bibliothèque."
 
-#: wr2x_settings.php:113
+#: wr2x_settings.php:119
 msgid "Hide Retina Dashboard"
 msgstr "Cacher le Retina Dashboard"
 
-#: wr2x_settings.php:114
+#: wr2x_settings.php:120
 msgid "Doesn't show the Retina Dashboard menu and tools."
 msgstr "Le Retina Dashboard ne s'affichera plus dans les menus."
 

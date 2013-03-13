@@ -19,7 +19,7 @@ function wr2x_settings_page() {
 	if ( $method == 'Retina-Images' ) {
 		echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
 		if ( defined( 'MULTISITE' ) && MULTISITE == true  )
-			echo " <span style='color: red;'>" . __( "By the way, you are using a <b>WordPress Multi-Site installation</b>! You must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the first RewriteRule if you want the server-side to work.", 'wp-retina-2x' ) . "</span>";
+			echo " <span style='color: red;'>" . __( "By the way, you are using a <b>WordPress Multi-Site installation</b>! You must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+.(?:jpe?g|gif|png)) wp-content/plugins/wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' as the first RewriteRule if you want the server-side to work.", 'wp-retina-2x' ) . "</span>";
 		echo "</p>";
 		if ( !get_option('permalink_structure') )
 			echo "<p><span style='color: red;'>" . __( "The permalinks are not enabled. They need to be enabled in order to use the server-side method.", 'wp-retina-2x' ) . "</span>";
@@ -85,8 +85,12 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'method',
                 'label' => __( 'Method', 'wp-retina-2x' ),
-                'desc' => __( '<br />The <b>server-side method</b> is very fast and efficient. However, depending on the hosting and cache system you are using (including services like Cloudflare) you might encounter issues.
-                <br /><br />The <b>client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution one will be retrieved if available. Most websites (Apple for instance) use this method.', 'wp-retina-2x' ),
+                'desc' => __( 
+                	'<br />
+                		The <b>HTML Rewrite method</b> is probably the best, especially when used with Cloudflare or Google PageSpeed Service! You cannot use a basic HTML caching plugin with it (or you have to hack the options properly). <br /><br />
+                		The <b>Server-side method</b> is very fast and efficient. However, depending on the hosting and cache system you are using (including services like Cloudflare) you might encounter issues.<br /><br />
+                		The <b>Client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution image will be retrieved if available. It requires more bandwidth and it is quite slow. However, Apple.com uses this method.
+                	', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
