@@ -127,7 +127,11 @@ function wpr2x_wp_retina_2x() {
 	?>
 
 	<div style='margin-top: 12px; background: #EEE; padding: 5px; border-radius: 4px; height: 24px; box-shadow: 0px 0px 3px #575757;'>
+		
+		<!-- GENERATE ALL -->
 		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
+		
+		<!-- SEARCH -->
 		<form id="posts-filter" action="upload.php" method="get">
 			<p class="search-box" style='margin-left: 5px; float: left;'>
 				<input type="search" name="s" value="<?php echo $s ? $s : ""; ?>">
@@ -137,9 +141,16 @@ function wpr2x_wp_retina_2x() {
 				<input type="submit" class="button" value="Search">
 			</p>
 		</form>
+
+		<!-- REMOVE BUTTON ALL -->
 		<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button-secondary' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
+
+		<!-- REFRESH -->
 		<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button-secondary' style='float: right; margin-right: 5px;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
-		<span style='margin-left: 12px; font-size: 12px; top: 5px; position: relative; color: #9C9C9C;' id='wr2x_progression'></span>	
+
+		<!-- PROGRESS -->
+		<span style='margin-left: 12px; font-size: 15px; top: 5px; position: relative; color: #747474;' id='wr2x_progression'></span>
+		
 	</div>
 
 	<?php 

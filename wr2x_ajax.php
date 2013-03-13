@@ -24,7 +24,7 @@ function wr2x_admin_head() {
 	
 		function wr2x_do_next () {
 			var data = { action: 'wr2x_' + ajax_action, attachmentId: ids[current - 1] };
-			jQuery('#wr2x_progression').text(current + "/" + ids.length);
+			jQuery('#wr2x_progression').text(current + "/" + ids.length + " (" + Math.round(current / ids.length * 100) + "%)");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
 				if (reply.success = false) {
@@ -61,7 +61,7 @@ function wr2x_admin_head() {
 					return;
 				}
 				ids = reply.ids;
-				jQuery('#wr2x_progression').html(current + "/" + ids.length);
+				jQuery('#wr2x_progression').text(current + "/" + ids.length + " (" + Math.round(current / ids.length * 100) + "%)");
 				wr2x_do_next();
 			});
 		}
