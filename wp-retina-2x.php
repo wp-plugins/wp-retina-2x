@@ -91,12 +91,14 @@ function wr2x_html_rewrite( $buffer ) {
 	$doc = new DOMDocument();
 	$doc->loadHTML( $buffer );
 	$imageTags = $doc->getElementsByTagName('img');
+	wr2x_log( "** HTML REWRITE **" );
 	foreach( $imageTags as $tag ) {
 		$img_info = parse_url( $tag->getAttribute('src') );
 		$img_pathinfo = ltrim( $img_info['path'], '/' );
 		$filepath = trailingslashit( $_SERVER['DOCUMENT_ROOT'] ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
+			//wr2x_log( "- From '{$filepath}' to '{$potential_retina}'." );
 			$retina_pathinfo = ltrim( str_replace( $_SERVER['DOCUMENT_ROOT'], "", $potential_retina ), '/' );
 			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
 		}
@@ -272,6 +274,7 @@ function wr2x_get_retina( $file ) {
 		return $retina_file;
 	}
 	else {
+		wr2x_log( "- The retina file '{$retina_file}' cannot be found." );
 		return null;
 	}
 }
@@ -423,6 +426,7 @@ function wr2x_generate_images( $meta ) {
 		wr2x_add_issue( $id );
 	else
 		wr2x_remove_issue( $id );
+
     return $meta;
 }
 
