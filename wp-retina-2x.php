@@ -88,18 +88,19 @@ function wr2x_buffer_end () {
 
 // Replace the images by retina images (if available)
 function wr2x_html_rewrite( $buffer ) {
+	if ( !isset( $buffer ) || trim( $buffer ) === '' )
+		return $buffer;
 	$doc = new DOMDocument();
-	$doc->loadHTML( $buffer );
+	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
 	$imageTags = $doc->getElementsByTagName('img');
-	wr2x_log( "** HTML REWRITE **" );
-	foreach( $imageTags as $tag ) {
+	foreach ( $imageTags as $tag ) {
 		$img_info = parse_url( $tag->getAttribute('src') );
 		$img_pathinfo = ltrim( $img_info['path'], '/' );
-		$filepath = trailingslashit( $_SERVER['DOCUMENT_ROOT'] ) . $img_pathinfo;
+		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
-			//wr2x_log( "- From '{$filepath}' to '{$potential_retina}'." );
-			$retina_pathinfo = ltrim( str_replace( $_SERVER['DOCUMENT_ROOT'], "", $potential_retina ), '/' );
+			wr2x_log( "Rewrite '{$filepath}' to '{$potential_retina}'." );
+			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
 			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
 		}
 	}
