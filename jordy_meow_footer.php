@@ -1,12 +1,18 @@
 <?php
 	if ( !function_exists( 'jordy_meow_donation' ) ) {
-		function jordy_meow_donation() {
+		function jordy_meow_donation($showWPE = false) {
 			if ( defined( 'WP_HIDE_DONATION_BUTTONS' ) && WP_HIDE_DONATION_BUTTONS == true )
 				return;
+			
+			if ( $showWPE ) {
+				echo "<a href='http://www.wpengine.com' target='_blank'><img style='float: right; margin-top: 5px; margin-left: 15px;' width='90px' height='34px' src='" . plugins_url('/img/wpengine.png', __FILE__) . "' /></a>";
+			}
 			?>
+
 			<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U' target='_blank'>
-				<img style='float: right; margin-top: 5px;' width='145px' height='39px' src='http://i.imgur.com/9mDWZ4C.png' />
+				<img style='float: right; margin-top: 5px;' width='145px' height='39px' src='<?php echo plugins_url('/img/donation.png', __FILE__); ?>' />
 			</a>
+			
 			<?php
 		}
 	}

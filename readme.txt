@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.5
+Tested up to: 3.6
 Stable tag: 1.2.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
@@ -13,7 +13,14 @@ Make your website look beautiful and smooth on Retina (high-DPI) displays such a
 
 This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
 
-It handles three different methods to serves the images to your visitors. Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well.
+It supports 3 different methods to serve the images to your visitors:
+
+* HTML Rewrite: The HTML is rewritten at the very end, and the images are replaced by their retina counterparts if available. Very fast, no 404 errors, but HTML caching cannot be used.
+* Client-side: This method should work in every case. Normal images are loaded first, then the client-side checks for retina images and download them if available. Works with caching but loads 2 images instead of 1. This method uses the Retina.js script.
+* Server-side: Uses a server-handler that decides whether to send the normal image or the retina image. Efficient method, but since the filename is the same either way (as seen from the client-side), it might not play well with services such as Cloudflare or Google PageSpeed.
+* Do you have any other idea? Let me know! :)
+
+Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. It's blazing fast, neat, and work with every method included in the plugin!
 
 Languages: English, French.
 
@@ -202,6 +209,9 @@ Maybe you don't have enough memory allocated to PHP or the script takes longer t
 
 Please note that it doesn't work with some cheap web hosts, as they don't want you do to that instead. The real issue can also be tracked in the PHP error logs.
 
+= I am using CSS3 filters and the Retina images look blurry =
+It is a known issue, not related to the plugin. You can find the answer on this post: http://matthewhappen.com/fixing-css3-filter-blur-on-retina-displays/
+
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.
 
@@ -210,7 +220,6 @@ Please check my tutorial and introduction to Retina Displays on <a href='http://
 
 = This plugin is great, how can I thank you? =
 Thanks for asking, since we, developers, get usually 10x more complains than thanks! I don't blame anyone, I persnnally don't say thank you to every single developer of all the software I am using ;) But if you are happy, please write a <a href='http://wordpress.org/support/view/plugin-reviews/wp-retina-2x'>nice review here</a>. You can also do one of the things I ask in the following question.
-
 
 = Can I contact you? =
 Yes, sure, you can! But since the plugin got popular, I get many emails everyday which consume almost 10% of my whole lifetime (not kidding! + it's rarely issues coming from the plugin itself). Before contacting me, please do one of the following:

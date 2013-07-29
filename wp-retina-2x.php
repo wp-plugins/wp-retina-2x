@@ -40,10 +40,16 @@ add_action( 'init', 'wr2x_init' );
 register_deactivation_hook( __FILE__, 'wr2x_deactivate' );
 register_activation_hook( __FILE__, 'wr2x_activate' );
 
-require('wr2x_functions.php');
 require('wr2x_settings.php');
-require('wr2x_ajax.php');
-require('jordy_meow_footer.php');
+
+if ( is_admin() ) {
+	require('wr2x_functions.php');
+	require('wr2x_ajax.php');
+	require('jordy_meow_footer.php');
+}
+
+if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) )
+	require('inc/Mobile_Detect.php'); 
 
 if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )
 	require('wr2x_retina-dashboard.php');
@@ -64,6 +70,10 @@ function wr2x_init() {
 		$is_retina = false;
 		if ( isset( $_COOKIE['devicePixelRatio'] ) ) {
 			$is_retina = ceil( floatval( $_COOKIE['devicePixelRatio'] ) ) > 1;
+			if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) ) {
+				$mobileDetect = new Mobile_Detect();
+				$is_retina = !$mobileDetect->isMobile();
+			}
 		}
 		if ( $is_retina || wr2x_is_debug() ) {
 			add_action( 'wp_head', 'wr2x_buffer_start' );
@@ -267,10 +277,15 @@ function wr2x_log( $data ) {
 	}
 }
 
+// Return the retina extension followed by a dot
+function wr2x_retina_extension() {
+	return '@2x.';	
+}
+
 // Return the retina file if there is any
 function wr2x_get_retina( $file ) {
 	$pathinfo = pathinfo( $file ) ;
-	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 	if ( file_exists( $retina_file ) ) {
 		return $retina_file;
 	}
@@ -308,7 +323,7 @@ function wr2x_retina_info( $id ) {
 			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
 				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 				$pathinfo = pathinfo( $normal_file ) ;
-				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 			}
 			// None of the file exist
 			else {
@@ -381,7 +396,7 @@ function wr2x_generate_images( $meta ) {
 		if ( isset( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['file'] ) ) {
 			$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 			$pathinfo = pathinfo( $normal_file ) ;
-			$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+			$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 		}
 		
 		if ( $retina_file && file_exists( $retina_file ) ) {
@@ -444,7 +459,7 @@ function wr2x_delete_images( $meta ) {
 	$basepath = trailingslashit( $uploads['basedir'] ) . $pathinfo['dirname'];
 	foreach ( $sizes as $name => $attr ) {
 		$pathinfo = pathinfo( $attr['file'] );
-		$retina_file = $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+		$retina_file = $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 		if ( file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
 			unlink( trailingslashit( $basepath ) . $retina_file );
 			do_action( 'wr2x_retina_file_removed', $id, $retina_file );
@@ -482,6 +497,12 @@ function wr2x_wp_enqueue_scripts () {
 	// Debug mode, we force the devicePixelRatio to be Retina
 	if ( wr2x_is_debug() )
 		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
+	// Not Debug Mode + Ignore Mobile
+	else if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) ) {
+		$mobileDetect = new Mobile_Detect();
+		if ( $mobileDetect->isMobile() )
+			return;
+	}
 
 	// Retina-Images and HTML Rewrite both need the devicePixelRatio cookie on the server-side
 	if ( $method == "Retina-Images" || $method == "HTML Rewrite" )

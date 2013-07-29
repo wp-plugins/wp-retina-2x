@@ -48,7 +48,7 @@ function wr2x_admin_head() {
 		function wr2x_do_all () {
 			current = 1;
 			ids = [];
-			var data = { action: 'wr2x_list_all', issuesOnly: ( ajax_action == "generate" ? 1 : 0 ) };
+			var data = { action: 'wr2x_list_all', issuesOnly: 0 };
 			jQuery('#wr2x_progression').text("<?php _e( "Please wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
@@ -250,6 +250,17 @@ function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
 }
 
 function wr2x_wp_ajax_wr2x_delete() {
+
+	if ( !isset( $_POST['attachmentId'] ) ) {
+		echo json_encode( 
+			array(
+				'success' => false,
+				'message' => __( "The attachment ID is missing.", 'wp-retina-2x' )
+			)
+		);
+		die();
+	}
+
 	$attachmentId = intval( $_POST['attachmentId'] );
 	wr2x_delete_attachment( $attachmentId );
 	$meta = wp_get_attachment_metadata( $attachmentId );
@@ -268,6 +279,17 @@ function wr2x_wp_ajax_wr2x_delete() {
 }
 
 function wr2x_wp_ajax_wr2x_generate() {
+
+	if ( !isset( $_POST['attachmentId'] ) ) {
+		echo json_encode( 
+			array(
+				'success' => false,
+				'message' => __( "The attachment ID is missing.", 'wp-retina-2x' )
+			)
+		);
+		die();
+	}
+
 	$attachmentId = intval( $_POST['attachmentId'] );
 	wr2x_delete_attachment( $attachmentId );
 	$meta = wp_get_attachment_metadata( $attachmentId );
@@ -299,7 +321,24 @@ function wr2x_wp_ajax_wr2x_replace() {
 	$data = $_POST['data'];
 
 	// Create the file as a TMP
-	$tmpfname = tempnam( "/tmp", "wr2x_up_" );
+	$tmpfname = tempnam( sys_get_temp_dir(), "wpx_" );
+	
+	if ( $tmpfname == FALSE ) {
+
+		$tmpdir = sys_get_temp_dir();
+		if ( !is_writable( $tmpdir ) )
+			echo json_encode( array(
+				'success' => false,
+				'message' => __( "You don't have the rights to use a temporary directory.", 'wp-retina-2x' )
+			));
+		else
+			echo json_encode( array(
+				'success' => false,
+				'message' => __( "The temporary directory could not be created.", 'wp-retina-2x' )
+			));
+		die();
+	}
+
 	$handle = fopen( $tmpfname, "w" );
 	fwrite( $handle, base64_decode( $data ) );
 	fclose( $handle );
@@ -339,7 +378,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
 				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 				$pathinfo = pathinfo( $normal_file );
-				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . '@2x.' . $pathinfo['extension'];
+				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 				
 				// Test if the file exists and if it is actually a file (and not a dir)
 				// Some old WordPress Media Library are sometimes broken and link to directories

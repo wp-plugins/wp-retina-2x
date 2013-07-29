@@ -33,7 +33,7 @@ function wpr2x_wp_retina_2x() {
 	
 	?>
 	<div class='wrap'>
-	<?php jordy_meow_donation(); ?>
+	<?php jordy_meow_donation(true); ?>
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>WP Retina 2x</h2>
 
@@ -211,7 +211,7 @@ function wpr2x_wp_retina_2x() {
 				
 				$attachmentsrc = wp_get_attachment_image_src( $attr['post']->ID, 'thumbnail' );
 				echo "<tr class='wr2x-file-row' postId='" . $attr['post']->ID . "'>";
-				echo "<td class='wr2x-image'><img style='max-width: 64px; height: 32px;' src='" . $attachmentsrc[0] . "' /></td>";
+				echo "<td class='wr2x-image'><img style='max-width: 64px; max-height: 64px;' src='" . $attachmentsrc[0] . "' /></td>";
 				echo "<td class='wr2x-title'><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $attr['post']->ID . "&action=edit'>" . 
 					$attr['post']->post_title . '<br />' .
 					"<span style='font-size: 9px; line-height: 10px; display: block;'>" . $original_width . "×" . $original_height . "</span>";

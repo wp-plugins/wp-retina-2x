@@ -3,15 +3,22 @@
     /* Version: 1.4.1 - now with case insensitivity */
 
 	// Check for Multisite WP install
-	if (isset($_GET['ms']) && $_GET['ms'] === 'true') {
-		define('SHORTINIT', true);
-		require_once(dirname(dirname(dirname(dirname( __FILE__ )))).'/wp-load.php');
-		$file            = rtrim(str_replace('\\', '/', BLOGUPLOADDIR), '/').'/'.str_replace('..', '', $_GET['file']);
-		$requested_uri   = str_replace(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '', $file);
-	}
-	else {
-		$requested_uri = parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH);
-	}
+    if (isset($_GET['ms']) && $_GET['ms'] === 'true') {
+        define('SHORTINIT', true);
+        require_once(dirname(dirname(dirname(dirname( __FILE__ )))).'/wp-load.php');
+        
+        if ( get_site_option( 'ms_files_rewriting' ) ) {
+            // MODIFICATION: Craig Foster
+            // 'ms_files_rewriting' support
+            $file            = rtrim(str_replace('\\', '/', BLOGUPLOADDIR), '/').'/'.str_replace('..', '', $_GET['file']);
+            $requested_uri   = str_replace(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '', $file);
+        } else {
+            $requested_uri  = '/'.$_GET['file'];
+        }
+    }
+    else {
+        $requested_uri = parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH);
+    }
 	
     $document_root   = $_SERVER['DOCUMENT_ROOT'];
     //$requested_uri   = parse_url(urldecode($_SERVER['REQUEST_URI']), PHP_URL_PATH);

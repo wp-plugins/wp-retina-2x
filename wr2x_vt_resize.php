@@ -18,6 +18,12 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$cropped_img_path = $no_ext_path . '-' . $width . 'x' . $height . "-tmp" . $extension;
 		$image = wp_get_image_editor( $file_path );
 		$image->resize( $width, $height, true );
+
+		$quality = wr2x_getoption( "image_quality", "wr2x_advanced", "80" );
+		if ( is_numeric( $quality ) ) {
+			$image->set_quality( intval( $quality ) );
+		}
+
 		$image->save( $cropped_img_path );
 		if ( rename( $cropped_img_path, $newfile ) )
 			$cropped_img_path = $newfile;
