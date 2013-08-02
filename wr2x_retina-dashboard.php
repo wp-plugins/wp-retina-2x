@@ -184,7 +184,7 @@ function wpr2x_wp_retina_2x() {
 		<thead><tr>
 			<?php
 			echo "<th style='width: 64px;''></th>";
-			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Titre", 'wp-retina-2x' ) . "</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Title", 'wp-retina-2x' ) . "</th>";
 
 			$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 			foreach ($sizes as $name => $attr) {

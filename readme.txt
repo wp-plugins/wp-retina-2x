@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.6
-Stable tag: 1.2.0
+Stable tag: 1.4.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -31,6 +31,14 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.4.0 =
+* Add: german translation and italian translation.
+* Add: option to ignore mobile.
+* Fix: avoid warnings if any issues during HTML Rewrite.
+* Fix: generate button was not working anymore.
+* Change: more logging for debug mode.
+* Add: progress % during operations.
 
 = 1.2.0 =
 * Add: new method called "HTML Rewrite".
