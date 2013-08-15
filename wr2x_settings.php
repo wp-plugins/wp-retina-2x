@@ -95,13 +95,15 @@ function wr2x_admin_init() {
                 'label' => __( 'Method', 'wp-retina-2x' ),
                 'desc' => __( 
                 	'<br />
-                		The <b>HTML Rewrite method</b> is probably the best, especially when used with Cloudflare or Google PageSpeed Service! You cannot use a basic HTML caching plugin with it (or you have to hack the options properly). <br /><br />
+                        The <b>srcset method</b> is the <u>best</u>. It works with caching and everything. Unfortunately, not all the browsers support it yet.<br /><br />
+                		The <b>HTML Rewrite method</b> is one of the best, especially when used with Cloudflare or Google PageSpeed Service! You cannot use a basic HTML caching plugin with it (or you have to hack the options properly). <br /><br />
                 		The <b>Server-side method</b> is very fast and efficient. However, depending on the hosting and cache system you are using (including services like Cloudflare) you might encounter issues.<br /><br />
                 		The <b>Client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution image will be retrieved if available. It requires more bandwidth.
                 	', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
+                    'srcset' => __( "srcset (W3C Draft)", 'wp-retina-2x' ),
                 	'HTML Rewrite' => __( "HTML Rewrite", 'wp-retina-2x' ),
                 	'retina.js' => __( "Client side", 'wp-retina-2x' ) . ': <a href=\'http://retinajs.com/\'>Retina.js</a>',
 					'Retina-Images' => __( "Server side", 'wp-retina-2x' ) . ': <a href=\'https://github.com/Retina-Images/Retina-Images\'>Retina-Images</a>',

@@ -43,7 +43,6 @@ register_activation_hook( __FILE__, 'wr2x_activate' );
 require('wr2x_settings.php');
 
 if ( is_admin() ) {
-	require('wr2x_functions.php');
 	require('wr2x_ajax.php');
 	require('jordy_meow_footer.php');
 }
@@ -80,11 +79,53 @@ function wr2x_init() {
 			add_action( 'wp_footer', 'wr2x_buffer_end' );
 		}
 	}
+	else if ( $method == 'srcset' ) {
+		add_action( 'wp_head', 'wr2x_srcset_buffer_start' );
+		add_action( 'wp_footer', 'wr2x_srcset_buffer_end' );
+	}
 }
 
 /**
  *
- * HTML REWRITE
+ * SRCSET METHOD
+ *
+ */ 
+
+function wr2x_srcset_buffer_start () {
+	ob_start( "wr2x_srcset_rewrite" );
+}
+
+function wr2x_srcset_buffer_end () {
+	ob_end_flush();
+}
+
+// Replace the images by retina images (if available)
+function wr2x_srcset_rewrite( $buffer ) {
+	if ( !isset( $buffer ) || trim( $buffer ) === '' )
+		return $buffer;
+	$doc = new DOMDocument();
+	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
+	$imageTags = $doc->getElementsByTagName('img');
+	foreach ( $imageTags as $tag ) {
+		$img_info = parse_url( $tag->getAttribute('src') );
+		$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
+		$potential_retina = wr2x_get_retina( $filepath );
+		if ( $potential_retina != null ) {
+			wr2x_log( "Add srcset:  " . $potential_retina . ' 2x' );
+			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
+			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+			$srcset = $doc->createAttribute( 'srcset' );
+			$srcset->value = $retina_url . ' 2x';
+			$tag->appendChild( $srcset );
+		}
+	}
+	return $doc->saveHTML();
+}
+
+/**
+ *
+ * HTML REWRITE METHOD
  *
  */ 
 
