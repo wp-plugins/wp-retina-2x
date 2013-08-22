@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.6
-Stable tag: 1.4.2
+Stable tag: 1.6.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -13,11 +13,12 @@ Make your website look beautiful and smooth on Retina (high-DPI) displays such a
 
 This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
 
-It supports 3 different methods to serve the images to your visitors:
+It supports 4 different methods to serve the images to your visitors:
 
-* HTML Rewrite: The HTML is rewritten at the very end, and the images are replaced by their retina counterparts if available. Very fast, no 404 errors, but HTML caching cannot be used.
-* Client-side: This method should work in every case. Normal images are loaded first, then the client-side checks for retina images and download them if available. Works with caching but loads 2 images instead of 1. This method uses the Retina.js script.
-* Server-side: Uses a server-handler that decides whether to send the normal image or the retina image. Efficient method, but since the filename is the same either way (as seen from the client-side), it might not play well with services such as Cloudflare or Google PageSpeed.
+* HTML srcset: The HTML will be rewritten with the srcset attribute added to the img tags.
+* HTML Rewrite: The HTML is rewritten with the images replaced by their retina equivalent.
+* Retina.js: This method should work in every case. Normal images are loaded first, then the client-side checks for retina images and download them if available. Works with caching but loads 2 images instead of 1.
+* Retina-Images: Uses a server-handler that decides whether to send the normal image or the retina image.
 * Do you have any other idea? Let me know! :)
 
 Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. It's blazing fast, neat, and work with every method included in the plugin!
@@ -31,6 +32,11 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.6.0 =
+* Add: HTML srcset method.
+* Change: use one file less.
+* Change: most methods were renamed nicely.
 
 = 1.4.0 =
 * Add: german translation and italian translation.

@@ -95,18 +95,18 @@ function wr2x_admin_init() {
                 'label' => __( 'Method', 'wp-retina-2x' ),
                 'desc' => __( 
                 	'<br />
-                        The <b>srcset method</b> is the <u>best</u>. It works with caching and everything. Unfortunately, not all the browsers support it yet.<br /><br />
-                		The <b>HTML Rewrite method</b> is one of the best, especially when used with Cloudflare or Google PageSpeed Service! You cannot use a basic HTML caching plugin with it (or you have to hack the options properly). <br /><br />
-                		The <b>Server-side method</b> is very fast and efficient. However, depending on the hosting and cache system you are using (including services like Cloudflare) you might encounter issues.<br /><br />
-                		The <b>Client-side method</b> is fail-safe and only uses a JavaScript file. When a Retina Display is detected, requests for every images on the page will be sent to the server and a high resolution image will be retrieved if available. It requires more bandwidth.
+                        The <b>HTML srcset method</b> is the best. The HTML will be rewritten with <a href="http://www.w3.org/html/wg/drafts/srcset/w3c-srcset/">the srcset attribute</a> added to the img tags. Works with caching. Unfortunately, not all the browsers support it yet.<br /><br />
+                		The <b>HTML Rewrite method</b> is one of the best methods. It replaces the images by the retina images - if available - in the HTML directly. It\'s tricky to use HTML caching with it however.<br /><br />               		
+                		The <b>Retina.js method</b> is fail-safe and only uses one <a href="https://github.com/imulus/retinajs/">JavaScript file</a>. When a Retina Display is detected, requests for every images on the page will be sent to the server and the retina images will be retrieved if available. Requires a lot of bandwidth.<br /><br />
+                        The <b>Retina-Images method</b> is efficient. The images will go through the <a href="https://github.com/Retina-Images/Retina-Images/">Retina-Images</a> handler. Caching systems might be an issue.
                 	', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
-                    'srcset' => __( "srcset (W3C Draft)", 'wp-retina-2x' ),
+                    'srcset' => __( "HTML srcset (W3C Draft)", 'wp-retina-2x' ),
                 	'HTML Rewrite' => __( "HTML Rewrite", 'wp-retina-2x' ),
-                	'retina.js' => __( "Client side", 'wp-retina-2x' ) . ': <a href=\'http://retinajs.com/\'>Retina.js</a>',
-					'Retina-Images' => __( "Server side", 'wp-retina-2x' ) . ': <a href=\'https://github.com/Retina-Images/Retina-Images\'>Retina-Images</a>',
+                	'retina.js' => __( "Retina.js", 'wp-retina-2x' ),
+					'Retina-Images' => __( "Retina-Images", 'wp-retina-2x' ),
 					'none' => __( "None", 'wp-retina-2x' )
                 )
             ),
