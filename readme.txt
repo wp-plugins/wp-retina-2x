@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.6.2
+Tested up to: 3.8.0
+Stable tag: 1.8.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -21,7 +21,7 @@ It supports 4 different methods to serve the images to your visitors:
 * Retina-Images: Uses a server-handler that decides whether to send the normal image or the retina image.
 * Do you have any other idea? Let me know! :)
 
-Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. It's blazing fast, neat, and work with every method included in the plugin!
+Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. It's blazing fast and neat!
 
 Languages: English, French.
 
@@ -32,6 +32,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.6.4 =
+* Fix: HTML5 issues with the HTML srcset method.
+* Change: RetinaJS (client-side) was updated to 1.1.0.
 
 = 1.6.2 =
 * Fix: encoding issue with the HTML srcset method.

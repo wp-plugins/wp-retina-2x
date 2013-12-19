@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.6.2
+Version: 1.8.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,8 +24,8 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '1.6.2';
-$wr2x_retinajs = '2013.02.06';
+$wr2x_version = '1.8.0';
+$wr2x_retinajs = '1.1.0';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -104,6 +104,29 @@ function wr2x_srcset_rewrite( $buffer ) {
 	if ( !isset( $buffer ) || trim( $buffer ) === '' )
 		return $buffer;
 	$doc = new DOMDocument();
+	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
+	$imageTags = $doc->getElementsByTagName('img');
+	foreach ( $imageTags as $tag ) {
+		$img_info = parse_url( $tag->getAttribute('src') );
+		$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
+		$potential_retina = wr2x_get_retina( $filepath );
+		if ( $potential_retina != null ) {
+			wr2x_log( "Add srcset:  " . $potential_retina . ' 2x' );
+			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
+			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+			$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
+			$buffer = str_replace( 'src="'.$img_url.'"', 'src="'.$img_url.'" srcset="'.$retina_url.' 2x"', $buffer );
+		}
+	}
+	return $buffer;
+}
+
+/* THIS VERSION WAS USED PREVIOUSLY ON THE 1.6.2 VERSION
+function wr2x_srcset_rewrite( $buffer ) {
+	if ( !isset( $buffer ) || trim( $buffer ) === '' )
+		return $buffer;
+	$doc = new DOMDocument();
 	@$doc->loadHTML( mb_convert_encoding( $buffer, 'HTML-ENTITIES', 'UTF-8' ) ); // = ($doc->strictErrorChecking = false;)
 	$imageTags = $doc->getElementsByTagName('img');
 	foreach ( $imageTags as $tag ) {
@@ -122,6 +145,7 @@ function wr2x_srcset_rewrite( $buffer ) {
 	}
 	return $doc->saveHTML();
 }
+*/
 
 /**
  *

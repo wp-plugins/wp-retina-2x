@@ -1,15 +1,23 @@
+/*!
+ * Retina.js v1.1.0
+ *
+ * Copyright 2013 Imulus, LLC
+ * Released under the MIT license
+ *
+ * Retina.js is an open source script that makes it easy to serve
+ * high-resolution images to devices with retina displays.
+ */
 (function() {
+
   var root = (typeof exports == 'undefined' ? window : exports);
 
   var config = {
     // Ensure Content-Type is an image before trying to load @2x image
     // https://github.com/imulus/retinajs/pull/45)
-    check_mime_type: true,
+    check_mime_type: true
+  };
 
-    // Resize high-resolution images to original image's pixel dimensions
-    // https://github.com/imulus/retinajs/issues/8
-    force_original_dimensions: true
- };
+
 
   root.Retina = Retina;
 
@@ -53,9 +61,15 @@
 
   root.RetinaImagePath = RetinaImagePath;
 
-  function RetinaImagePath(path) {
+  function RetinaImagePath(path, at_2x_path) {
     this.path = path;
-    this.at_2x_path = path.replace(/\.\w+$/, function(match) { return "@2x" + match; });
+    if (typeof at_2x_path !== "undefined" && at_2x_path !== null) {
+      this.at_2x_path = at_2x_path;
+      this.perform_check = false;
+    } else {
+      this.at_2x_path = path.replace(/\.\w+$/, function(match) { return "@2x" + match; });
+      this.perform_check = true;
+    }
   }
 
   RetinaImagePath.confirmed_paths = [];
@@ -68,6 +82,8 @@
     var http, that = this;
     if (this.is_external()) {
       return callback(false);
+    } else if (!this.perform_check && typeof this.at_2x_path !== "undefined" && this.at_2x_path !== null) {
+      return callback(true);
     } else if (this.at_2x_path in RetinaImagePath.confirmed_paths) {
       return callback(true);
     } else {
@@ -100,7 +116,7 @@
 
   function RetinaImage(el) {
     this.el = el;
-    this.path = new RetinaImagePath(this.el.getAttribute('src'));
+    this.path = new RetinaImagePath(this.el.getAttribute('src'), this.el.getAttribute('data-at2x'));
     var that = this;
     this.path.check_2x_variant(function(hasVariant) {
       if (hasVariant) that.swap();
@@ -117,11 +133,8 @@
       if (! that.el.complete) {
         setTimeout(load, 5);
       } else {
-        if (config.force_original_dimensions) {
-          that.el.setAttribute('width', that.el.offsetWidth);
-          that.el.setAttribute('height', that.el.offsetHeight);
-        }
-
+        that.el.setAttribute('width', that.el.offsetWidth);
+        that.el.setAttribute('height', that.el.offsetHeight);
         that.el.setAttribute('src', path);
       }
     }
@@ -136,3 +149,4 @@
   }
 
 })();
+
