@@ -33,7 +33,7 @@ Languages: English, French.
 
 == Changelog ==
 
-= 1.6.4 =
+= 1.8.0 =
 * Fix: HTML5 issues with the HTML srcset method.
 * Change: RetinaJS (client-side) was updated to 1.1.0.
 
