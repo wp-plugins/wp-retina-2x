@@ -5,7 +5,7 @@
 				return;
 			
 			if ( $showWPE ) {
-				echo "<a href='http://www.wpengine.com' target='_blank'><img style='float: right; margin-top: 5px; margin-left: 15px;' width='90px' height='34px' src='" . plugins_url('/img/wpengine.png', __FILE__) . "' /></a>";
+				echo "<a href='http://www.shareasale.com/r.cfm?B=394686&U=767054&M=41388&urllink=' target='_blank'><img style='float: right; margin-top: 5px; margin-left: 15px;' width='120px' height='34px' src='" . plugins_url('/img/wpengine.png', __FILE__) . "' /></a>";
 			}
 			?>
 
@@ -21,7 +21,7 @@
 		function jordy_meow_footer() {
 			?>
 			<div style='font-size: 14px; color: #32595E; border-top: 1px solid #DFDFDF; position: absolute;margin-right: 20px;right: 0px;left: 0px;text-align: center;font-family: Tahoma;z-index: 10;background: white;margin-top: 15px;'>
-				<p><b>This plugin is actively developed and maintained by <a href='https://plus.google.com/106075761239802324012'>Jordy Meow</a></b>.<br />Please visit <a href='http://www.totorotimes.com'>Totoro Times</a>, a website about Japan, Photography, Urban Exploration & Adventures.<br />And thanks for following me on <a href='https://twitter.com/TigrouMeow'>Twitter</a> or <a href='https://plus.google.com/106075761239802324012'>Google+</a> :)</p>
+				<p><b>This plugin is actively developed and maintained by <a href='https://plus.google.com/+JordyMeow'>Jordy Meow</a></b>.<br />Please visit <a href='http://www.totorotimes.com'>Totoro Times</a>, a website about Japan, Photography, Urban Exploration & Adventures.<br />And thanks for following me on <a href='https://twitter.com/TigrouMeow'>Twitter</a> or <a href='https://plus.google.com/+JordyMeow'>Google+</a> :)</p>
 			</div>
 			<?php
 		}

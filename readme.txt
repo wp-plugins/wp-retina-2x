@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.8.0
-Stable tag: 1.8.0
+Stable tag: 1.9.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -32,6 +32,11 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.9.0 =
+* Fix: issues when using custom UPLOADS / WP_SITEURL constants.
+* Info: Please come say hello or make a donation if you love this plugin :)
+* Info: I am getting married this year!
 
 = 1.8.0 =
 * Fix: HTML5 issues with the HTML srcset method.

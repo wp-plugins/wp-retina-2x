@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.8.0
+Version: 1.9.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -107,8 +107,9 @@ function wr2x_srcset_rewrite( $buffer ) {
 	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
 	$imageTags = $doc->getElementsByTagName('img');
 	foreach ( $imageTags as $tag ) {
-		$img_info = parse_url( $tag->getAttribute('src') );
-		$img_pathinfo = ltrim( $img_info['path'], '/' );
+		//$img_info = parse_url( $tag->getAttribute('src') );
+		//$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$img_pathinfo = wr2x_get_pathinfo_from_image_src($tag->getAttribute('src'));
 		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
@@ -121,31 +122,6 @@ function wr2x_srcset_rewrite( $buffer ) {
 	}
 	return $buffer;
 }
-
-/* THIS VERSION WAS USED PREVIOUSLY ON THE 1.6.2 VERSION
-function wr2x_srcset_rewrite( $buffer ) {
-	if ( !isset( $buffer ) || trim( $buffer ) === '' )
-		return $buffer;
-	$doc = new DOMDocument();
-	@$doc->loadHTML( mb_convert_encoding( $buffer, 'HTML-ENTITIES', 'UTF-8' ) ); // = ($doc->strictErrorChecking = false;)
-	$imageTags = $doc->getElementsByTagName('img');
-	foreach ( $imageTags as $tag ) {
-		$img_info = parse_url( $tag->getAttribute('src') );
-		$img_pathinfo = ltrim( $img_info['path'], '/' );
-		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
-		$potential_retina = wr2x_get_retina( $filepath );
-		if ( $potential_retina != null ) {
-			wr2x_log( "Add srcset:  " . $potential_retina . ' 2x' );
-			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
-			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
-			$srcset = $doc->createAttribute( 'srcset' );
-			$srcset->value = $retina_url . ' 2x';
-			$tag->appendChild( $srcset );
-		}
-	}
-	return $doc->saveHTML();
-}
-*/
 
 /**
  *
@@ -169,8 +145,9 @@ function wr2x_html_rewrite( $buffer ) {
 	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
 	$imageTags = $doc->getElementsByTagName('img');
 	foreach ( $imageTags as $tag ) {
-		$img_info = parse_url( $tag->getAttribute('src') );
-		$img_pathinfo = ltrim( $img_info['path'], '/' );
+		//$img_info = parse_url( $tag->getAttribute('src') );
+		//$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $tag->getAttribute('src') );
 		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
@@ -187,6 +164,20 @@ function wr2x_html_rewrite( $buffer ) {
  * ISSUES CALCULATION AND FUNCTIONS
  *
  */ 
+
+// Function written by jappievw
+// http://wordpress.org/support/topic/cant-find-retina-file-with-custom-uploads-constant?replies=3#post-5078892
+function wr2x_get_pathinfo_from_image_src($image_src) {
+	$site_url = trailingslashit( site_url() );
+	if ( strpos( $image_src, $site_url ) === 0 ) {
+		return substr( $image_src, strlen( $site_url ) );
+	}
+	else {
+		$img_info = parse_url( $image_src );
+		return ltrim( $img_info['path'], '/' );
+	}
+}
+ 
 
 // UPDATE THE ISSUE STATUS OF THIS ATTACHMENT
 function wr2x_update_issue_status( $attachmentId, $issues = null, $info = null ) {
