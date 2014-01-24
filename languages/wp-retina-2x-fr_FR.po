@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Retina 2x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 11:50+0900\n"
-"PO-Revision-Date: 2013-08-02 11:52+0900\n"
+"POT-Creation-Date: 2014-01-24 16:53+0900\n"
+"PO-Revision-Date: 2014-01-24 16:54+0900\n"
 "Last-Translator: Jordy Meow <work@meow.fr>\n"
 "Language-Team: Jordy Meow <work@meow.fr>\n"
 "Language: fr_FR\n"
@@ -84,8 +84,8 @@ msgstr "Images Retina"
 
 #: wr2x_retina-dashboard.php:20
 #, php-format
-msgid "Retina %s"
-msgstr "Retina %s"
+msgid "WP Retina 2x %s"
+msgstr "WP Retina 2x %s"
 
 #: wr2x_retina-dashboard.php:132
 msgid "Generate"
@@ -143,11 +143,11 @@ msgstr "IGNORER"
 msgid "Current method:"
 msgstr "Methode utilisée :"
 
-#: wr2x_settings.php:18 wr2x_settings.php:106
+#: wr2x_settings.php:18
 msgid "Client side"
 msgstr "Client side"
 
-#: wr2x_settings.php:21 wr2x_settings.php:107
+#: wr2x_settings.php:21
 msgid "Server side"
 msgstr "Server side"
 
@@ -221,51 +221,76 @@ msgstr "Méthode"
 #: wr2x_settings.php:97
 msgid ""
 "<br />\n"
-"                \t\tThe <b>HTML Rewrite method</b> is probably the best, "
-"especially when used with Cloudflare or Google PageSpeed Service! You cannot "
-"use a basic HTML caching plugin with it (or you have to hack the options "
-"properly). <br /><br />\n"
-"                \t\tThe <b>Server-side method</b> is very fast and "
-"efficient. However, depending on the hosting and cache system you are using "
-"(including services like Cloudflare) you might encounter issues.<br /><br /"
-">\n"
-"                \t\tThe <b>Client-side method</b> is fail-safe and only uses "
-"a JavaScript file. When a Retina Display is detected, requests for every "
-"images on the page will be sent to the server and a high resolution image "
-"will be retrieved if available. It requires more bandwidth.\n"
+"                        The <b>HTML srcset method</b> is the best. The HTML "
+"will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/srcset/w3c-"
+"srcset/\">the srcset attribute</a> added to the img tags. Works with "
+"caching. Unfortunately, not all the browsers support it yet.<br /><br />\n"
+"                \t\tThe <b>HTML Rewrite method</b> is one of the best "
+"methods. It replaces the images by the retina images - if available - in the "
+"HTML directly. It's tricky to use HTML caching with it however.<br /><br /"
+">               \t\t\n"
+"                \t\tThe <b>Retina.js method</b> is fail-safe and only uses "
+"one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</a>. "
+"When a Retina Display is detected, requests for every images on the page "
+"will be sent to the server and the retina images will be retrieved if "
+"available. Requires a lot of bandwidth.<br /><br />\n"
+"                        The <b>Retina-Images method</b> is efficient. The "
+"images will go through the <a href=\"https://github.com/Retina-Images/Retina-"
+"Images/\">Retina-Images</a> handler. Caching systems might be an issue.\n"
 "                \t"
 msgstr ""
-"La <b>méthode HTML Rewrite</b> est la meilleure, surtout si utilisée "
-"conjointement à Cloudflare ou encore mieux, du Google PageSpeed Service. "
-"Désactivez vos plugins de cache HTML (ou alors il vous faudra hacker les "
-"options).<br /><br />La <b>méthode côté serveur</b> est rapide et optimale. "
-"Cependant, selon votre système de caching (Cloudflare inclus), ça ne "
-"fonctionnera peut-être pas correctement.<br /><br />La <b>méthode côté "
-"client</b> est fiable, fonctionne dans tous les cas et utilise seulement un "
-"JavaScript. C'est une méthode moins rapide et performante mais néanmoins la "
-"méthode utilisée sur le site d'Apple."
+"<br />\n"
+"                        The <b>HTML srcset method</b> is the best. The HTML "
+"will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/srcset/w3c-"
+"srcset/\">the srcset attribute</a> added to the img tags. Works with "
+"caching. Unfortunately, not all the browsers support it yet.<br /><br />\n"
+"                \t\tThe <b>HTML Rewrite method</b> is one of the best "
+"methods. It replaces the images by the retina images - if available - in the "
+"HTML directly. It's tricky to use HTML caching with it however.<br /><br /"
+">               \t\t\n"
+"                \t\tThe <b>Retina.js method</b> is fail-safe and only uses "
+"one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</a>. "
+"When a Retina Display is detected, requests for every images on the page "
+"will be sent to the server and the retina images will be retrieved if "
+"available. Requires a lot of bandwidth.<br /><br />\n"
+"                        The <b>Retina-Images method</b> is efficient. The "
+"images will go through the <a href=\"https://github.com/Retina-Images/Retina-"
+"Images/\">Retina-Images</a> handler. Caching systems might be an issue.\n"
+"                \t"
 
-#: wr2x_settings.php:105
+#: wr2x_settings.php:106
+msgid "HTML srcset (W3C Draft)"
+msgstr "HTML srcset (W3C Draft)"
+
+#: wr2x_settings.php:107
 msgid "HTML Rewrite"
 msgstr "HTML Rewrite"
 
 #: wr2x_settings.php:108
+msgid "Retina.js"
+msgstr "Retina.js"
+
+#: wr2x_settings.php:109
+msgid "Retina-Images"
+msgstr "Retina-Images"
+
+#: wr2x_settings.php:110
 msgid "None"
 msgstr "Aucune"
 
-#: wr2x_settings.php:113
+#: wr2x_settings.php:115
 msgid "Quality"
 msgstr "Qualité"
 
-#: wr2x_settings.php:114
+#: wr2x_settings.php:116
 msgid "Image Compression quality (between 0 and 100)."
 msgstr "Qualité de compression (entre 0 et 100)."
 
-#: wr2x_settings.php:120
+#: wr2x_settings.php:122
 msgid "Debug Mode"
 msgstr "Mode Debug"
 
-#: wr2x_settings.php:121
+#: wr2x_settings.php:123
 msgid ""
 "If checked, the client will be always served Retina images. Convenient for "
 "testing."
@@ -273,29 +298,55 @@ msgstr ""
 "Si sélectionné, les images Retina seront toujours délivrées. Idéal pour vos "
 "tests."
 
-#: wr2x_settings.php:127
+#: wr2x_settings.php:129
 msgid "Hide 'Retina' column"
 msgstr "Cacher la colonne 'Retina'"
 
-#: wr2x_settings.php:128
+#: wr2x_settings.php:130
 msgid "Will hide the 'Retina Column' from the Media Library."
 msgstr "La colonne Retina ne s'affichera plus dans la Bibliothèque."
 
-#: wr2x_settings.php:134
+#: wr2x_settings.php:136
 msgid "Hide Retina Dashboard"
 msgstr "Cacher le Retina Dashboard"
 
-#: wr2x_settings.php:135
+#: wr2x_settings.php:137
 msgid "Doesn't show the Retina Dashboard menu and tools."
 msgstr "Le Retina Dashboard ne s'affichera plus dans les menus."
 
-#: wr2x_settings.php:141
+#: wr2x_settings.php:143
 msgid "Ignore Mobile"
 msgstr "Ignorer Mobiles"
 
-#: wr2x_settings.php:142
+#: wr2x_settings.php:144
 msgid "Doesn't deliver Retina images to mobiles."
 msgstr "Pas de retina pour les mobiles."
+
+#~ msgid ""
+#~ "<br />\n"
+#~ "                \t\tThe <b>HTML Rewrite method</b> is probably the best, "
+#~ "especially when used with Cloudflare or Google PageSpeed Service! You "
+#~ "cannot use a basic HTML caching plugin with it (or you have to hack the "
+#~ "options properly). <br /><br />\n"
+#~ "                \t\tThe <b>Server-side method</b> is very fast and "
+#~ "efficient. However, depending on the hosting and cache system you are "
+#~ "using (including services like Cloudflare) you might encounter issues."
+#~ "<br /><br />\n"
+#~ "                \t\tThe <b>Client-side method</b> is fail-safe and only "
+#~ "uses a JavaScript file. When a Retina Display is detected, requests for "
+#~ "every images on the page will be sent to the server and a high resolution "
+#~ "image will be retrieved if available. It requires more bandwidth.\n"
+#~ "                \t"
+#~ msgstr ""
+#~ "La <b>méthode HTML Rewrite</b> est la meilleure, surtout si utilisée "
+#~ "conjointement à Cloudflare ou encore mieux, du Google PageSpeed Service. "
+#~ "Désactivez vos plugins de cache HTML (ou alors il vous faudra hacker les "
+#~ "options).<br /><br />La <b>méthode côté serveur</b> est rapide et "
+#~ "optimale. Cependant, selon votre système de caching (Cloudflare inclus), "
+#~ "ça ne fonctionnera peut-être pas correctement.<br /><br />La <b>méthode "
+#~ "côté client</b> est fiable, fonctionne dans tous les cas et utilise "
+#~ "seulement un JavaScript. C'est une méthode moins rapide et performante "
+#~ "mais néanmoins la méthode utilisée sur le site d'Apple."
 
 #~ msgid "Titre"
 #~ msgstr "Titre"

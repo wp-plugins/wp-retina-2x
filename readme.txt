@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.8.0
-Stable tag: 1.9.0
+Tested up to: 3.8.1
+Stable tag: 1.9.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -32,6 +32,11 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.9.2 =
+* Fix: issue with the src-set method.
+* Change: thumbnail size was reduced in the Retina dashboard.
+* Update: French translation.
 
 = 1.9.0 =
 * Fix: issues when using custom UPLOADS / WP_SITEURL constants.

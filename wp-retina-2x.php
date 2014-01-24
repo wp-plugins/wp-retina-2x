@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.9.0
+Version: 1.9.2
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '1.8.0';
+$wr2x_version = '1.9.2';
 $wr2x_retinajs = '1.1.0';
 $wr2x_retina_image = '1.4.1';
 
@@ -579,7 +579,7 @@ function wr2x_wp_enqueue_scripts () {
 
 	// Retina-Images and HTML Rewrite both need the devicePixelRatio cookie on the server-side
 	if ( $method == "Retina-Images" || $method == "HTML Rewrite" )
-		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-images.js', __FILE__ ), array(), $wr2x_retina_image, false );
+		wp_enqueue_script( 'retina-images', plugins_url( '/js/retina-cookie.js', __FILE__ ), array(), $wr2x_retina_image, false );
 	
 	// Retina.js only needs itself
 	if ($method == "retina.js")
