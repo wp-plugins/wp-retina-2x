@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.9.2
+Version: 1.9.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,8 +24,8 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '1.9.2';
-$wr2x_retinajs = '1.1.0';
+$wr2x_version = '1.9.4';
+$wr2x_retinajs = '1.3.0';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -47,7 +47,7 @@ if ( is_admin() ) {
 	require('jordy_meow_footer.php');
 }
 
-if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) )
+if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) && !class_exists( 'Mobile_Detect' ) )
 	require('inc/Mobile_Detect.php'); 
 
 if ( !wr2x_getoption( "hide_retina_dashboard", "wr2x_advanced", false ) )

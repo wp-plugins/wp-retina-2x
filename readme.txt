@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.8.1
-Stable tag: 1.9.2
+Tested up to: 3.9
+Stable tag: 1.9.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -32,6 +32,12 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 1.9.4 =
+* Update: for WordPress 3.9.
+* Update: MobileDetect, from 2.6.0 to 2.8.0.
+* Update: RetinaJS, from 1.1 to 1.3.
+* Info: if you want new features / enhancements, please add a message in the WordPress forum and consider a little donation (or a flattr) and I will do my best to include it in the upcoming 2.0 version of the plugin.
 
 = 1.9.2 =
 * Fix: issue with the src-set method.
@@ -241,26 +247,19 @@ Maybe you don't have enough memory allocated to PHP or the script takes longer t
 Please note that it doesn't work with some cheap web hosts, as they don't want you do to that instead. The real issue can also be tracked in the PHP error logs.
 
 = I am using CSS3 filters and the Retina images look blurry =
-It is a known issue, not related to the plugin. You can find the answer on this post: http://matthewhappen.com/fixing-css3-filter-blur-on-retina-displays/
-
-= It still doesn't work! =
-Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a> or contact me directly, and always send me a screenshot copy of your "Image Sizes" settings in Settings -> Media, and another screenshot of your Retina Dashboard. I will do my best to help you.
+It is a known issue and it is not related to the plugin. You can find the answer on this post: http://matthewhappen.com/fixing-css3-filter-blur-on-retina-displays/
 
 = I still don't understand a thing! =
-Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>. You should also have a look at the WordPress forums.
+Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>. You should also have a look at the WordPress forums. Ask a friend to help you.
+
+= It still doesn't work! =
+Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a>. I always look at the new tickets. However, I only reply if it seems there is a bug in the plugin and I will always try my best to resolve it.
 
 = This plugin is great, how can I thank you? =
-Thanks for asking, since we, developers, get usually 10x more complains than thanks! I don't blame anyone, I persnnally don't say thank you to every single developer of all the software I am using ;) But if you are happy, please write a <a href='http://wordpress.org/support/view/plugin-reviews/wp-retina-2x'>nice review here</a>. You can also do one of the things I ask in the following question.
+Thanks for asking, since we, developers, get usually 10x more complains than thanks! I don't blame anyone, I persnnally don't say thank you to every single developer of all the software I am using ;) But if you are happy, please write a <a href='http://wordpress.org/support/view/plugin-reviews/wp-retina-2x'>nice review here</a>.
 
 = Can I contact you? =
-Yes, sure, you can! But since the plugin got popular, I get many emails everyday which consume almost 10% of my whole lifetime (not kidding! + it's rarely issues coming from the plugin itself). Before contacting me, please do one of the following:
-
-* Tweet a page of <a href='http://www.totorotimes.com'>Totoro Times</a> to more than 500 followers, mentioning @TigrouMeow
-* Facebook a page of <a href='http://www.totorotimes.com'>Totoro Times</a> to more than 600 friends/followers (using a page is fine too)
-* Link a page of <a href='http://www.totorotimes.com'>Totoro Times</a> from your website/blog
-* Make <a href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U'>a donation</a> and buy me some sushi (I live in Tokyo and they are really good here!)
-
-Then please <a href='http://www.totorotimes.com/about/'>contact me</a> :) Thank you!
+Yes and no. I cannot provide free support anymore since it always take too much time and 99% not a problem of the plugin. Ask a developer friend first or hire one, they will help you. If you want me to help, then consider hiring me as well. If you really think you found a bug, then write it down in the WordPress forum with screenshot, you server configuration, URLs, etc.
 
 = I donated, can I get rid of the donation button? =
 Of course. I don't like to see too many of those buttons neither ;) You can disable the donation buttons from all my plugins by adding this to your wp-config.php:

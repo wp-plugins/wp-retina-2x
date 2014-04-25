@@ -19,7 +19,7 @@
 		}
 		function by_jordy_meow() {
 			echo '<div><span style="font-size: 13px; position: relative; top: -6px;">Developed by <a style="text-decoration: none;" href="https://plus.google.com/+JordyMeow">Jordy Meow</a></span>
-				<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://profiles.wordpress.org/TigrouMeow/"></a></div>';
+				<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" title="Jordy Meow / WordPress" href="http://profiles.wordpress.org/TigrouMeow/"></a></div>';
 		}
 	}
 
