@@ -4,24 +4,23 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 1.9.4
+Tested up to: 3.9.0
+Stable tag: 2.0.0
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
 == Description ==
 
-This plugin creates the image files required by the Retina (high-DPI) displays and it displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
+This plugin creates the image files required by the Retina (high-DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
 
 It supports 4 different methods to serve the images to your visitors:
 
-* HTML srcset: The HTML will be rewritten with the srcset attribute added to the img tags.
-* HTML Rewrite: The HTML is rewritten with the images replaced by their retina equivalent.
-* Retina.js: This method should work in every case. Normal images are loaded first, then the client-side checks for retina images and download them if available. Works with caching but loads 2 images instead of 1.
-* Retina-Images: Uses a server-handler that decides whether to send the normal image or the retina image.
-* Do you have any other idea? Let me know! :)
+* PictureFill: The Picturefill method rewrites the HTML on-the-fly in order to use the new SRCSET. Since it is not supported by the browsers yet, the JS polyfill Picturefill is used to load the images. It is now the recommended method.
+* Retina.js: The Retina JS method is a 100% JS solution. The HTML loads the normal images, then if a retina device is detected, the retina images will be loaded. It is fail-safe but not efficient (images are loaded twice).
+* IMG Rewrite: The IMG Rewrite method rewrites IMG's SRC tags on-the-fly with the retina images directly if the device supports them. This method does not work with most caching solutions.
+* Retina-Images: The Retina-Images method uses a server handler: the images will be loaded through the Retina-Images PHP handler. Your .htaccess will be modified automatically.
 
-Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. It's blazing fast and neat!
+Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting.
 
 Languages: English, French.
 
@@ -32,6 +31,13 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.0.0 =
+* Info: The new method PictureFill is currently beta but I believe is the best. Please help me test it and participate in the WordPress forums if you find any bug or a way to enhance it. Also, thanks a lot to those who made donations! :)
+* Change: new PictureFill method
+* Change: texts and method names
+* Fix: debug mode was not logging
+* Update for WordPress 3.9.1
 
 = 1.9.4 =
 * Update: for WordPress 3.9.
@@ -182,7 +188,7 @@ Quick and easy installation:
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Check the settings of WP Retina 2x in the WordPress administration screen.
 4. Check the Retina Dashboard.
-6. Read the tutorial about the plugin on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>.
+6. Read the tutorial about the plugin on <a href='http://www.totorotimes.com/wp-retina-2x-plugin/'>Totoro Times</a>.
 
 == Frequently Asked Questions ==
 
@@ -250,7 +256,7 @@ Please note that it doesn't work with some cheap web hosts, as they don't want y
 It is a known issue and it is not related to the plugin. You can find the answer on this post: http://matthewhappen.com/fixing-css3-filter-blur-on-retina-displays/
 
 = I still don't understand a thing! =
-Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/news/retina-display-wordpress-plugin'>Totoro Times</a>. You should also have a look at the WordPress forums. Ask a friend to help you.
+Please check my tutorial and introduction to Retina Displays on <a href='http://www.totorotimes.com/wp-retina-2x-plugin/'>Totoro Times</a>. You should also have a look at the WordPress forums. Ask a friend to help you.
 
 = It still doesn't work! =
 Create a new support thread <a href='http://wordpress.org/support/plugin/wp-retina-2x'>here</a>. I always look at the new tickets. However, I only reply if it seems there is a bug in the plugin and I will always try my best to resolve it.

@@ -161,7 +161,7 @@ function wpr2x_wp_retina_2x() {
 		}
 	?>
 	
-	<p><?php _e("This screen allows you to check the media for which the retina files are missing. You can then create the files independently for each media or for all of them. You can also upload and replace the images by drag & drop them on the grid.", 'wp-retina-2x'); ?></p>
+	<p><?php _e("You can upload/replace the images by drag & drop on the grid.", 'wp-retina-2x'); ?></p>
 
 	<div id='wr2x-pages'>
 	<?php
@@ -225,7 +225,7 @@ function wpr2x_wp_retina_2x() {
 					echo "<td id='wr2x_" . $aindex .  "_" . $attr['post']->ID . "'>";
 					if ( is_array( $aval ) ) {
 						echo "<img title='Please upload a bigger original image.' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
-						"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " . $aval['width'] . "×" . $aval['height'] . "</span>";
+						"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -10px;'><br />< " . $aval['width'] . "×" . $aval['height'] . "</span>";
 					}
 					else if ( $aval == 'EXISTS' ) {
 						echo "<img style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";

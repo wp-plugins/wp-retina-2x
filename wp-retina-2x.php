@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 1.9.4
+Version: 2.0.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,8 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '1.9.4';
+$wr2x_version = '2.0.0';
 $wr2x_retinajs = '1.3.0';
+$wr2x_picturefill = '2.1.0b';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -65,7 +66,12 @@ function wr2x_init() {
 
 	// If HTML Rewrite + Retina (or debug), add special actions
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
-	if ( $method == 'HTML Rewrite' ) {
+
+	if ( $method == "Picturefill" ) {
+		add_action( 'wp_head', 'wr2x_picture_buffer_start' );
+		add_action( 'wp_footer', 'wr2x_picture_buffer_end' );
+	}
+	else if ( $method == 'HTML Rewrite' ) {
 		$is_retina = false;
 		if ( isset( $_COOKIE['devicePixelRatio'] ) ) {
 			$is_retina = ceil( floatval( $_COOKIE['devicePixelRatio'] ) ) > 1;
@@ -83,6 +89,80 @@ function wr2x_init() {
 		add_action( 'wp_head', 'wr2x_srcset_buffer_start' );
 		add_action( 'wp_footer', 'wr2x_srcset_buffer_end' );
 	}
+}
+
+/**
+ *
+ * PICTURE METHOD
+ *
+ */ 
+
+function wr2x_picture_buffer_start () {
+	ob_start( "wr2x_picture_rewrite" );
+}
+
+function wr2x_picture_buffer_end () {
+	ob_end_flush();
+}
+
+function wr2x_dom_rename(DOMElement $node, $name) {
+    $renamed = $node->ownerDocument->createElement($name);
+    foreach ($node->attributes as $attribute) {
+        $renamed->setAttribute($attribute->nodeName, $attribute->nodeValue);
+    }
+    while ($node->firstChild) {
+        $renamed->appendChild($node->firstChild);
+    }
+    $node->parentNode->replaceChild($renamed, $node);
+    return $renamed;
+}
+
+// Replace the IMG tags by PICTURE tags with SRCSET
+function wr2x_picture_rewrite( $buffer ) {
+	if ( !isset( $buffer ) || trim( $buffer ) === '' )
+		return $buffer;
+	$doc = new DOMDocument();
+	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
+	$imgnodes = array();
+	foreach( $doc->getElementsByTagName( "img" ) as $node )
+		array_push( $imgnodes, $node );
+	foreach( $imgnodes as $node ) {
+		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $node->getAttribute( "src" ) );
+		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
+		$potential_retina = wr2x_get_retina( $filepath );
+
+		if ( $potential_retina != null ) {
+			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
+			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+			$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
+			$from = $doc->saveHTML($node);
+			wr2x_log( "From IMG TAG:  " . $from );
+			
+			/*
+			// FROM IMG TAG TO PICTURE TAG WITH SRCSET
+			$source = $doc->createElement( "source" );
+			$srcset = $doc->createAttribute( "srcset" );
+			$srcset->value =  "$img_url, $retina_url 2x";
+			$source->appendChild( $srcset );
+			$node->appendChild( $source );
+			$node = wr2x_dom_rename( $node, "picture" );
+			$node->removeAttribute( "src" );
+			*/
+			
+			// ONLY ADD SRCSET TO IMG TAGS AND REMOVE SRC
+			$srcset = $doc->createAttribute( "srcset" );
+			$srcset->value =  "$img_url, $retina_url 2x";
+			$node->removeAttribute( "src" );
+			$node->appendChild($srcset);
+
+			$to = $doc->saveHTML($node);
+			wr2x_log( "To PIC TAG:  " . $to );
+			// DOMDocument SaveHTML write the HTML a bit differently (removes the / for example)
+			// Trim is a trick, hopefully will find better solution for this
+			$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
+		}
+	}
+	return $buffer;
 }
 
 /**
@@ -322,7 +402,7 @@ function wr2x_is_debug() {
 	if ( $debug == -1 ) {
 		$debug = wr2x_getoption( "debug", "wr2x_advanced", false );
 	}
-	return $debug;
+	return $debug && $debug == "on";
 }
 
 function wr2x_log( $data ) {
@@ -559,9 +639,17 @@ function wr2x_deactivate() {
  */
 
 function wr2x_wp_enqueue_scripts () {
-	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image;
+	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image, $wr2x_picturefill;
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	
+	// Picturefill
+	if ( $method == "Picturefill" ) {
+		if ( wr2x_is_debug() )
+			wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
+		wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
+		return;
+	}
+
 	// Debug + HTML Rewrite = No JS!
 	if ( wr2x_is_debug() && $method == "HTML Rewrite" ) {
 		return;

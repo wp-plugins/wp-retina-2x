@@ -9,11 +9,14 @@ add_action( 'admin_init', 'wr2x_admin_init' );
  */
  
 function wr2x_settings_page() {
-    $settings_api = wr2x_WeDevs_Settings_API::getInstance();
+    global $wr2x_settings_api;
 	echo '<div class="wrap">';
-	jordy_meow_donation(true);
+    jordy_meow_donation(true);
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
-	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x</h2>";
+
+	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x";
+    by_jordy_meow();
+    echo "</h2>";
 	if ( $method == 'retina.js' ) {
 		echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
 	}
@@ -34,8 +37,8 @@ function wr2x_settings_page() {
 	}
 	
     //settings_errors();
-    $settings_api->show_navigation();
-    $settings_api->show_forms();
+    $wr2x_settings_api->show_navigation();
+    $wr2x_settings_api->show_forms();
     echo '</div>';
 	jordy_meow_footer();
 }
@@ -77,7 +80,7 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'ignore_sizes',
                 'label' => __( 'Disabled Sizes', 'wp-retina-2x' ),
-                'desc' => __( 'The checked sizes will not be generated for Retina displays.', 'wp-retina-2x' ),
+                'desc' => __( '<br />The selected sizes will not have their retina equivalent generated.', 'wp-retina-2x' ),
                 'type' => 'multicheck',
                 'options' => $sizes
             ),
@@ -95,18 +98,20 @@ function wr2x_admin_init() {
                 'label' => __( 'Method', 'wp-retina-2x' ),
                 'desc' => __( 
                 	'<br />
-                        The <b>HTML srcset method</b> is the best. The HTML will be rewritten with <a href="http://www.w3.org/html/wg/drafts/srcset/w3c-srcset/">the srcset attribute</a> added to the img tags. Works with caching. Unfortunately, not all the browsers support it yet.<br /><br />
-                		The <b>HTML Rewrite method</b> is one of the best methods. It replaces the images by the retina images - if available - in the HTML directly. It\'s tricky to use HTML caching with it however.<br /><br />               		
-                		The <b>Retina.js method</b> is fail-safe and only uses one <a href="https://github.com/imulus/retinajs/">JavaScript file</a>. When a Retina Display is detected, requests for every images on the page will be sent to the server and the retina images will be retrieved if available. Requires a lot of bandwidth.<br /><br />
-                        The <b>Retina-Images method</b> is efficient. The images will go through the <a href="https://github.com/Retina-Images/Retina-Images/">Retina-Images</a> handler. Caching systems might be an issue.
+                        The <b>Picturefill</b> method rewrites the HTML on-the-fly in order to use the new SRCSET. Since it is not supported by the browsers yet, the JS polyfill <a href="http://scottjehl.github.io/picturefill/">Picturefill</a> is used to load the images. <b>It is now the recommended method.</b><br /><br />
+                        The <b>Retina JS</b> method is a 100% JS solution. The HTML loads the normal images, then if a retina device is detected, the retina images will be loaded. It is fail-safe but not efficient (images are loaded twice).<br /><br />
+                        The <b>IMG Rewrite</b> method rewrites IMG\'s SRC tags on-the-fly with the retina images directly if the device supports them. This method does not work with most caching solutions.<br /><br />
+                        The <b>Retina-Images method</b> uses a server handler: the images will be loaded through the <a href="https://github.com/Retina-Images/Retina-Images/">Retina-Images</a> PHP handler. Your .htaccess will be modified automatically. It might be too difficult to set-up if it does not work right away.<br /><br />
+                        The <b>HTML srcset method</b> has been deprecated and has been replaced by <b>Picturefill</b>.
                 	', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
-                    'srcset' => __( "HTML srcset (W3C Draft)", 'wp-retina-2x' ),
-                	'HTML Rewrite' => __( "HTML Rewrite", 'wp-retina-2x' ),
+                    'Picturefill' => __( "Picturefill", 'wp-retina-2x' ),
                 	'retina.js' => __( "Retina.js", 'wp-retina-2x' ),
+                    'HTML Rewrite' => __( "IMG Rewrite", 'wp-retina-2x' ),
 					'Retina-Images' => __( "Retina-Images", 'wp-retina-2x' ),
+                    'srcset' => __( "HTML srcset", 'wp-retina-2x' ),
 					'none' => __( "None", 'wp-retina-2x' )
                 )
             ),
@@ -120,7 +125,7 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'debug',
                 'label' => __( 'Debug Mode', 'wp-retina-2x' ),
-                'desc' => __( 'If checked, the client will be always served Retina images. Convenient for testing.', 'wp-retina-2x' ),
+                'desc' => __( 'If checked, the client will be always served Retina images. <br />Please use it for testing purposes. It also generates a log file in the plugin folder.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
@@ -141,16 +146,17 @@ function wr2x_admin_init() {
             array(
                 'name' => 'ignore_mobile',
                 'label' => __( 'Ignore Mobile', 'wp-retina-2x' ),
-                'desc' => __( 'Doesn\'t deliver Retina images to mobiles.', 'wp-retina-2x' ),
+                'desc' => __( 'Doesn\'t deliver Retina images to mobiles.<br />Does not work with Picturefill since it is managed by an external JS.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             )
 		)
     );
-	$settings_api = wr2x_WeDevs_Settings_API::getInstance();
-    $settings_api->set_sections( $sections );
-    $settings_api->set_fields( $fields );
-    $settings_api->admin_init();
+    global $wr2x_settings_api;
+	$wr2x_settings_api = new WeDevs_Settings_API;
+    $wr2x_settings_api->set_sections( $sections );
+    $wr2x_settings_api->set_fields( $fields );
+    $wr2x_settings_api->admin_init();
 }
 
 function wr2x_update_option( $option ) {
