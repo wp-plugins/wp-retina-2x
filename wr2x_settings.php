@@ -45,8 +45,15 @@ function wr2x_settings_page() {
 
 function wr2x_getoption( $option, $section, $default = '' ) {
 	$options = get_option( $section );
-	if ( isset( $options[$option] ) )
+	if ( isset( $options[$option] ) ) {
+        if ( $options[$option] == "off" ) {
+            return false;
+        }
+        if ( $options[$option] == "on" ) {
+            return true;
+        }
 		return $options[$option];
+    }
 	return $default;
 }
  
@@ -125,7 +132,7 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'debug',
                 'label' => __( 'Debug Mode', 'wp-retina-2x' ),
-                'desc' => __( 'If checked, the client will be always served Retina images. <br />Please use it for testing purposes. It also generates a log file in the plugin folder.', 'wp-retina-2x' ),
+                'desc' => __( 'If checked, the client will be always served Retina images. <br />Please use it for testing purposes. It also generates a <a href="' . plugins_url("wp-retina-2x") . '/wp-retina-2x.log">log file</a> in the plugin folder.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),

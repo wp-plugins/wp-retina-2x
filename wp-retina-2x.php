@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.0.0
+Version: 2.0.2
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.0.0';
+$wr2x_version = '2.0.2';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.1.0b';
 $wr2x_retina_image = '1.4.1';
@@ -126,7 +126,20 @@ function wr2x_picture_rewrite( $buffer ) {
 	$imgnodes = array();
 	foreach( $doc->getElementsByTagName( "img" ) as $node )
 		array_push( $imgnodes, $node );
+
+	$nodes_replaced = 0;
+	if (wr2x_is_debug()) {
+		$nodes_count = count( $imgnodes );
+		wr2x_log( "$nodes_count img tags found." );
+	}
+	
 	foreach( $imgnodes as $node ) {
+
+		if ( $node->parentNode->tagName == "picture" ) {
+			wr2x_log("Found IE fallback img tag in picture tag, will ignore.");
+			continue;
+		}
+
 		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $node->getAttribute( "src" ) );
 		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
@@ -135,33 +148,28 @@ function wr2x_picture_rewrite( $buffer ) {
 			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
 			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
 			$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
-			$from = $doc->saveHTML($node);
-			wr2x_log( "From IMG TAG:  " . $from );
-			
-			/*
-			// FROM IMG TAG TO PICTURE TAG WITH SRCSET
-			$source = $doc->createElement( "source" );
-			$srcset = $doc->createAttribute( "srcset" );
-			$srcset->value =  "$img_url, $retina_url 2x";
-			$source->appendChild( $srcset );
-			$node->appendChild( $source );
-			$node = wr2x_dom_rename( $node, "picture" );
-			$node->removeAttribute( "src" );
-			*/
+			$from = $doc->saveXML($node);
 			
 			// ONLY ADD SRCSET TO IMG TAGS AND REMOVE SRC
 			$srcset = $doc->createAttribute( "srcset" );
 			$srcset->value =  "$img_url, $retina_url 2x";
 			$node->removeAttribute( "src" );
 			$node->appendChild($srcset);
+			$to = $doc->saveXML($node);
 
-			$to = $doc->saveHTML($node);
-			wr2x_log( "To PIC TAG:  " . $to );
 			// DOMDocument SaveHTML write the HTML a bit differently (removes the / for example)
 			// Trim is a trick, hopefully will find better solution for this
 			$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
+
+			wr2x_log( "Replaced img tag '$from' by '$to'" );
+			$nodes_replaced++;
 		}
 	}
+
+	if ( wr2x_is_debug() ) {
+		wr2x_log( "$nodes_replaced img tags were replaced out of $nodes_count." );
+	}
+
 	return $buffer;
 }
 
@@ -407,9 +415,11 @@ function wr2x_is_debug() {
 
 function wr2x_log( $data ) {
 	if ( wr2x_is_debug() ) {
+
 		$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
-		fwrite($fh, "{$data}\n");
-		fclose($fh);
+		$date = date( "Y-m-d H:i:s" );
+		fwrite( $fh, "$date: {$data}\n" );
+		fclose( $fh );
 	}
 }
 

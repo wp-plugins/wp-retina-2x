@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.9.0
-Stable tag: 2.0.0
+Tested up to: 3.9.1
+Stable tag: 2.0.2
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -31,6 +31,12 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.0.2 =
+* Fix: PictureFill issue with older version of PHP
+* Fix: issue with boolean values in the options
+* Fix: PictureFill method now ignore fallback img tags found in picture tags
+* Change: logging enhanced for PictureFill
 
 = 2.0.0 =
 * Info: The new method PictureFill is currently beta but I believe is the best. Please help me test it and participate in the WordPress forums if you find any bug or a way to enhance it. Also, thanks a lot to those who made donations! :)
@@ -273,4 +279,6 @@ Of course. I don't like to see too many of those buttons neither ;) You can disa
 
 == Screenshots ==
 
-1. The Retina Dashboard
+1. Retina Dashboard
+2. Basic Settings
+3. Advanced Settings
