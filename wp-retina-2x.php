@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr/wp-retina-2x
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.0.2
+Version: 2.0.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.0.2';
+$wr2x_version = '2.0.4';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.1.0b';
+$wr2x_picturefill = '2.1.0.2014.08.20';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -85,10 +85,6 @@ function wr2x_init() {
 			add_action( 'wp_footer', 'wr2x_buffer_end' );
 		}
 	}
-	else if ( $method == 'srcset' ) {
-		add_action( 'wp_head', 'wr2x_srcset_buffer_start' );
-		add_action( 'wp_footer', 'wr2x_srcset_buffer_end' );
-	}
 }
 
 /**
@@ -105,64 +101,37 @@ function wr2x_picture_buffer_end () {
 	ob_end_flush();
 }
 
-function wr2x_dom_rename(DOMElement $node, $name) {
-    $renamed = $node->ownerDocument->createElement($name);
-    foreach ($node->attributes as $attribute) {
-        $renamed->setAttribute($attribute->nodeName, $attribute->nodeValue);
-    }
-    while ($node->firstChild) {
-        $renamed->appendChild($node->firstChild);
-    }
-    $node->parentNode->replaceChild($renamed, $node);
-    return $renamed;
-}
-
 // Replace the IMG tags by PICTURE tags with SRCSET
 function wr2x_picture_rewrite( $buffer ) {
 	if ( !isset( $buffer ) || trim( $buffer ) === '' )
 		return $buffer;
-	$doc = new DOMDocument();
-	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
-	$imgnodes = array();
-	foreach( $doc->getElementsByTagName( "img" ) as $node )
-		array_push( $imgnodes, $node );
+	require('inc/simple_html_dom.php');
 
 	$nodes_replaced = 0;
-	if (wr2x_is_debug()) {
-		$nodes_count = count( $imgnodes );
-		wr2x_log( "$nodes_count img tags found." );
-	}
-	
-	foreach( $imgnodes as $node ) {
-
-		if ( $node->parentNode->tagName == "picture" ) {
+	$html = str_get_html( $buffer );
+	foreach( $html->find( 'img' ) as $element ) {
+		$nodes_count++;
+		$parent = $element->parent();
+		if ( $parent->tag == "picture" ) {
 			wr2x_log("Found IE fallback img tag in picture tag, will ignore.");
 			continue;
 		}
-
-		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $node->getAttribute( "src" ) );
-		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
-		$potential_retina = wr2x_get_retina( $filepath );
-
-		if ( $potential_retina != null ) {
-			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
-			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
-			$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
-			$from = $doc->saveXML($node);
-			
-			// ONLY ADD SRCSET TO IMG TAGS AND REMOVE SRC
-			$srcset = $doc->createAttribute( "srcset" );
-			$srcset->value =  "$img_url, $retina_url 2x";
-			$node->removeAttribute( "src" );
-			$node->appendChild($srcset);
-			$to = $doc->saveXML($node);
-
-			// DOMDocument SaveHTML write the HTML a bit differently (removes the / for example)
-			// Trim is a trick, hopefully will find better solution for this
-			$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
-
-			wr2x_log( "Replaced img tag '$from' by '$to'" );
-			$nodes_replaced++;
+		else {
+			$img_pathinfo = wr2x_get_pathinfo_from_image_src( $element->src );
+			$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
+			$potential_retina = wr2x_get_retina( $filepath );
+			$from = substr( $element, 0 );
+			if ( $potential_retina != null ) {
+				$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
+				$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+				$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
+				$element->srcset =  "$img_url, $retina_url 2x";
+				$element->src = null;
+				$to = $element;
+				$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
+				wr2x_log( "Replaced img tag '$from' by '$to'" );
+				$nodes_replaced++;
+			}
 		}
 	}
 
@@ -175,47 +144,9 @@ function wr2x_picture_rewrite( $buffer ) {
 
 /**
  *
- * SRCSET METHOD
- *
- */ 
-
-function wr2x_srcset_buffer_start () {
-	ob_start( "wr2x_srcset_rewrite" );
-}
-
-function wr2x_srcset_buffer_end () {
-	ob_end_flush();
-}
-
-// Replace the images by retina images (if available)
-function wr2x_srcset_rewrite( $buffer ) {
-	if ( !isset( $buffer ) || trim( $buffer ) === '' )
-		return $buffer;
-	$doc = new DOMDocument();
-	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
-	$imageTags = $doc->getElementsByTagName('img');
-	foreach ( $imageTags as $tag ) {
-		//$img_info = parse_url( $tag->getAttribute('src') );
-		//$img_pathinfo = ltrim( $img_info['path'], '/' );
-		$img_pathinfo = wr2x_get_pathinfo_from_image_src($tag->getAttribute('src'));
-		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
-		$potential_retina = wr2x_get_retina( $filepath );
-		if ( $potential_retina != null ) {
-			wr2x_log( "Add srcset:  " . $potential_retina . ' 2x' );
-			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
-			$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
-			$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
-			$buffer = str_replace( 'src="'.$img_url.'"', 'src="'.$img_url.'" srcset="'.$retina_url.' 2x"', $buffer );
-		}
-	}
-	return $buffer;
-}
-
-/**
- *
  * HTML REWRITE METHOD
  *
- */ 
+ */
 
 function wr2x_buffer_start () {
 	ob_start( "wr2x_html_rewrite" );

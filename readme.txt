@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 3.9.1
-Stable tag: 2.0.2
+Stable tag: 2.0.4
 
 Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
 
@@ -31,6 +31,12 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.0.4 =
+* Fix: PictureFill method now handles special characters.
+* Change: Performance boost for PictureFill method.
+* Change: Use PHP Simple HTML DOM instead of DOMDocument for PictureFill.
+* Update: PictureFill, from 2.1.0 (2014-06-03) to 2.1.0 (2014-08-20).
 
 = 2.0.2 =
 * Fix: PictureFill issue with older version of PHP

@@ -106,19 +106,17 @@ function wr2x_admin_init() {
                 'desc' => __( 
                 	'<br />
                         The <b>Picturefill</b> method rewrites the HTML on-the-fly in order to use the new SRCSET. Since it is not supported by the browsers yet, the JS polyfill <a href="http://scottjehl.github.io/picturefill/">Picturefill</a> is used to load the images. <b>It is now the recommended method.</b><br /><br />
-                        The <b>Retina JS</b> method is a 100% JS solution. The HTML loads the normal images, then if a retina device is detected, the retina images will be loaded. It is fail-safe but not efficient (images are loaded twice).<br /><br />
                         The <b>IMG Rewrite</b> method rewrites IMG\'s SRC tags on-the-fly with the retina images directly if the device supports them. This method does not work with most caching solutions.<br /><br />
+                        The <b>Retina JS</b> method is a 100% JS solution. The HTML loads the normal images, then if a retina device is detected, the retina images will be loaded. It is fail-safe but not efficient (images are loaded twice).<br /><br />                        
                         The <b>Retina-Images method</b> uses a server handler: the images will be loaded through the <a href="https://github.com/Retina-Images/Retina-Images/">Retina-Images</a> PHP handler. Your .htaccess will be modified automatically. It might be too difficult to set-up if it does not work right away.<br /><br />
-                        The <b>HTML srcset method</b> has been deprecated and has been replaced by <b>Picturefill</b>.
                 	', 'wp-retina-2x' ),
                 'type' => 'radio',
                 'default' => 'retina.js',
                 'options' => array(
                     'Picturefill' => __( "Picturefill", 'wp-retina-2x' ),
-                	'retina.js' => __( "Retina.js", 'wp-retina-2x' ),
                     'HTML Rewrite' => __( "IMG Rewrite", 'wp-retina-2x' ),
+                    'retina.js' => __( "Retina.js", 'wp-retina-2x' ),
 					'Retina-Images' => __( "Retina-Images", 'wp-retina-2x' ),
-                    'srcset' => __( "HTML srcset", 'wp-retina-2x' ),
 					'none' => __( "None", 'wp-retina-2x' )
                 )
             ),
