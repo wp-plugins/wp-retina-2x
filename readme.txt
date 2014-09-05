@@ -4,10 +4,10 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: 2.0.4
 
-Make your website look beautiful and smooth on Retina (high-DPI) displays such as the MacBook Pro Retina and the iPad.
+Make your website look beautiful and smooth on etina (high-DPI) displays such as the MacBook Pro Retina and the iPad. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
 
 == Description ==
 
@@ -20,7 +20,7 @@ It supports 4 different methods to serve the images to your visitors:
 * IMG Rewrite: The IMG Rewrite method rewrites IMG's SRC tags on-the-fly with the retina images directly if the device supports them. This method does not work with most caching solutions.
 * Retina-Images: The Retina-Images method uses a server handler: the images will be loaded through the Retina-Images PHP handler. Your .htaccess will be modified automatically.
 
-Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting.
+Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
 
 Languages: English, French.
 
@@ -204,6 +204,9 @@ Quick and easy installation:
 
 == Frequently Asked Questions ==
 
+= Where do I start? =
+Did you read the tutorial about this plugin already? If not, I suggest you to read it first: http://www.totorotimes.com/wp-retina-2x-plugin/.
+
 = What does this plugin do? =
 It creates the image files required by the Retina devices. In the case the resolution of the original images are not high enough, you will see a warning in the Media Library where you will be able to re-upload bigger images. The plugin then recognizes different devices and send the images required accordingly.
 
@@ -277,7 +280,7 @@ Create a new support thread <a href='http://wordpress.org/support/plugin/wp-reti
 Thanks for asking, since we, developers, get usually 10x more complains than thanks! I don't blame anyone, I persnnally don't say thank you to every single developer of all the software I am using ;) But if you are happy, please write a <a href='http://wordpress.org/support/view/plugin-reviews/wp-retina-2x'>nice review here</a>.
 
 = Can I contact you? =
-Yes and no. I cannot provide free support anymore since it always take too much time and 99% not a problem of the plugin. Ask a developer friend first or hire one, they will help you. If you want me to help, then consider hiring me as well. If you really think you found a bug, then write it down in the WordPress forum with screenshot, you server configuration, URLs, etc.
+Yes and no. I cannot provide free support anymore since it always take too much time and 99% not a problem of the plugin. Ask a developer/friend or hire one, that's the best! If you want specifically my help, please consider hiring me for the task. If you think you found a bug, then start a new thread in the WordPress forum along with a link to a screenshot, you server configuration, PHP logs and your URL.
 
 = I donated, can I get rid of the donation button? =
 Of course. I don't like to see too many of those buttons neither ;) You can disable the donation buttons from all my plugins by adding this to your wp-config.php:
