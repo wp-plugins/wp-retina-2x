@@ -1,17 +1,17 @@
 === WP Retina 2x ===
 Contributors: TigrouMeow
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JAWE2XWH7ZE5U
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H2S7S3G4XMJ6J
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 2.0.4
+Stable tag: 2.0.6
 
 Make your website look beautiful and smooth on etina (high-DPI) displays such as the MacBook Pro Retina and the iPad. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
 
 == Description ==
 
-This plugin creates the image files required by the Retina (high-DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically, served, and you will be able to control everything from the Retina Dashboard.
+This plugin creates the image files required by the Retina (high-DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically (you can also do it manually), served, and you will be able to control everything from the Retina Dashboard.
 
 It supports 4 different methods to serve the images to your visitors:
 
@@ -31,6 +31,9 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.0.6 =
+* Works with WP 4.
 
 = 2.0.4 =
 * Fix: PictureFill method now handles special characters.
