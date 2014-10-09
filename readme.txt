@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 2.0.6
+Stable tag: 2.0.8
 
 Make your website look beautiful and smooth on etina (high-DPI) displays such as the MacBook Pro Retina and the iPad. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
 
@@ -31,6 +31,13 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.0.8 =
+* Add: Option to disable Retina in the WP Admin. Actually now disabled by default to avoid an issue with NextGen.
+* Add: Option to disable the loading of the PictureFill script.
+* Update: PictureFill, from 2.1.0 (2014-08-20) to 2.1.0 (2014-10-07).
+* Change: Flattr button doesn't pop anymore. I know, that was annoying ;)
+* Info: I am thinking of adding features through a pro version. I would love to know your thoughts. Please check this: https://wordpress.org/support/topic/what-about-a-pro-version
 
 = 2.0.6 =
 * Works with WP 4.

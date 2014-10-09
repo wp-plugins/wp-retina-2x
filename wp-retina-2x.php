@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.0.6
+Version: 2.0.8
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.0.6';
+$wr2x_version = '2.0.8';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.1.0.2014.08.20';
+$wr2x_picturefill = '2.1.0.2014.10.07';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -59,18 +59,21 @@ if ( !wr2x_getoption( "hide_retina_column", "wr2x_advanced", false ) )
 
 function wr2x_init() {
 	load_plugin_textdomain( 'wp-retina-2x', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	
 	if ( is_admin() ) {
 		wp_register_style( 'wr2x-admin-css', plugins_url( '/wr2x_admin.css', __FILE__ ) );
 		wp_enqueue_style( 'wr2x-admin-css' );
+		if ( !wr2x_getoption( "retina_admin", "wr2x_advanced", false ) )
+			return;
 	}
 
-	// If HTML Rewrite + Retina (or debug), add special actions
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 
 	if ( $method == "Picturefill" ) {
 		add_action( 'wp_head', 'wr2x_picture_buffer_start' );
 		add_action( 'wp_footer', 'wr2x_picture_buffer_end' );
 	}
+
 	else if ( $method == 'HTML Rewrite' ) {
 		$is_retina = false;
 		if ( isset( $_COOKIE['devicePixelRatio'] ) ) {
@@ -85,6 +88,7 @@ function wr2x_init() {
 			add_action( 'wp_footer', 'wr2x_buffer_end' );
 		}
 	}
+
 }
 
 /**
@@ -107,6 +111,7 @@ function wr2x_picture_rewrite( $buffer ) {
 		return $buffer;
 	require('inc/simple_html_dom.php');
 
+	$nodes_count = 0;
 	$nodes_replaced = 0;
 	$html = str_get_html( $buffer );
 	foreach( $html->find( 'img' ) as $element ) {
@@ -583,11 +588,15 @@ function wr2x_wp_enqueue_scripts () {
 	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image, $wr2x_picturefill;
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	
+	if ( is_admin() && !wr2x_getoption( "retina_admin", "wr2x_advanced", false ) )
+			return;
+
 	// Picturefill
 	if ( $method == "Picturefill" ) {
 		if ( wr2x_is_debug() )
 			wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
-		wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
+		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) )
+			wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
 		return;
 	}
 

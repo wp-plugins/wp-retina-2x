@@ -10,7 +10,7 @@
 					        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
 					        s.type = 'text/javascript';
 					        s.async = true;
-					        s.src = '//api.flattr.com/js/0.6/load.js?mode=auto&uid=TigrouMeow';
+					        s.src = '//api.flattr.com/js/0.6/load.js?mode=auto&uid=TigrouMeow&popout=0';
 					        t.parentNode.insertBefore(s, t);
 					    })();
 					/* ]]> */
@@ -19,7 +19,7 @@
 		}
 		function by_jordy_meow() {
 			echo '<div><span style="font-size: 13px; position: relative; top: -6px;">Developed by <a style="text-decoration: none;" href="https://plus.google.com/+JordyMeow">Jordy Meow</a></span>
-				<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" title="Jordy Meow / WordPress" href="http://profiles.wordpress.org/TigrouMeow/"></a></div>';
+				<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" title="Jordy Meow" href="http://profiles.wordpress.org/TigrouMeow/"></a></div>';
 		}
 	}
 
