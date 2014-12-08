@@ -5,22 +5,17 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 2.2.0
+Stable tag: 2.4.0
 
-Make your website look beautiful and smooth on etina (high-DPI) displays such as the MacBook Pro Retina and the iPad. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
+Make your website look beautiful and crisp on Retina / High DPI displays.
 
 == Description ==
 
-This plugin creates the image files required by the Retina (high-DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and sharp on every device. The retina images will be generated for you automatically (you can also do it manually), served, and you will be able to control everything from the Retina Dashboard.
+This plugin creates the image files required by the Retina (High DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and crisp on every device. The retina images will be generated for you automatically (you can also do it manually) and served to the retina devices.
 
-It supports 4 different methods to serve the images to your visitors:
+It supports different methods to serve the images to your visitors, for instance: PictureFill (future HTML standard + its JS polyfill), Retina.js (JS only), IMG Rewrite (on-the-fly HTML rewrite). Retina-Images (server handler). Pick the one that works best with your hosting and WordPress environment. Multi-site are also supported.
 
-* PictureFill: The Picturefill method rewrites the HTML on-the-fly in order to use the new SRCSET. Since it is not supported by the browsers yet, the JS polyfill Picturefill is used to load the images. It is now the recommended method.
-* Retina.js: The Retina JS method is a 100% JS solution. The HTML loads the normal images, then if a retina device is detected, the retina images will be loaded. It is fail-safe but not efficient (images are loaded twice).
-* IMG Rewrite: The IMG Rewrite method rewrites IMG's SRC tags on-the-fly with the retina images directly if the device supports them. This method does not work with most caching solutions.
-* Retina-Images: The Retina-Images method uses a server handler: the images will be loaded through the Retina-Images PHP handler. Your .htaccess will be modified automatically.
-
-Pick the one that works best with your hosting and environment. WordPress Multi-site are supported as well. WP Retina 2x also loves WPEngine and strongly recommend it for your hosting. I am trying to keep a tutorial about this plugin up to date and comprehensive here: http://www.totorotimes.com/wp-retina-2x-plugin/.
+More information and tutorial available one http://apps.meow.fr/wp-retina-2x/.
 
 Languages: English, French.
 
@@ -31,6 +26,13 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.4.0 =
+* Fix: Cropped images from the side now supported.
+* Fix: Avoid loading the PHP Simple HTML DOM Parser twice.
+* Update: PictureFill, from 2.1.0 to 2.2.0.
+* Change: Now create retina files by default.
+* Info: If you are using LIGHTROOM, please check my new plugin called WP/LR Sync, you might find it very useful (apps.meow.fr/wplr-sync/). I am also preparing WP Retina 2x for a Pro version. Many improvements are on the way so if you have any request, please let me know here: https://wordpress.org/support/topic/what-about-a-pro-version.
 
 = 2.2.0 =
 * Change: Links, documentation, readme.
@@ -213,7 +215,7 @@ Quick and easy installation:
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Check the settings of WP Retina 2x in the WordPress administration screen.
 4. Check the Retina Dashboard.
-6. Read the tutorial about the plugin on <a href='http://www.totorotimes.com/wp-retina-2x-plugin/'>Totoro Times</a>.
+6. Read the tutorial about the plugin: <a href='http://apps.meow.fr/wp-retina-2x/tutorial//'>WP Retina 2x Tutorial</a>.
 
 == Frequently Asked Questions ==
 

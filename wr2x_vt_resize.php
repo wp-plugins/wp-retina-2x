@@ -7,7 +7,13 @@
  */
 
 if ( !function_exists('wr2x_vt_resize') ) {
-	function wr2x_vt_resize( $file_path, $width, $height, $newfile ) {
+	function wr2x_vt_resize( $file_path, $width, $height, $crop, $newfile ) {
+		if ( $crop == '1' ) {
+			$crop_params = true;
+		}
+		else {
+			$crop_params = $crop;
+		}
 		$orig_size = getimagesize( $file_path );
 		$image_src[0] = $file_path;
 		$image_src[1] = $orig_size[0];
@@ -17,7 +23,7 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$no_ext_path = $file_info['dirname'] . '/' . $file_info['filename'];
 		$cropped_img_path = $no_ext_path . '-' . $width . 'x' . $height . "-tmp" . $extension;
 		$image = wp_get_image_editor( $file_path );
-		$image->resize( $width, $height, true );
+		$image->resize( $width, $height, $crop_params );
 
 		$quality = wr2x_getoption( "image_quality", "wr2x_advanced", "80" );
 		if ( is_numeric( $quality ) ) {

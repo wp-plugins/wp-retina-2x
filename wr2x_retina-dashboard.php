@@ -126,7 +126,7 @@ function wpr2x_wp_retina_2x() {
 	}
 	?>
 
-	<div style='margin-top: 12px; background: #FFF; padding: 5px; border-radius: 4px; height: 28px; box-shadow: 0px 0px 6px #C2C2C2;'>
+	<div style='background: #FFF; padding: 5px; border-radius: 4px; height: 28px; box-shadow: 0px 0px 6px #C2C2C2;'>
 		
 		<!-- GENERATE ALL -->
 		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>

@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.2.0
+Version: 2.4.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.2.0';
+$wr2x_version = '2.4.0';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.1.0.2014.10.07';
+$wr2x_picturefill = '2.2.0.2014.12.05';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -109,7 +109,8 @@ function wr2x_picture_buffer_end () {
 function wr2x_picture_rewrite( $buffer ) {
 	if ( !isset( $buffer ) || trim( $buffer ) === '' )
 		return $buffer;
-	require('inc/simple_html_dom.php');
+	if ( !function_exists( "str_get_html" ) )
+		require('inc/simple_html_dom.php');
 
 	$nodes_count = 0;
 	$nodes_replaced = 0;
@@ -461,7 +462,7 @@ function wr2x_delete_attachment( $attach_id ) {
 }
  
 function wr2x_wp_generate_attachment_metadata( $meta ) {
-	if (wr2x_getoption( "auto_generate", "wr2x_basics", false ) == true)
+	if (wr2x_getoption( "auto_generate", "wr2x_basics", true ) == true)
 		// Check if the attachment is an image
 		if ( $meta && isset( $meta['width'] ) && isset( $meta['height'] ) )
 			wr2x_generate_images( $meta );
@@ -470,6 +471,7 @@ function wr2x_wp_generate_attachment_metadata( $meta ) {
 
 function wr2x_generate_images( $meta ) {
 	require('wr2x_vt_resize.php');
+	global $_wp_additional_image_sizes;
 	$sizes = wr2x_get_image_sizes();
 	$originalfile = $meta['file'];
 	$uploads = wp_upload_dir();
@@ -518,9 +520,12 @@ function wr2x_generate_images( $meta ) {
 			}
 			// Otherwise let's resize (if the original size is big enough).
 			else if ( $meta['sizes'][$name]['width'] * 2 <= $meta['width'] && $meta['sizes'][$name]['height'] * 2 <= $meta['height'] ) {
-				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2, 
-					$meta['sizes'][$name]['height'] * 2, $retina_file );
-			}
+				// Change proposed by Nicscott01, slighlty modified by Jordy (+isset)
+				// (https://wordpress.org/support/topic/issue-with-crop-position?replies=4#post-6200271)
+				$crop = isset( $_wp_additional_image_sizes[$name] ) ? $_wp_additional_image_sizes[$name]['crop'] : true;
+				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2,
+					$meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+			}			
 			if ( !file_exists( $retina_file ) ) {
 				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => FAIL" );
 				$issue = true;
