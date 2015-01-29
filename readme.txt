@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 4.0
-Stable tag: 2.4.0
+Tested up to: 4.1
+Stable tag: 2.6.0
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,15 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 2.6.0 =
+* Add: Support Manual Image Crop, resize the @2x as the user manually cropped them (that's cool!).
+* Change: Name will change little by little to WP Retina X and menus simplified to simply "Retina".
+* Change: Simplification of the dashboard (more is coming).
+* Change: PictureFill updated to 'v2.2.0 - 2014-12-19'.
+* Fix: Issue with the upload directory on some installs.
+* Info: Way more is coming soon to the dashboard, thanks for your patience :)
+* Info: Manual Image Crop received a Pull Request from me to support the Retina cropping but it is not part of their current version yet (1.07). For a version of Manual Image Crop that includes this change, you can use my forked version: https://github.com/tigroumeow/wp-manual-image-crop.
 
 = 2.4.0 =
 * Fix: Cropped images from the side now supported.

@@ -14,7 +14,7 @@ function wr2x_settings_page() {
     jordy_meow_donation(true);
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 
-	echo "<div id='icon-options-general' class='icon32'><br></div><h2>WP Retina 2x";
+	echo "<div id='icon-options-general' class='icon32'><br></div><h2>Retina";
     by_jordy_meow();
     echo "</h2>";
 	if ( $method == 'retina.js' ) {

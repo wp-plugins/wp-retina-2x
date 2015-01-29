@@ -49,7 +49,7 @@ function wr2x_admin_head() {
 			current = 1;
 			ids = [];
 			var data = { action: 'wr2x_list_all', issuesOnly: 0 };
-			jQuery('#wr2x_progression').text("<?php _e( "Please wait...", 'wp-retina-2x' ); ?>");
+			jQuery('#wr2x_progression').text("<?php _e( "Wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				reply = jQuery.parseJSON(response);
 				if (reply.success = false) {
@@ -78,29 +78,14 @@ function wr2x_admin_head() {
 	
 		// Refresh the dashboard with the results from the Ajax operation (Replace or Generate)
 		function wr2x_refresh_dashboard (results) {
-			jQuery.each(results, function (index, sizes) {
-				var index = index;
-				jQuery.each(sizes, function (size, rsize) {
-					if (rsize == 'EXISTS')
-						jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'tick-circle.png'; ?>' />");
-					else if (rsize == 'MISSING')
-						jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'cross-small.png'; ?>' />");
-					else if (rsize == 'PENDING')
-						jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'clock.png'; ?>' />");
-					else if (rsize == 'IGNORED')
-						jQuery('#wr2x_' + size + '_' + index).html("<img style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'prohibition-small.png'; ?>' />");
-					else if (jQuery.isPlainObject(rsize))
-						jQuery('#wr2x_' + size + '_' + index).html("<img title='Please upload a bigger original image.' style='margin-top: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . 'exclamation.png'; ?>' /><span style='font-size: 9px; margin-left: 5px; position: relative; top: -4px;'><br />< " + rsize.width + "×" + rsize.height + "</span>");
-					else {
-						jQuery('#wr2x_' + size + '_' + index).html(rsize);
-					}
-				});
+			jQuery.each(results, function (id, html) {
+				jQuery('#wr2x-info-' + id).html(html);
 			});
 		}
 
 		function wr2x_generate (attachmentId, retinaDashboard) {
 			var data = { action: 'wr2x_generate', attachmentId: attachmentId };
-			jQuery('#wr2x_generate_button_' + attachmentId).text("<?php echo __( "Please wait...", 'wp-retina-2x' ); ?>");
+			jQuery('#wr2x_generate_button_' + attachmentId).text("<?php echo __( "Wait...", 'wp-retina-2x' ); ?>");
 			jQuery.post(ajaxurl, data, function (response) {
 				var reply = jQuery.parseJSON(response);
 				if (!reply.success) {
@@ -296,7 +281,7 @@ function wr2x_wp_ajax_wr2x_generate() {
 	wr2x_generate_images( $meta );
 	
 	// RESULTS FOR RETINA DASHBOARD
-	$info = wr2x_retina_info( $attachmentId );
+	$info = wpr2x_html_get_basic_retina_info( $attachmentId, wr2x_retina_info( $attachmentId ) );
 	$results[$attachmentId] = $info;
 	echo json_encode( 
 		array(

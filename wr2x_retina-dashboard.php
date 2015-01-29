@@ -17,16 +17,15 @@ function wr2x_admin_menu_dashboard () {
 		wr2x_calculate_issues();
 	$flagged = count( wr2x_get_issues() );
 	$warning_title = __( "Retina images", 'wp-retina-2x' );
-	$menu_label = sprintf( __( 'WP Retina 2x %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
-	add_media_page( 'WP Retina 2x', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
+	$menu_label = sprintf( __( 'Retina %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
+	add_media_page( 'Retina', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
 }
- 
+
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
 	$s = isset ( $_GET[ 's' ] ) ? $_GET[ 's' ] : null;
 	$issues = $count = 0;
-	$sizes = wr2x_get_image_sizes();
 	$posts_per_page = 15; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
@@ -35,7 +34,7 @@ function wpr2x_wp_retina_2x() {
 	<div class='wrap'>
 	<?php jordy_meow_donation(true); ?>
 	<div id="icon-upload" class="icon32"><br></div>
-	<h2>WP Retina 2x <?php by_jordy_meow(); ?></h2>
+	<h2>Retina Dashboard <?php by_jordy_meow(); ?></h2>
 
 	<?php 
 	
@@ -45,7 +44,7 @@ function wpr2x_wp_retina_2x() {
 			SELECT COUNT(*)
 			FROM $wpdb->posts p
 			WHERE post_status = 'inherit'
-			AND post_type = 'attachment'
+			AND post_type = 'attachment'" . wr2x_create_sql_if_wpml_original() . "
 			AND post_title LIKE %s
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/png' OR
@@ -69,7 +68,7 @@ function wpr2x_wp_retina_2x() {
 			SELECT COUNT(*)
 			FROM $wpdb->posts p
 			WHERE post_status = 'inherit'
-			AND post_type = 'attachment'
+			AND post_type = 'attachment'" . wr2x_create_sql_if_wpml_original() . "
 			AND post_title LIKE %s
 			AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/jpg' OR
@@ -112,7 +111,7 @@ function wpr2x_wp_retina_2x() {
 		$issues_count = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*)
 			FROM $wpdb->posts p
-			WHERE id IN ( " . implode( ',', $issues ) . " )
+			WHERE id IN ( " . implode( ',', $issues ) . " )" . wr2x_create_sql_if_wpml_original() . "
 			AND post_title LIKE %s
 		", '%' . $s . '%' ) );
 	}
@@ -125,6 +124,24 @@ function wpr2x_wp_retina_2x() {
 		array_push( $results, array( 'post' => $post, 'info' => $info ) );		
 	}
 	?>
+
+	<style>
+		.widefat td {
+			padding: 5px 6px 0px 6px;
+		}
+
+		.widefat td .button {
+			margin-right: 2px;
+		}
+
+		.widefat td .button:last-child {
+			margin-right: 0px;
+		}
+
+		.subsubsub #icl_subsubsub, .subsubsub br {
+			display: none;
+		}
+	</style>
 
 	<div style='background: #FFF; padding: 5px; border-radius: 4px; height: 28px; box-shadow: 0px 0px 6px #C2C2C2;'>
 		
@@ -183,73 +200,59 @@ function wpr2x_wp_retina_2x() {
 	<table class='wp-list-table widefat fixed media'>
 		<thead><tr>
 			<?php
-			echo "<th style='width: 64px;''></th>";
-			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Title", 'wp-retina-2x' ) . "</th>";
+			echo "<th style='width: 64px;'></th>";
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 200px;'>" . __( "Base image", 'wp-retina-2x' ) . "</th>";
 
-			$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Retina for Media sizes", 'wp-retina-2x' ) . "</th>";
+			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Retina for Base image", 'wp-retina-2x' ) . "</th>";
+			/*
+			
 			foreach ($sizes as $name => $attr) {
 				if ( !in_array( $name, $ignore_cols ) )
 					echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
 			}
+			*/
 			
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 88px;'>" . __( "Actions", 'wp-retina-2x' ) . "</th>";
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 70px;'></th>";
+			echo "<th style='font-size: 11px; font-family: Verdana; width: 152px;'>" . __( "Actions", 'wp-retina-2x' ) . "</th>";
 			?>
 		</tr></thead>
 		<tbody>
 			<?php
 			foreach ($results as $index => $attr) {
-				$meta = wp_get_attachment_metadata($attr['post']->ID);
+				$post = $attr['post'];
+				$retina_info = $attr['info'];
+				$meta = wp_get_attachment_metadata( $post->ID );
 				// Let's clean the issues status
 				if ( $view != 'issues' ) {
-					wr2x_update_issue_status( $attr['post']->ID, $issues, $attr['info'] );
+					wr2x_update_issue_status( $post->ID, $issues, $info );
 				}
 				if ( isset( $meta ) && isset( $meta['width'] ) ) {
 					$original_width = $meta['width'];
 					$original_height = $meta['height'];
 				}
 				
-				$attachmentsrc = wp_get_attachment_image_src( $attr['post']->ID, 'thumbnail' );
-				echo "<tr class='wr2x-file-row' postId='" . $attr['post']->ID . "'>";
-				echo "<td class='wr2x-image'><img style='max-width: 42px; max-height: 42px;' src='" . $attachmentsrc[0] . "' /></td>";
-				echo "<td class='wr2x-title'><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $attr['post']->ID . "&action=edit'>" . 
-					$attr['post']->post_title . '<br />' .
+				$attachmentsrc = wp_get_attachment_image_src( $post->ID, 'thumbnail' );
+				echo "<tr class='wr2x-file-row' postId='" . $post->ID . "'>";
+				echo "<td class='wr2x-image'><img style='max-width: 64px; max-height: 64px;' src='" . $attachmentsrc[0] . "' /></td>";
+				echo "<td class='wr2x-title'><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $post->ID . "&action=edit'>" . 
+					$post->post_title . '<br />' .
 					"<span style='font-size: 9px; line-height: 10px; display: block;'>" . $original_width . "×" . $original_height . "</span>";
 					"</a></td>";
 
-				foreach ($sizes as $aindex => $aval) {
-					if ( in_array( $aindex, $ignore_cols ) )
-						continue;
+					// Status of the retina for this image
+				echo "<td id='wr2x-info-$post->ID' class='wr2x-info'>";
+				echo wpr2x_html_get_basic_retina_info( $post, $info );
+				echo "</td>";
 
-					$aval = ( isset( $attr['info'] ) && isset( $attr['info'][$aindex] ) ) ? $attr['info'][$aindex] : null;
-					echo "<td id='wr2x_" . $aindex .  "_" . $attr['post']->ID . "'>";
-					if ( is_array( $aval ) ) {
-						echo "<img title='Please upload a bigger original image.' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "exclamation.png' />" .
-						"<span style='font-size: 9px; margin-left: 5px; position: relative; top: -10px;'><br />< " . $aval['width'] . "×" . $aval['height'] . "</span>";
-					}
-					else if ( $aval == 'EXISTS' ) {
-						echo "<img style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "tick-circle.png' />";
-					}
-					else if ( $aval == 'PENDING' ) {
-						echo "<img title='Click on \"Generate\".' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "clock.png' />";
-					}
-					else if ( $aval == 'MISSING' ) {
-						echo "<img title='The file related to this size is missing.' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "cross-small.png' />";
-					}
-					else if ( $aval == 'IGNORED' ) {
-						echo "<img title='Retina disabled.' style='margin-top: 3px; width: 16px; height: 16px;' src='" . trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img') . "prohibition-small.png' />";
-					}
-					else {
-						echo "<span style='position: relative; top: 3px;'>" . $aval . "</span>";
-					}
-					echo "</td>";
-				}
-				echo "<td><a style='position: relative; top: 0px;' onclick='wr2x_generate(" . $attr['post']->ID . ", true)' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a></td>";
-				
-				if ( !wr2x_is_ignore( $attr['post']->ID ) ) {
-					echo "<td><a style='position: relative; top: 0px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $attr['post']->ID . "' id='wr2x_generate_button_" . $attr['post']->ID . "' class='button-secondary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a></td>";
-				}
-				
+				// Retina for Base Image
+				echo "<td><em>Coming soon.</em></td>";
+
+				// Actions
+				echo "<td><a style='position: relative; top: 0px;' onclick='wr2x_generate(" . $post->ID . ", true)' id='wr2x_generate_button_" . $post->ID . "' class='button button-primary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a>";
+				if ( !wr2x_is_ignore( $post->ID ) ) {
+					echo "<a style='position: relative; top: 0px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $post->ID . "' id='wr2x_generate_button_" . $post->ID . "' class='button button-primary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a>";
+				}			
+				echo "</td>";
 				echo "</tr>";
 			}
 			?>

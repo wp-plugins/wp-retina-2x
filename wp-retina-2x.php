@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.4.0
+Version: 2.6.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.4.0';
+$wr2x_version = '2.6.0';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.2.0.2014.12.05';
+$wr2x_picturefill = '2.2.0.2014.12.19';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -244,7 +244,7 @@ function wr2x_calculate_issues() {
 	$postids = $wpdb->get_col( "
 		SELECT p.ID FROM $wpdb->posts p
 		WHERE post_status = 'inherit'
-		AND post_type = 'attachment'
+		AND post_type = 'attachment'" . wr2x_create_sql_if_wpml_original() . "
 		AND ( post_mime_type = 'image/jpeg' OR
 			post_mime_type = 'image/jpg' OR
 			post_mime_type = 'image/png' OR
@@ -312,7 +312,49 @@ function wr2x_add_ignore( $attachmentId ) {
 	wr2x_remove_issue( $attachmentId, true );
 	return $ignores;
 }
-	
+
+/**
+ *
+ * INFORMATION ABOUT THE RETINA IMAGE IN HTML
+ *
+ */
+
+function wpr2x_html_get_basic_retina_info( $post, $retina_info ) {
+	$sizes = wr2x_get_image_sizes();
+	$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+
+	$total = 0;
+	$possible = 0;
+	$ignored = 0;
+	$generated = 0;
+
+	foreach ( $sizes as $aindex => $aval ) {
+		if ( in_array( $aindex, $ignore_cols ) )
+			continue;
+		$total++;
+
+		$aval = ( isset( $retina_info ) && isset( $retina_info[$aindex] ) ) ? $retina_info[$aindex] : null;
+		if ( is_array( $aval ) ) {
+		}
+		else if ( $aval == 'EXISTS' ) {
+			$generated++;
+		}
+		else if ( $aval == 'PENDING' ) {
+			$possible++;
+		}
+		else if ( $aval == 'MISSING' ) {
+			$total--;
+		}
+		else if ( $aval == 'IGNORED' ) {
+			$ignored++;
+			$total--;
+		}
+	}
+
+	return "<span title='$ignored ignored, $possible pending' class=''>$generated/$total</span>";
+}
+
+
 /**
  *
  * WP RETINA 2X CORE
@@ -320,7 +362,7 @@ function wr2x_add_ignore( $attachmentId ) {
  */
 
 function wr2x_admin_menu() {
-	add_options_page( 'WP Retina 2x', 'WP Retina 2x', 'manage_options', 'wr2x_settings', 'wr2x_settings_page' );
+	add_options_page( 'Retina', 'Retina', 'manage_options', 'wr2x_settings', 'wr2x_settings_page' );
 }
 
 function wr2x_get_image_sizes() {
@@ -342,6 +384,20 @@ function wr2x_get_image_sizes() {
 	return $sizes;
 }
 
+// SQL Query if WPML with an AND to check if the p.ID (p is attachment) is indeed an original
+// That is to limit the SQL that queries all the attachments
+function wr2x_create_sql_if_wpml_original() {
+	$whereIsOriginal = "";
+	if ( function_exists( 'icl_object_id' ) ) {
+		global $wpdb;
+		global $sitepress;
+		$tbl_wpml = $wpdb->prefix . "icl_translations";
+		$language = $sitepress->get_default_language();
+		$whereIsOriginal = " AND p.ID IN (SELECT element_id FROM $tbl_wpml WHERE element_type = 'post_attachment' AND language_code = '$language') ";
+	}
+	return $whereIsOriginal;
+}
+
 function wr2x_is_debug() {
 	static $debug = -1;
 	if ( $debug == -1 ) {
@@ -352,7 +408,6 @@ function wr2x_is_debug() {
 
 function wr2x_log( $data ) {
 	if ( wr2x_is_debug() ) {
-
 		$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
 		$date = date( "Y-m-d H:i:s" );
 		fwrite( $fh, "$date: {$data}\n" );
@@ -523,8 +578,15 @@ function wr2x_generate_images( $meta ) {
 				// Change proposed by Nicscott01, slighlty modified by Jordy (+isset)
 				// (https://wordpress.org/support/topic/issue-with-crop-position?replies=4#post-6200271)
 				$crop = isset( $_wp_additional_image_sizes[$name] ) ? $_wp_additional_image_sizes[$name]['crop'] : true;
+				$customCrop = null;
+				
+				// Support for Manual Image Crop
+				// If the size of the image was manually cropped, let's keep it.
+				if ( class_exists( 'ManualImageCrop' ) && isset( $meta['micSelectedArea'] ) && isset( $meta['micSelectedArea'][$name] ) && isset( $meta['micSelectedArea'][$name]['scale'] ) ) {
+					$customCrop = $meta['micSelectedArea'][$name];
+				}
 				$image = wr2x_vt_resize( $originalfile, $meta['sizes'][$name]['width'] * 2,
-					$meta['sizes'][$name]['height'] * 2, $crop, $retina_file );
+					$meta['sizes'][$name]['height'] * 2, $crop, $retina_file, $customCrop );
 			}			
 			if ( !file_exists( $retina_file ) ) {
 				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => FAIL" );
