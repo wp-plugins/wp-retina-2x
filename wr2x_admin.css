@@ -5,17 +5,13 @@
 }
 
 .wr2x-hover-drop {
-	background: rgb(243, 243, 243);
+	background: #FED5FF;
 }
 
 .wr2x-hover-drop .wr2x-title {
 	background: url('./img/replace.png');
 	background-position: 5px 4px;
 	background-repeat: no-repeat;
-}
-
-.wr2x-loading-file {
-	background: rgb(243, 243, 243);
 }
 
 .wr2x-loading-file .wr2x-title {
@@ -41,6 +37,192 @@
 
 #wr2x-pages .current {
 	font-weight: bold;
+}
+
+.widefat td .button {
+	margin-right: 2px;
+}
+
+.widefat td .button:last-child {
+	margin-right: 0px;
+}
+
+.wr2x-table th {
+	font-size: 11px; 
+}
+
+.subsubsub #icl_subsubsub, .subsubsub br {
+	display: none;
+}
+
+.retina-info {
+	margin-top: 0px;
+	cursor: pointer;
+}
+
+.retina-info li, #wr2x-modal-info .retina-status-icon {
+	display: block;
+	color: white;
+	width: 10px;
+	height: 10px;
+	line-height: 8px;
+	background: black;
+	float: left;
+	margin-right: 1px;
+}
+
+#wr2x-modal-info .retina-status-icon {
+	width: 19px;
+	height: 19px;
+	margin-right: 10px;
+}
+
+.retina-info .retina-exists, #wr2x-modal-info .retina-exists {
+	background: #3C82C7;
+}
+
+.retina-info .retina-pending, #wr2x-modal-info .retina-pending {
+	background: orange;
+}
+
+.retina-info .retina-issue, #wr2x-modal-info .retina-issue {
+	background: red;
+}
+
+.retina-info .retina-missing, #wr2x-modal-info .retina-missing {
+	background: red;
+}
+
+.retina-info .retina-ignored, #wr2x-modal-info .retina-ignored {
+	background: gray;
+}
+
+.wr2x-image {
+	padding: 0px;
+}
+
+.wr2x-image img {
+	margin-bottom: 0px;
+	margin-right: 0px;
+	max-width: 64px; 
+	max-height: 64px;
+}
+
+.wr2x-info-full img {
+	border: 1px solid white;
+}
+
+.wr2x-info-full img:hover {
+	cursor: not-allowed;
+	border: 1px solid red;
+}
+
+.wr2x-title {
+	line-height: 16px !important;
+}
+
+.wr2x-title .resolution {
+	font-size: 11px;
+	line-height: 10px;
+}
+
+.wr2x-title .resolution .red {
+	color: red;
+	font-weight: bold;
+}
+
+.wr2x-title .actions {
+	margin-top: 5px;
+}
+
+.wr2x-button {
+	font-size: 10px;
+	background: #3E79BB;
+	color: white;
+	display: inline;
+	padding: 3px 9px;
+	text-transform: uppercase;
+}
+
+.wr2x-button:hover {
+	color: white;
+	cursor: pointer;
+	background: #5D93CF;
+}
+
+.wr2x-button-ignore {
+	background: #A8A8A8
+}
+
+.wr2x-button-ignore:hover {
+	background: #CFCFCF;
+}
+
+.wr2x-dragdrop {
+	margin: 0px 0px;
+	width: 48px;
+	height: 48px;
+	border: dashed 2px #BBB;
+}
+
+.wr2x-loading-file .wr2x-dragdrop {
+	background-color: rgb(243, 243, 243);
+	background-image: url('./img/loading.gif');
+	background-size: 48px 48px;
+	background-position-y: 4px;
+	background-repeat: no-repeat;
+	border: none;
+}
+
+#wr2x-modal-info-backdrop {
+	background: rgba(0, 0, 0, 0.75);
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+	z-index: 10000;
+}
+
+#wr2x-modal-info {
+	background: white;
+	box-shadow: 0px 0px 5px black;
+	padding: 15px;
+	overflow-y: scroll;
+	position: fixed;
+	z-index: 10000;
+	left: 100px;
+	right: 100px;
+	top: 50px;
+	bottom: 50px;
+}
+
+#wr2x-modal-info h3 {
+	height: 25px;
+	border-bottom: 2px solid #808080;
+}
+
+#wr2x-modal-info td {
+	text-align: center;
+	font-size: 11px;
+	border: 1px solid #D3DCFF;
+	padding: 10px 15px;
+	background: #EFF8FF;
+}
+
+#wr2x-modal-info .close {
+	float: right;
+	font-size: 18px;
+	font-weight: bold;
+	font-family: Verdana;
+	cursor: pointer;
+}
+
+#wr2x-modal-info .loading {
+	background-color: #F2F2F2;
+	text-align: center;
+	padding-top: 10px;
+	background-size: 32px 32px;
 }
 
 .wp-core-ui .button-red {

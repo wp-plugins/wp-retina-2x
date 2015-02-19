@@ -4,18 +4,18 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 4.1
-Stable tag: 2.6.0
+Tested up to: 4.1.1
+Stable tag: 3.0.0
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
 == Description ==
 
-This plugin creates the image files required by the Retina (High DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and crisp on every device. The retina images will be generated for you automatically (you can also do it manually) and served to the retina devices.
+This plugin creates the image files required by the Retina (High DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and crisp on every device! The retina images will be generated for you automatically - though you can also do it manually - and served to the retina devices.
 
-It supports different methods to serve the images to your visitors, for instance: PictureFill (future HTML standard + its JS polyfill), Retina.js (JS only), IMG Rewrite (on-the-fly HTML rewrite). Retina-Images (server handler). Pick the one that works best with your hosting and WordPress environment. Multi-site are also supported.
+It supports different methods to serve the images to your visitors, for instance: PictureFill (future HTML standard + its JS polyfill), Retina.js (JS only), IMG Rewrite (on-the-fly HTML rewrite) and Retina-Images (server handler). Pick the one that works best with your hosting and WordPress environment. Multi-site are also supported.
 
-More information and tutorial available one http://apps.meow.fr/wp-retina-2x/.
+The plugin is very fast and optimized. It doesn't create anything in the database. In most cases, it doesn't even require any configuration. More information and tutorial available one http://apps.meow.fr/wp-retina-2x/.
 
 Languages: English, French.
 
@@ -26,6 +26,20 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.0.0 =
+* Add: Link to logs from the dashboard (if logs are available), and possibility to clear it directly.
+* Add: Replace the Full-Size directly by drag & drop in the box.
+* Change: Picturefill script to 'v2.2.0 - 2014-02-03'.
+* Change: Enhanced logs (in debug mode), much easier to read.
+* Change: Dashboard enhanced, more clear, possibility of having many image sizes on the screen.
+* Fix: Better handing of non-image media and image detection.
+* Fix: Rounding issues always been present, they are now fixed with an 2px error margin. 
+* Fix: Warnings and issues in case of broken metadata and images.
+* Add: (PRO) New pop-up screen with detailed information.
+* Add: (PRO) Added Retina for Full-Size with upload feature. Please note that Full-Size Retina also works with the normal version but you will have to manually resize and upload them.
+* Add: (PRO) Option to avoid removing img's src when using PictureFill.
+* Info: The serial for the Pro version can be bought at http://apps.meow.fr/wp-retina-2x. Thanks for all your support, the plugin is going to be 3 years old this year! :)
 
 = 2.6.0 =
 * Add: Support Manual Image Crop, resize the @2x as the user manually cropped them (that's cool!).

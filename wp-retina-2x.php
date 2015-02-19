@@ -2,8 +2,8 @@
 /*
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
-Description: Your website will look beautiful and smooth on Retina displays.
-Version: 2.6.0
+Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
+Version: 3.0.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,9 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '2.6.0';
+$wr2x_version = '3.0.0';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.2.0.2014.12.19';
+$wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -99,6 +99,7 @@ function wr2x_init() {
 
 function wr2x_picture_buffer_start () {
 	ob_start( "wr2x_picture_rewrite" );
+	wr2x_log( "* HTML REWRITE FOR PICTUREFILL" );
 }
 
 function wr2x_picture_buffer_end () {
@@ -119,7 +120,7 @@ function wr2x_picture_rewrite( $buffer ) {
 		$nodes_count++;
 		$parent = $element->parent();
 		if ( $parent->tag == "picture" ) {
-			wr2x_log("Found IE fallback img tag in picture tag, will ignore.");
+			wr2x_log("The img tag is inside a picture tag already. Tag ignored.");
 			continue;
 		}
 		else {
@@ -128,23 +129,23 @@ function wr2x_picture_rewrite( $buffer ) {
 			$potential_retina = wr2x_get_retina( $filepath );
 			$from = substr( $element, 0 );
 			if ( $potential_retina != null ) {
-				$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
-				$retina_url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+				$retina_url = wr2x_from_system_to_url( $potential_retina );
 				$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
 				$element->srcset =  "$img_url, $retina_url 2x";
-				$element->src = null;
+				if ( !wr2x_is_pro() || !wr2x_getoption( "picturefill_keep_src", "wr2x_advanced", false ) ) {
+					$element->src = null;
+				}
 				$to = $element;
 				$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
-				wr2x_log( "Replaced img tag '$from' by '$to'" );
+				wr2x_log( "The img tag '$from' was rewritten to '$to'" );
 				$nodes_replaced++;
+			}
+			else {
+				wr2x_log( "The img tag was not rewritten. No retina for '" . $element->src . "'." );
 			}
 		}
 	}
-
-	if ( wr2x_is_debug() ) {
-		wr2x_log( "$nodes_replaced img tags were replaced out of $nodes_count." );
-	}
-
+	wr2x_log( "$nodes_replaced/$nodes_count were replaced." );
 	return $buffer;
 }
 
@@ -156,6 +157,7 @@ function wr2x_picture_rewrite( $buffer ) {
 
 function wr2x_buffer_start () {
 	ob_start( "wr2x_html_rewrite" );
+	wr2x_log( "* HTML REWRITE" );
 }
 
 function wr2x_buffer_end () {
@@ -166,21 +168,27 @@ function wr2x_buffer_end () {
 function wr2x_html_rewrite( $buffer ) {
 	if ( !isset( $buffer ) || trim( $buffer ) === '' )
 		return $buffer;
+	$nodes_count = 0;
+	$nodes_replaced = 0;
 	$doc = new DOMDocument();
 	@$doc->loadHTML( $buffer ); // = ($doc->strictErrorChecking = false;)
 	$imageTags = $doc->getElementsByTagName('img');
 	foreach ( $imageTags as $tag ) {
-		//$img_info = parse_url( $tag->getAttribute('src') );
-		//$img_pathinfo = ltrim( $img_info['path'], '/' );
+		$nodes_count++;
 		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $tag->getAttribute('src') );
 		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
-			wr2x_log( "Rewrite '{$filepath}' to '{$potential_retina}'." );
 			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
 			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
+			wr2x_log( "The img src '$img_pathinfo' was replaced by '$retina_pathinfo'" );
+			$nodes_replaced++;
+		}
+		else {
+			wr2x_log( "The file '$potential_retina' was not found. Tag not modified." );
 		}
 	}
+	wr2x_log( "$nodes_replaced/$nodes_count were replaced." );
 	return $buffer;
 }
 
@@ -202,7 +210,13 @@ function wr2x_get_pathinfo_from_image_src($image_src) {
 		return ltrim( $img_info['path'], '/' );
 	}
 }
- 
+
+// Compares two images dimensions (resolutions) against each while accepting an margin error
+function wr2x_are_dimensions_ok( $width, $height, $retina_width, $retina_height ) {
+	$w_margin = $width - $retina_width;
+	$h_margin = $height - $retina_height;
+	return ( $w_margin >= -2 && $h_margin >= -2 );
+}
 
 // UPDATE THE ISSUE STATUS OF THIS ATTACHMENT
 function wr2x_update_issue_status( $attachmentId, $issues = null, $info = null ) {
@@ -319,47 +333,175 @@ function wr2x_add_ignore( $attachmentId ) {
  *
  */
 
-function wpr2x_html_get_basic_retina_info( $post, $retina_info ) {
+function wpr2x_html_get_basic_retina_info_full( $attachmentId, $retina_info ) {
+	if ( !wr2x_getoption( "full_size", "wr2x_basics", false ) ) {
+		return __( "N/A", "wp-retina-2x" );
+	}
+	$status = ( isset( $retina_info ) && isset( $retina_info['full-size'] ) ) ? $retina_info['full-size'] : 'IGNORED';
+	if ( $status == 'EXISTS' ) {
+		$fullsize_file = get_attached_file( $attachmentId );
+		$retina_file = wr2x_get_retina( $fullsize_file );
+		$retina = wr2x_from_system_to_url( $retina_file );
+		return '<img src="' . $retina . '" />';
+	}
+	else if ( is_array( $status ) ) {
+		return __( "<i>Required</i>", "wp-retina-2x" );
+	}
+	else if ( $status == 'IGNORED' ) {
+		return __( "N/A", "wp-retina-2x" );
+	}
+	return $status;
+}
+
+// Information for the 'Media Sizes Retina-ized' Column in the Retina Dashboard
+function wpr2x_html_get_basic_retina_info( $attachmentId, $retina_info ) {
+	$sizes = wr2x_get_active_image_sizes();
+	$result = '<ul class="retina-info">';
+	foreach ( $sizes as $i => $status ) {
+		$status = ( isset( $retina_info ) && isset( $retina_info[$i] ) ) ? $retina_info[$i] : null;
+		if ( is_array( $status ) )
+			$result .= '<li class="retina-issue"></li>';
+		else if ( $status == 'EXISTS' )
+			$result .= '<li class="retina-exists"></li>';
+		else if ( $status == 'PENDING' )
+			$result .= '<li class="retina-pending"></li>';
+		else if ( $status == 'MISSING' )
+			$result .= '<li class="retina-missing"></li>';
+		else if ( $status == 'IGNORED' )
+			$result .= '<li class="retina-ignored"></li>';
+		else {
+			error_log( "Retina: This status is not recognized: " . $status );
+		}
+	}
+	$result .= '</ul>';
+	return $result;
+}
+
+// Information for Details in the Retina Dashboard
+function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
 	$sizes = wr2x_get_image_sizes();
-	$ignore_cols = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+	$total = 0; $possible = 0; $issue = 0; $ignored = 0; $retina = 0;
 
-	$total = 0;
-	$possible = 0;
-	$ignored = 0;
-	$generated = 0;
+	$postinfo = get_post( $post, OBJECT );
+	$meta = wp_get_attachment_metadata( $post );
+	$fullsize_file = get_attached_file( $post );
+	$pathinfo_system = pathinfo( $fullsize_file );
+	$pathinfo = pathinfo( $meta['file'] );
+	$uploads = wp_upload_dir();
+	$basepath_url = trailingslashit( $uploads['baseurl'] ) . $pathinfo['dirname'];
 
-	foreach ( $sizes as $aindex => $aval ) {
-		if ( in_array( $aindex, $ignore_cols ) )
-			continue;
+	if ( wr2x_getoption( "full_size", "wr2x_basics", false ) ) {
+		$sizes['full-size']['file'] = $meta['file'];
+		$sizes['full-size']['width'] = $meta['width'];
+		$sizes['full-size']['height'] = $meta['height'];
+		$meta['sizes']['full-size']['file'] = $meta['file'];
+		$meta['sizes']['full-size']['width'] = $meta['width'];
+		$meta['sizes']['full-size']['height'] = $meta['height'];
+	}
+	// else
+	// 	$sizes['full-size'] = 'IGNORED';
+
+	$result = "<p>This screen displays all the image sizes set-up by your WordPress configuration with the Retina details.</p>";
+	$result .= "<br /><a target='_blank' href='" . trailingslashit( $uploads['baseurl'] ) . $meta['file'] . "'><img src='" . trailingslashit( $uploads['baseurl'] ) . $meta['file'] . "' height='100px' style='float: left; margin-right: 10px;' /></a><div class='base-info'>";
+	$result .= "Title: <b>" . ( $postinfo->post_title ? $postinfo->post_title : '<i>Untitled</i>' ) . "</b><br />";
+	$result .= "Full-size: <b>" . $meta['width'] . "×" . $meta['height'] . "</b><br />";
+	$result .= "Image URL: <a target='_blank' href='" . trailingslashit( $uploads['baseurl'] ) . $meta['file'] . "'>" . trailingslashit( $uploads['baseurl'] ) . $meta['file'] . "</a><br />";
+	$result .= "Image Path: " . $fullsize_file . "<br />";
+	$result .= "</div><div style='clear: both;'></div><br />";
+
+	$result .= "<div class='scrollable-info'>";
+	foreach ( $sizes as $i => $sizemeta ) {
 		$total++;
+			
+		$normal_file_system = "";
+		$retina_file_system = "";
+		$normal_file = "";
+		$retina_file = "";
+		$width = "";
+		$height = "";
+		if ( !isset( $meta['sizes'] ) ) {
+			$statusText  = "The metadata is broken! This is not related to the retina plugin. You should probably use a plugin to re-generate the missing metadata and images.";
+			$status = "BROKEN";
+		}
+		else if ( !isset( $meta['sizes'][$i] ) ) {
+			$statusText  = "The image size '$i' could not be found. You probably changed your image sizes but this specific image was not re-build. This is not related to the retina plugin. You should probably use a plugin to re-generate the missing metadata and images.";
+			$status = "BROKEN";
+		}
+		else {
+			$normal_file_system = trailingslashit( $pathinfo_system['dirname'] ) . $meta['sizes'][$i]['file'];
+			$retina_file_system = wr2x_get_retina( $normal_file_system );
+			$normal_file = trailingslashit( $basepath_url ) . $meta['sizes'][$i]['file'];
+			$retina_file = wr2x_from_system_to_url( $retina_file_system );
+			$status = ( isset( $retina_info ) && isset( $retina_info[$i] ) ) ? $retina_info[$i] : null;
+			$width = $meta['sizes'][$i]['width'];
+			$height = $meta['sizes'][$i]['height'];
+		}
 
-		$aval = ( isset( $retina_info ) && isset( $retina_info[$aindex] ) ) ? $retina_info[$aindex] : null;
-		if ( is_array( $aval ) ) {
+		$result .= "<h3>";
+
+		// Status Icon
+		if ( is_array( $status ) && $i == 'full-size' ) {
+			$result .= '<div class="retina-status-icon retina-missing"></div>';
+			$statusText = "A retina version of the Full Size is required and needs to be uploaded (minimum " . $status['width'] . "x" . $status['height'] . "). You can drag & drop this image in 'Full-Size Retina Upload'.";
 		}
-		else if ( $aval == 'EXISTS' ) {
-			$generated++;
+		else if ( is_array( $status ) ) {
+			$result .= '<div class="retina-status-icon retina-issue"></div>';
+			$statusText = "The Full Size image is too small. An image of at least " . $status['width'] . "x" . $status['height'] . " is required but your Full Size image is " . $meta['width'] . "×" . $meta['height'] . ".";
+			$issue++;
 		}
-		else if ( $aval == 'PENDING' ) {
+		else if ( $status == 'EXISTS' ) {
+			$result .= '<div class="retina-status-icon retina-exists"></div>';
+			$statusText = "The retina file exists.";
+			$retina++;
+		}
+		else if ( $status == 'PENDING' ) {
+			$result .= '<div class="retina-status-icon retina-pending"></div>';
+			$statusText = "The retina image can be created. Please use the 'GENERATE' button.";
 			$possible++;
 		}
-		else if ( $aval == 'MISSING' ) {
+		else if ( $status == 'MISSING' ) {
+			$result .= '<div class="retina-status-icon retina-missing"></div>';
+			$statusText = "The image created by WordPress is missing. The plugin will only create a retina image if the base image exists.";
 			$total--;
 		}
-		else if ( $aval == 'IGNORED' ) {
+		else if ( $status == 'IGNORED' ) {
+			$result .= '<div class="retina-status-icon retina-ignored"></div>';
+			$statusText = "This size is ignored by your retina settings.";
 			$ignored++;
 			$total--;
 		}
+
+		$result .= "Size: $i</h3><p>$statusText</p>";
+
+		if ( !is_array( $status ) && $status !== 'IGNORED' ) {
+			$result .= "<table><tr><th>Normal (" . $width . "×" . $height. ")</th><th>Retina 2x (" . $width * 2 . "×" . $height * 2 . ")</th></tr><tr><td><a target='_blank' href='$normal_file'><img src='$normal_file' width='100'></a></td><td><a target='_blank' href='$retina_file'><img src='$retina_file' width='100'></a></td></tr></table>";
+			$result .= "<p><small>";
+			$result .= "Image URL: <a target='_blank' href='$normal_file'>$normal_file</a><br />";
+			$result .= "Retina URL: <a target='_blank' href='$retina_file'>$retina_file</a><br />";
+			$result .= "Image Path: $normal_file_system<br />";
+			$result .= "Retina Path: $retina_file_system<br />";
+			$result .= "</small></p>";
+		}
 	}
-
-	return "<span title='$ignored ignored, $possible pending' class=''>$generated/$total</span>";
+	$result .= "</table>";
+	$result .= "</div>";
+	return $result;
 }
-
 
 /**
  *
  * WP RETINA 2X CORE
  *
  */
+
+
+function wr2x_from_system_to_url( $file ) {
+	if ( empty( $file ) )
+		return "";
+	$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $file ), '/' );
+	$url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+	return $url;
+}
 
 function wr2x_admin_menu() {
 	add_options_page( 'Retina', 'Retina', 'manage_options', 'wr2x_settings', 'wr2x_settings_page' );
@@ -375,13 +517,25 @@ function wr2x_get_image_sizes() {
 			$height = intval($_wp_additional_image_sizes[$s]['height']);
 			$crop = $_wp_additional_image_sizes[$s]['crop'];
 		} else {
-			$width = get_option($s.'_size_w');
-			$height = get_option($s.'_size_h');
-			$crop = get_option($s.'_crop');
+			$width = get_option( $s . '_size_w' );
+			$height = get_option( $s . '_size_h' );
+			$crop = get_option( $s . '_crop' );
 		}
 		$sizes[$s] = array( 'width' => $width, 'height' => $height, 'crop' => $crop );
 	}
 	return $sizes;
+}
+
+function wr2x_get_active_image_sizes() {
+	$sizes = wr2x_get_image_sizes();
+	$active_sizes = array();
+	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+	foreach ( $sizes as $name => $attr ) {
+		if ( !in_array( $name, $ignore ) ) {
+			$active_sizes[$name] = $attr;
+		}
+	}
+	return $active_sizes;
 }
 
 // SQL Query if WPML with an AND to check if the p.ID (p is attachment) is indeed an original
@@ -445,26 +599,46 @@ function wr2x_get_retina( $file ) {
 		return $retina_file;
 	}
 	else {
-		wr2x_log( "- The retina file '{$retina_file}' cannot be found." );
+		wr2x_log( "Retina file at '{$retina_file}' does not exist." );
 		return null;
 	}
 }
 
+function wr2x_is_image_meta( $meta ) {
+	if ( !isset( $meta ) )
+		return false;
+	if ( !isset( $meta['sizes'] ) )
+		return false;
+	if ( !isset( $meta['width'], $meta['height'] ) ) {
+		wr2x_log( "[WARN] No width and height in the metadata for #" . $id . "." );
+		return false;
+	}
+	return true;
+}
+
 function wr2x_retina_info( $id ) {
 	$result = array();
-    $meta = wp_get_attachment_metadata( $id );
-	if ( !isset( $meta, $meta['width'], $meta['height'] ) ) {
+	$meta = wp_get_attachment_metadata( $id );
+	if ( !wr2x_is_image_meta( $meta ) )
 		return $result;
-	}
 	$original_width = $meta['width'];
 	$original_height = $meta['height'];
-	$available_pixels = $original_width * $original_height;
 	$sizes = wr2x_get_image_sizes();
 	$required_files = true;
 	$originalfile = get_attached_file( $id );
 	$pathinfo = pathinfo( $originalfile );
 	$basepath = $pathinfo['dirname'];
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
+
+	// Full-Size (if required in the settings)
+	if ( wr2x_getoption( "full_size", "wr2x_basics", false ) && wr2x_is_pro() ) {
+		$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
+		if ( $retina_file && file_exists( $retina_file ) )
+			$result['full-size'] = 'EXISTS';
+		else if ( $retina_file )
+			$result['full-size'] = array( 'width' => $original_width * 2, 'height' => $original_height * 2 );
+	}
+
 	if ( $sizes ) {
 		foreach ($sizes as $name => $attr) {
 			if ( in_array( $name, $ignore ) ) {
@@ -475,7 +649,7 @@ function wr2x_retina_info( $id ) {
 			$pathinfo = null;
 			$retina_file = null;
 			
-			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
+			if ( isset( $meta['sizes'][$name]['width'] ) && isset( $meta['sizes'][$name]['height']) && isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] ) ) {
 				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 				$pathinfo = pathinfo( $normal_file ) ;
 				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
@@ -496,17 +670,15 @@ function wr2x_retina_info( $id ) {
 			else if ( $retina_file )
 				$result[$name] = 'PENDING';
 			
+			// The retina file exists
 			$required_width = $meta['sizes'][$name]['width'] * 2;
 			$required_height = $meta['sizes'][$name]['height'] * 2;
-
-			// The retina file exists
-			if ( $required_width > $original_width || $required_height > $original_height ) {
-				$required_pixels = $required_width * $required_height;
-				$result[$name] = array( 'width' => $required_width, 'height' => $required_height, 'pixels' => $required_pixels );
-				
-			}			
+			if ( !wr2x_are_dimensions_ok( $original_width, $original_height, $required_width, $required_height ) ) {
+				$result[$name] = array( 'width' => $required_width, 'height' => $required_height );
+			}
 		}
 	}
+
 	return $result;
 }
  
@@ -518,8 +690,7 @@ function wr2x_delete_attachment( $attach_id ) {
  
 function wr2x_wp_generate_attachment_metadata( $meta ) {
 	if (wr2x_getoption( "auto_generate", "wr2x_basics", true ) == true)
-		// Check if the attachment is an image
-		if ( $meta && isset( $meta['width'] ) && isset( $meta['height'] ) )
+		if ( wr2x_is_image_meta( $meta ) )
 			wr2x_generate_images( $meta );
     return $meta;
 }
@@ -528,6 +699,8 @@ function wr2x_generate_images( $meta ) {
 	require('wr2x_vt_resize.php');
 	global $_wp_additional_image_sizes;
 	$sizes = wr2x_get_image_sizes();
+	if ( !isset( $meta['file'] ) )
+		return;
 	$originalfile = $meta['file'];
 	$uploads = wp_upload_dir();
 	$pathinfo = pathinfo( $originalfile );
@@ -537,12 +710,12 @@ function wr2x_generate_images( $meta ) {
 	$issue = false;
 	$id = wr2x_get_attachment_id( $meta['file'] );
 	
-	wr2x_log("** RETINA INFO FOR ATTACHMENT '{$meta['file']}' **");
-	wr2x_log( "- Original: {$original_basename}" );
+	wr2x_log("* GENERATE RETINA FOR ATTACHMENT '{$meta['file']}'");
+	wr2x_log( "Full Size is {$original_basename}." );
 
 	foreach ( $sizes as $name => $attr ) {
 		if ( in_array( $name, $ignore ) ) {
-			wr2x_log( "- {$name} => IGNORED" );
+			wr2x_log( "Retina for {$name} ignored (settings)." );
 			continue;
 		}
 		// Is the file related to this size there?
@@ -556,25 +729,26 @@ function wr2x_generate_images( $meta ) {
 		}
 		
 		if ( $retina_file && file_exists( $retina_file ) ) {
-			wr2x_log( "- {$name}: {$normal_file } -> {$retina_file} => EXISTS" );
+			wr2x_log( "Base for {$name} is '{$normal_file }'." );
+			wr2x_log( "Retina for {$name} already exists: '$retina_file'." );
 			continue;
 		}
 		if ( $retina_file ) {
 			$originalfile = trailingslashit( $pathinfo['dirname'] ) . $original_basename;
 			
 			if ( !file_exists( $originalfile ) ) {
-				wr2x_log( "- The Original File '{$originalfile}' cannot be found." );
+				wr2x_log( "[ERROR] Original file '{$originalfile}' cannot be found." );
 				return $meta;
 			}
 
 			// Maybe that new image is exactly the size of the original image.
 			// In that case, let's make a copy of it.
 			if ( $meta['sizes'][$name]['width'] * 2 == $meta['width'] && $meta['sizes'][$name]['height'] * 2 == $meta['height'] ) {
-				wr2x_log( "- {$name}: {$originalfile } -> {$retina_file} => COPY" );
 				copy ( $originalfile, $retina_file );
+				wr2x_log( "Retina for {$name} created: '{$retina_file}' (as a copy of the full-size)." );
 			}
 			// Otherwise let's resize (if the original size is big enough).
-			else if ( $meta['sizes'][$name]['width'] * 2 <= $meta['width'] && $meta['sizes'][$name]['height'] * 2 <= $meta['height'] ) {
+			else if ( wr2x_are_dimensions_ok( $meta['width'], $meta['height'], $meta['sizes'][$name]['width'] * 2, $meta['sizes'][$name]['height'] * 2 ) ) {
 				// Change proposed by Nicscott01, slighlty modified by Jordy (+isset)
 				// (https://wordpress.org/support/topic/issue-with-crop-position?replies=4#post-6200271)
 				$crop = isset( $_wp_additional_image_sizes[$name] ) ? $_wp_additional_image_sizes[$name]['crop'] : true;
@@ -589,15 +763,15 @@ function wr2x_generate_images( $meta ) {
 					$meta['sizes'][$name]['height'] * 2, $crop, $retina_file, $customCrop );
 			}			
 			if ( !file_exists( $retina_file ) ) {
-				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => FAIL" );
+				wr2x_log( "[ERROR] Retina for {$name} could not be created. Full Size is " . $meta['width'] . "x" . $meta['height'] . " but Retina requires a file of at least " . $meta['sizes'][$name]['width'] * 2 . "x" . $meta['sizes'][$name]['height'] * 2 . "." );
 				$issue = true;
 			}
 			else {
 				do_action( 'wr2x_retina_file_added', $id, $retina_file );
-				wr2x_log( "- {$name}: {$normal_file} -> {$retina_file} => RESIZE" );
+				wr2x_log( "Retina for {$name} created: '{$retina_file}'." );
 			}
 		} else {
-			wr2x_log( "- {$name} => MISSING" );
+			wr2x_log( "[ERROR] Base file '{$name}' cannot be found here: '{$normal_file}'." );
 		}
 	}
 	
@@ -608,16 +782,16 @@ function wr2x_generate_images( $meta ) {
 		wr2x_add_issue( $id );
 	else
 		wr2x_remove_issue( $id );
-
-    return $meta;
+   return $meta;
 }
 
 function wr2x_delete_images( $meta ) {
-	if ( !isset( $meta['sizes'] ) )
+	if ( !wr2x_is_image_meta( $meta ) )
 		return $meta;
 	$sizes = $meta['sizes'];
 	if ( !$sizes || !is_array( $sizes ) )
 		return $meta;
+	wr2x_log("* DELETE RETINA FOR ATTACHMENT '{$meta['file']}'");
 	$originalfile = $meta['file'];
 	$id = wr2x_get_attachment_id( $originalfile );
 	$pathinfo = pathinfo( $originalfile );
@@ -627,8 +801,10 @@ function wr2x_delete_images( $meta ) {
 		$pathinfo = pathinfo( $attr['file'] );
 		$retina_file = $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
 		if ( file_exists( trailingslashit( $basepath ) . $retina_file ) ) {
-			unlink( trailingslashit( $basepath ) . $retina_file );
+			$fullpath = trailingslashit( $basepath ) . $retina_file;
+			unlink( $fullpath );
 			do_action( 'wr2x_retina_file_removed', $id, $retina_file );
+			wr2x_log("Deleted '$fullpath'.");
 		}
 	}
     return $meta;
@@ -647,6 +823,63 @@ function wr2x_deactivate() {
 
 /**
  *
+ * PRO 
+ * Come on, it's only 5$ :'(
+ *
+ */
+
+function wr2x_is_pro() {
+	$validated = get_transient( 'wr2x_validated' );
+	if ( !$validated ) {
+		$subscr_id = get_option( 'wr2x_pro_serial', "" );
+		if ( !empty( $subscr_id ) )
+			return wr2x_validate_pro( wr2x_getoption( "subscr_id", "wr2x_pro", array() ) );
+		return false;
+	}
+	return true;
+}
+
+function wr2x_validate_pro( $subscr_id ) {
+	if ( empty( $subscr_id ) ) {
+		delete_option( 'wr2x_pro_serial', "" );
+		delete_option( 'wr2x_pro_status', "" );
+		return false;
+	}
+	require_once ABSPATH . WPINC . '/class-IXR.php';
+	$client = new IXR_Client( 'http://apps.meow.fr/xmlrpc.php' );
+	if ( !$client->query( 'meow_sales.auth', $subscr_id, 'retina', get_site_url() ) ) { 
+		update_option( 'wr2x_pro_serial', "" );
+		update_option( 'wr2x_pro_status', "A network error: " . $client->getErrorMessage() );
+		set_transient( 'wr2x_validated', false, 0 );
+		return false;
+	}
+	$post = $client->getResponse();
+	if ( !$post['success'] ) {
+		if ( $post['message_code'] == "NO_SUBSCRIPTION" ) {
+			$status = __( "Your serial does not seem right." );
+		}
+		else if ( $post['message_code'] == "NOT_ACTIVE" ) {
+			$status = __( "Your subscription is not active." );
+		}
+		else if ( $post['message_code'] == "TOO_MANY_URLS" ) {
+			$status = __( "Too many URLs are linked to your subscription." );
+		}
+		else {
+			$status = "There is a problem with your subscription.";
+		}
+		update_option( 'wr2x_pro_serial', "" );
+		update_option( 'wr2x_pro_status', $status );
+		set_transient( 'wr2x_validated', false, 0 );
+		return false;
+	}
+	set_transient( 'wr2x_validated', $subscr_id, 3600 * 24 * 100 );
+	update_option( 'wr2x_pro_serial', $subscr_id );
+	update_option( 'wr2x_pro_status', __( "Your subscription is enabled." ) );
+	return true;
+}
+
+/**
+ *
  * LOAD SCRIPTS IF REQUIRED
  *
  */
@@ -661,7 +894,7 @@ function wr2x_wp_enqueue_scripts () {
 	// Picturefill
 	if ( $method == "Picturefill" ) {
 		if ( wr2x_is_debug() )
-			wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
+			wp_enqueue_script( 'wr2x-debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
 		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) )
 			wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
 		return;
@@ -674,7 +907,7 @@ function wr2x_wp_enqueue_scripts () {
 
 	// Debug mode, we force the devicePixelRatio to be Retina
 	if ( wr2x_is_debug() )
-		wp_enqueue_script( 'debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
+		wp_enqueue_script( 'wr2x-debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
 	// Not Debug Mode + Ignore Mobile
 	else if ( wr2x_getoption( "ignore_mobile", "wr2x_advanced", false ) ) {
 		$mobileDetect = new Mobile_Detect();

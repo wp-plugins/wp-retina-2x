@@ -7,7 +7,7 @@
  */
 
 if ( !function_exists('wr2x_vt_resize') ) {
-	function wr2x_vt_resize( $file_path, $width, $height, $crop, $newfile, $customCrop ) {
+	function wr2x_vt_resize( $file_path, $width, $height, $crop, $newfile, $customCrop = false ) {
 		if ( $crop == '1' ) {
 			$crop_params = true;
 		}
@@ -37,8 +37,8 @@ if ( !function_exists('wr2x_vt_resize') ) {
 			$image->set_quality( intval( $quality ) );
 		}
 
-		$image->save( $cropped_img_path );
-		if ( rename( $cropped_img_path, $newfile ) )
+		$saved = $image->save( $cropped_img_path );
+		if ( rename( $saved['path'], $newfile ) )
 			$cropped_img_path = $newfile;
 		$new_img_size = getimagesize( $cropped_img_path );
 		$new_img = str_replace( basename( $image_src[0] ), basename( $cropped_img_path ), $image_src[0] );

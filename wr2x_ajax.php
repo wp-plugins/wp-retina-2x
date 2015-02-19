@@ -2,8 +2,11 @@
 
 add_action( 'wp_ajax_wr2x_generate', 'wr2x_wp_ajax_wr2x_generate' );
 add_action( 'wp_ajax_wr2x_delete', 'wr2x_wp_ajax_wr2x_delete' );
+add_action( 'wp_ajax_wr2x_delete_full', 'wr2x_wp_ajax_wr2x_delete_full' );
 add_action( 'wp_ajax_wr2x_list_all', 'wr2x_wp_ajax_wr2x_list_all' );
 add_action( 'wp_ajax_wr2x_replace', 'wr2x_wp_ajax_wr2x_replace' );
+add_action( 'wp_ajax_wr2x_upload', 'wr2x_wp_ajax_wr2x_upload' );
+add_action( 'wp_ajax_wr2x_retina_details', 'wr2x_wp_ajax_wr2x_retina_details' );
 add_action( 'admin_head', 'wr2x_admin_head' );
 
 /**
@@ -22,6 +25,10 @@ function wr2x_admin_head() {
 		var ids = [];
 		var ajax_action = "generate"; // generate | delete
 	
+		function wr2x_display_please_refresh() {
+			jQuery('#wr2x_progression').html("<?php echo _e( "<a href='?page=wp-retina-2x&view=issues&refresh=true'>Refresh</a> this page.", 'wp-retina-2x' ); ?>");
+		}
+
 		function wr2x_do_next () {
 			var data = { action: 'wr2x_' + ajax_action, attachmentId: ids[current - 1] };
 			jQuery('#wr2x_progression').text(current + "/" + ids.length + " (" + Math.round(current / ids.length * 100) + "%)");
@@ -31,16 +38,14 @@ function wr2x_admin_head() {
 					alert('Error: ' + reply.message);
 					return;
 				}
-				wr2x_refresh_dashboard(reply.results);
+				wr2x_refresh_media_sizes(reply.results);
+				if (reply.results_full) {
+					wr2x_refresh_full(reply.results_full);
+				}
 				if (++current <= ids.length)
 					wr2x_do_next();
 				else {
-					if ( ajax_action == "generate" ) {
-						jQuery('#wr2x_progression').html("<?php echo _e( "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page.", 'wp-retina-2x' ); ?>");
-					}
-					else {
-						jQuery('#wr2x_progression').html("<?php echo _e( "Done. You might want to <a href='?page=wp-retina-2x&view=issues&refresh=true'>refresh</a> the issues.", 'wp-retina-2x' ); ?>");	
-					}
+					wr2x_display_please_refresh();
 				}
 			});
 		}
@@ -76,8 +81,19 @@ function wr2x_admin_head() {
 			wr2x_do_all();
 		}
 	
-		// Refresh the dashboard with the results from the Ajax operation (Replace or Generate)
-		function wr2x_refresh_dashboard (results) {
+		// Refresh the dashboard retina full with the results from the Ajax operation (Upload)
+		function wr2x_refresh_full (results) {
+			jQuery.each(results, function (id, html) {
+				jQuery('#wr2x-info-full-' + id).html(html);
+				jQuery('#wr2x-info-full-' + id + ' img').attr('src', jQuery('#wr2x-info-full-' + id + ' img').attr('src')+'?'+ Math.random());
+				jQuery('#wr2x-info-full-' + id + ' img').on('click', function (evt) {
+					wr2x_delete_full( jQuery(evt.target).parents('.wr2x-file-row').attr('postid') );
+				});
+			});
+		}
+
+		// Refresh the dashboard media sizes with the results from the Ajax operation (Replace or Generate)
+		function wr2x_refresh_media_sizes (results) {
 			jQuery.each(results, function (id, html) {
 				jQuery('#wr2x-info-' + id).html(html);
 			});
@@ -93,7 +109,7 @@ function wr2x_admin_head() {
 					return;
 				}
 				jQuery('#wr2x_generate_button_' + attachmentId).html("<?php echo __( "GENERATE", 'wp-retina-2x' ); ?>");
-				wr2x_refresh_dashboard(reply.results);
+				wr2x_refresh_media_sizes(reply.results);
 			});
 		}
 
@@ -104,30 +120,41 @@ function wr2x_admin_head() {
 			evt.preventDefault();
 		}
 
-		function wr2x_handleReaderLoad(evt) {
-			var attachmentId = evt.target.attachmentId;
-			var fileData = evt.target.result;
-			fileData = fileData.substr(fileData.indexOf('base64') + 7);
+		function wr2x_delete_full(attachmentId) {
 			var data = { 
-				action: 'wr2x_replace',
+				action: 'wr2x_delete_full',
 				isAjax: true,
-				filename: evt.target.filename,
-				data: fileData,
-				attachmentId: evt.target.attachmentId
+				attachmentId: attachmentId
 			};
 
 			jQuery.post(ajaxurl, data, function (response) {
 				var data = jQuery.parseJSON(response);
-				jQuery('[postid=' + attachmentId + ']').removeClass('wr2x-loading-file wr2x-hover-drop');
-				var imgSelector = '[postid=' + attachmentId + '] .wr2x-image img';
-				jQuery(imgSelector).attr('src', jQuery(imgSelector).attr('src')+'?'+ Math.random());
-
 				if (data.success === false) {
 					alert(data.message);
 				}
 				else {
-					wr2x_refresh_dashboard(data.results);
+					wr2x_refresh_full(data.results);
+					wr2x_display_please_refresh();
+				}				
+			});
+		}
+
+		function wr2x_load_details(attachmentId) {
+			var data = { 
+				action: 'wr2x_retina_details',
+				isAjax: true,
+				attachmentId: attachmentId
+			};
+
+			jQuery.post(ajaxurl, data, function (response) {
+				var data = jQuery.parseJSON(response);
+				if (data.success === false) {
+					alert(data.message);
 				}
+				else {
+					jQuery('#wr2x-modal-info .loading').css('display', 'none');
+					jQuery('#wr2x-modal-info .content').html(data.result);
+				}				
 			});
 		}
 
@@ -138,7 +165,53 @@ function wr2x_admin_head() {
 			if (count < 0) {
 				return;
 			}
-			jQuery(evt.target).parents('.wr2x-file-row').addClass('wr2x-loading-file');
+			var wr2x_replace = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-replace');
+			var wr2x_upload = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-retina-upload');
+
+			function wr2x_handleReaderLoad(evt) {
+				var attachmentId = evt.target.attachmentId;
+				var fileData = evt.target.result;
+				fileData = fileData.substr(fileData.indexOf('base64') + 7);
+				var action = "";
+				if (wr2x_replace) {
+					action = 'wr2x_replace';
+				}
+				else if (wr2x_upload) {
+					action = 'wr2x_upload';
+				}
+				else {
+					alert("Unknown command. Contact the developer.");
+				}
+				var data = { 
+					action: action,
+					isAjax: true,
+					filename: evt.target.filename,
+					data: fileData,
+					attachmentId: evt.target.attachmentId
+				};
+
+				jQuery.post(ajaxurl, data, function (response) {
+					var data = jQuery.parseJSON(response);
+					jQuery('[postid=' + attachmentId + '] td').removeClass('wr2x-loading-file');
+					jQuery('[postid=' + attachmentId + '] .wr2x-dragdrop').removeClass('wr2x-hover-drop');
+					var imgSelector = '[postid=' + attachmentId + '] .wr2x-image img';
+					jQuery(imgSelector).attr('src', jQuery(imgSelector).attr('src')+'?'+ Math.random());
+
+					if (data.success === false) {
+						alert(data.message);
+					}
+					else {
+						if ( wr2x_replace ) {
+							wr2x_refresh_media_sizes(data.results);
+						}
+						else if ( wr2x_upload ) {
+							wr2x_refresh_full(data.results);
+						}
+					}
+				});
+			}
+
+			jQuery(evt.target).parents('td').addClass('wr2x-loading-file');
 			var file = files[0];
 			var reader = new FileReader();
 			reader.filename = file.name;
@@ -148,25 +221,50 @@ function wr2x_admin_head() {
 		}
 
 		jQuery(document).ready(function () {
-			jQuery('.wr2x-file-row').on('dragenter', function (evt) {
+			jQuery('.wr2x-dragdrop').on('dragenter', function (evt) {
 				wr2x_stop_propagation(evt);
 				jQuery(this).addClass('wr2x-hover-drop');
 			});
 
-			jQuery('.wr2x-file-row').on('dragover', function (evt) {
+			jQuery('.wr2x-dragdrop').on('dragover', function (evt) {
 				wr2x_stop_propagation(evt);
 				jQuery(this).addClass('wr2x-hover-drop');
 			});
 
-			jQuery('.wr2x-file-row').on('dragleave', function (evt) {
+			jQuery('.wr2x-dragdrop').on('dragleave', function (evt) {
 				wr2x_stop_propagation(evt);
 				jQuery(this).removeClass('wr2x-hover-drop');
 			});
 
-			jQuery('.wr2x-file-row').on('dragexit', wr2x_stop_propagation);
+			jQuery('.wr2x-dragdrop').on('dragexit', wr2x_stop_propagation);
 
-			jQuery('.wr2x-file-row').each(function (index, elem) {
+			jQuery('.wr2x-dragdrop').each(function (index, elem) {
 				this.addEventListener('drop', wr2x_filedropped);
+			});
+
+			jQuery('.retina-info, .wr2x-button-view').on('click', function (evt) {
+				jQuery('#wr2x-modal-info-backdrop').css('display', 'block');
+				jQuery('#wr2x-modal-info .content').html("");
+				jQuery('#wr2x-modal-info .loading').css('display', 'block');
+				jQuery('#wr2x-modal-info').css('display', 'block');
+				jQuery('#wr2x-modal-info').focus();
+				wr2x_load_details(jQuery(evt.target).parents('.wr2x-file-row').attr('postid'));
+			});
+
+			jQuery('#wr2x-modal-info .close, #wr2x-modal-info-backdrop').on('click', function (evt) {
+				jQuery('#wr2x-modal-info').css('display', 'none');
+				jQuery('#wr2x-modal-info-backdrop').css('display', 'none');
+			});
+
+			jQuery('.wr2x-info-full img').on('click', function (evt) {
+				wr2x_delete_full( jQuery(evt.target).parents('.wr2x-file-row').attr('postid') );
+			});
+
+			jQuery('#wr2x-modal-info').bind('keydown', function (evt) {
+				if (evt.keyCode === 27) {
+					jQuery('#wr2x-modal-info').css('display', 'none');
+					jQuery('#wr2x-modal-info-backdrop').css('display', 'none');
+				}
 			});
 		});
 
@@ -234,6 +332,42 @@ function wr2x_wp_ajax_wr2x_list_all( $issuesOnly ) {
 	}
 }
 
+function wr2x_wp_ajax_wr2x_delete_full( $pleaseReturn = false ) {
+
+	if ( !isset( $_POST['attachmentId'] ) ) {
+		echo json_encode( 
+			array(
+				'success' => false,
+				'message' => __( "The attachment ID is missing.", 'wp-retina-2x' )
+			)
+		);
+		die();
+	}
+	$attachmentId = intval( $_POST['attachmentId'] );
+	$originalfile = get_attached_file( $attachmentId );
+	$pathinfo = pathinfo( $originalfile );
+	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
+	if ( $retina_file && file_exists( $retina_file ) )
+		unlink( $retina_file );
+
+	// RESULTS FOR RETINA DASHBOARD
+	$info = wpr2x_html_get_basic_retina_info_full( $attachmentId, wr2x_retina_info( $attachmentId ) );
+	$results[$attachmentId] = $info;
+
+	// Return if that's not the final step.
+	if ( $pleaseReturn )
+		return $info;
+
+	echo json_encode( 
+		array(
+			'results' => $results,
+			'success' => true,
+			'message' => __( "Full retina file deleted.", 'wp-retina-2x' )
+		)
+	);
+	die();
+}
+
 function wr2x_wp_ajax_wr2x_delete() {
 
 	if ( !isset( $_POST['attachmentId'] ) ) {
@@ -246,18 +380,46 @@ function wr2x_wp_ajax_wr2x_delete() {
 		die();
 	}
 
+	// Information for the retina version of the full-size
 	$attachmentId = intval( $_POST['attachmentId'] );
+	$results_full[$attachmentId] = wr2x_wp_ajax_wr2x_delete_full( true );
+
 	wr2x_delete_attachment( $attachmentId );
 	$meta = wp_get_attachment_metadata( $attachmentId );
 	
 	// RESULTS FOR RETINA DASHBOARD
-	$info = wr2x_retina_info( $attachmentId );
+	wr2x_update_issue_status( $attachmentId );
+	$info = wpr2x_html_get_basic_retina_info( $attachmentId, wr2x_retina_info( $attachmentId ) );
 	$results[$attachmentId] = $info;
 	echo json_encode( 
 		array(
 			'results' => $results,
+			'results_full' => $results_full,
 			'success' => true,
 			'message' => __( "Retina files deleted.", 'wp-retina-2x' )
+		)
+	);
+	die();
+}
+
+function wr2x_wp_ajax_wr2x_retina_details() {
+	if ( !isset( $_POST['attachmentId'] ) ) {
+		echo json_encode( 
+			array(
+				'success' => false,
+				'message' => __( "The attachment ID is missing.", 'wp-retina-2x' )
+			)
+		);
+		die();
+	}
+
+	$attachmentId = intval( $_POST['attachmentId'] );
+	$info = wpr2x_html_get_details_retina_info( $attachmentId, wr2x_retina_info( $attachmentId ) );
+	echo json_encode( 
+		array(
+			'result' => $info,
+			'success' => true,
+			'message' => __( "Details retrieved.", 'wp-retina-2x' )
 		)
 	);
 	die();
@@ -293,9 +455,8 @@ function wr2x_wp_ajax_wr2x_generate() {
 	die();
 }
 
-function wr2x_wp_ajax_wr2x_replace() {
-
-	if ( !current_user_can('upload_files') ) {
+function wr2x_check_get_ajax_uploaded_file() {
+		if ( !current_user_can('upload_files') ) {
 		echo json_encode( array(
 			'success' => false,
 			'message' => __( "You do not have permission to upload files.", 'wp-retina-2x' )
@@ -348,7 +509,54 @@ function wr2x_wp_ajax_wr2x_replace() {
 		));
 		die();
 	}
-	
+
+	return $tmpfname;
+}
+
+function wr2x_wp_ajax_wr2x_upload() {
+	$tmpfname = wr2x_check_get_ajax_uploaded_file();
+	$attachmentId = (int) $_POST['attachmentId'];
+
+	$meta = wp_get_attachment_metadata( $attachmentId );
+	$current_file = get_attached_file( $attachmentId );
+	$pathinfo = pathinfo( $current_file );
+	$basepath = $pathinfo['dirname'];
+	$retinafile = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
+
+	if ( file_exists( $retinafile ) )
+		unlink( $retinafile );
+
+	// Insert the new file and delete the temporary one
+	//rename( $tmpfname, $retinafile );
+	//chmod( $retinafile, 0644 );
+	list( $width, $height ) = getimagesize( $tmpfname );
+	if ( $meta['width'] * 2 > $width || $meta['height'] * 2 > $height ) {
+		echo json_encode( array(
+			'success' => false,
+			'message' => "This image has a resolution of ${width}×${height} but your Full Size image requires a retina image of at least " . ( $meta['width'] * 2 ) . "x" . ( $meta['height'] * 2 ) . "."
+		));
+		die();
+	}
+	require('wr2x_vt_resize.php');
+	wr2x_vt_resize( $tmpfname, $meta['width'] * 2, $meta['height'] * 2, null, $retinafile );
+	chmod( $retinafile, 0644 );
+	unlink( $tmpfname );
+
+	// Get the results
+	$info = wr2x_retina_info( $attachmentId );
+	wr2x_update_issue_status( $attachmentId );
+	$results[$attachmentId] = wpr2x_html_get_basic_retina_info_full( $attachmentId, $info );
+
+	echo json_encode( array(
+		'success' => true,
+		'results' => $results,
+		'message' => __( "Uploaded successfully.", 'wp-retina-2x' )
+	));
+	die();
+}
+
+function wr2x_wp_ajax_wr2x_replace() {
+	$tmpfname = wr2x_check_get_ajax_uploaded_file();
 	$attachmentId = (int) $_POST['attachmentId'];
 	$meta = wp_get_attachment_metadata( $attachmentId );
 	$current_file = get_attached_file( $attachmentId );
@@ -360,7 +568,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 	if ( wp_attachment_is_image( $attachmentId ) ) {
 		$sizes = wr2x_get_image_sizes();
 		foreach ($sizes as $name => $attr) {
-			if (isset($meta['sizes'][$name]) && isset($meta['sizes'][$name]['file']) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] )) {
+			if ( isset( $meta['sizes'][$name] ) && isset( $meta['sizes'][$name]['file'] ) && file_exists( trailingslashit( $basepath ) . $meta['sizes'][$name]['file'] ) ) {
 				$normal_file = trailingslashit( $basepath ) . $meta['sizes'][$name]['file'];
 				$pathinfo = pathinfo( $normal_file );
 				$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
@@ -374,7 +582,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 			}
 		}
 	}
-	if ( file_exists($current_file) )
+	if ( file_exists( $current_file ) )
 		unlink( $current_file );
 
 	// Insert the new file and delete the temporary one
@@ -388,7 +596,7 @@ function wr2x_wp_ajax_wr2x_replace() {
 
 	// Get the results
 	$info = wr2x_retina_info( $attachmentId );
-	$results[$attachmentId] = $info;
+	$results[$attachmentId] = wpr2x_html_get_basic_retina_info( $attachmentId, $info );
 
 	echo json_encode( array(
 		'success' => true,

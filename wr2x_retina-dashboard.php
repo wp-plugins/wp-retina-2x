@@ -10,11 +10,18 @@ add_action( 'admin_menu', 'wr2x_admin_menu_dashboard' );
 
 function wr2x_admin_menu_dashboard () {
 	$refresh = isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0;
+	$clearlogs = isset ( $_GET[ 'clearlogs' ] ) ? $_GET[ 'clearlogs' ] : 0;
 	$ignore = isset ( $_GET[ 'ignore' ] ) ? $_GET[ 'ignore' ] : false;
 	if ( $ignore )
 		wr2x_add_ignore( $ignore );
-	if ( $refresh )
+	if ( $refresh ) {
 		wr2x_calculate_issues();
+	}
+	if ( $clearlogs ) {
+		if ( file_exists( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' ) ) {
+			unlink( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' );
+		}
+	}
 	$flagged = count( wr2x_get_issues() );
 	$warning_title = __( "Retina images", 'wp-retina-2x' );
 	$menu_label = sprintf( __( 'Retina %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
@@ -34,7 +41,7 @@ function wpr2x_wp_retina_2x() {
 	<div class='wrap'>
 	<?php jordy_meow_donation(true); ?>
 	<div id="icon-upload" class="icon32"><br></div>
-	<h2>Retina Dashboard <?php by_jordy_meow(); ?></h2>
+	<h2>Retina <?php by_jordy_meow(); ?></h2>
 
 	<?php 
 	
@@ -125,29 +132,11 @@ function wpr2x_wp_retina_2x() {
 	}
 	?>
 
-	<style>
-		.widefat td {
-			padding: 5px 6px 0px 6px;
-		}
-
-		.widefat td .button {
-			margin-right: 2px;
-		}
-
-		.widefat td .button:last-child {
-			margin-right: 0px;
-		}
-
-		.subsubsub #icl_subsubsub, .subsubsub br {
-			display: none;
-		}
-	</style>
-
 	<div style='background: #FFF; padding: 5px; border-radius: 4px; height: 28px; box-shadow: 0px 0px 6px #C2C2C2;'>
 		
-		<!-- GENERATE ALL -->
-		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>photo-album--plus.png' /><?php _e("Generate", 'wp-retina-2x'); ?></a>
-		
+		<!-- REFRESH -->
+		<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo plugin_dir_url( __FILE__ ); ?>img/refresh.png' /><?php _e("Refresh", 'wp-retina-2x'); ?></a>
+
 		<!-- SEARCH -->
 		<form id="posts-filter" action="upload.php" method="get">
 			<p class="search-box" style='margin-left: 5px; float: left;'>
@@ -160,25 +149,56 @@ function wpr2x_wp_retina_2x() {
 		</form>
 
 		<!-- REMOVE BUTTON ALL -->
-		<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button button-red' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>burn.png' /><?php _e("Delete all @2x", 'wp-retina-2x'); ?></a>
+		<a id='wr2x_remove_button_all' onclick='wr2x_delete_all()' class='button button-red' style='float: right;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo plugin_dir_url( __FILE__ ); ?>img/burn.png' /><?php _e("Bulk Delete", 'wp-retina-2x'); ?></a>
 
-		<!-- REFRESH -->
-		<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button-primary' style='float: right; margin-right: 5px;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo trailingslashit( WP_PLUGIN_URL ) . trailingslashit( 'wp-retina-2x/img'); ?>refresh.png' /><?php _e("Refresh issues", 'wp-retina-2x'); ?></a>
+		<!-- GENERATE ALL -->
+		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: right; margin-right: 5px;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo plugin_dir_url( __FILE__ ); ?>img/photo-album--plus.png' /><?php _e("Bulk Generate", 'wp-retina-2x'); ?></a>
+		
 
 		<!-- PROGRESS -->
-		<span style='margin-left: 12px; font-size: 15px; top: 5px; position: relative; color: #747474;' id='wr2x_progression'></span>
+		<span style='margin-left: 12px; font-size: 13px; top: 5px; position: relative; color: #24547C; font-weight: bold;' id='wr2x_progression'></span>
 		
 	</div>
 
 	<?php 
-		if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
+		// if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
+		// 	echo "<div class='updated' style='margin-top: 20px;'><p>";
+		// 	_e( "Issues has been refreshed.", 'wp-retina-2x' );
+		// 	echo "</p></div>";
+		// }
+		if (isset ( $_GET[ 'clearlogs' ] ) ? $_GET[ 'clearlogs' ] : 0) {
 			echo "<div class='updated' style='margin-top: 20px;'><p>";
-			_e( "Issues has been refreshed.", 'wp-retina-2x' );
+			_e( "The logs have been cleared.", 'wp-retina-2x' );
 			echo "</p></div>";
 		}
+
+		$active_sizes = wr2x_get_active_image_sizes();
+		$full_size_needed = wr2x_getoption( "full_size", "wr2x_basics", false );
+
+		$max_width = 0;
+		$max_height = 0;
+		foreach ( $active_sizes as $name => $active_size ) {
+			if ( $active_size['height'] > $max_height ) {
+				$max_height = $active_size['height'];
+			}
+			if ( $active_size['width'] > $max_width ) {
+				$max_width = $active_size['width'];
+			}
+		}
+		$max_width = $max_width * 2;
+		$max_height = $max_height * 2;
 	?>
-	
-	<p><?php _e("You can upload/replace the images by drag & drop on the grid.", 'wp-retina-2x'); ?></p>
+
+	<p>
+		<?php printf( __( 'The full-size images should have a resolution of <b>%d×%d</b> at least for the plugin to be able generate the <b>%d retina images</b> required by your website.', 'wp-retina-2x' ), $max_width, $max_height, count( $active_sizes ) ); ?>
+		<?php if ( $full_size_needed ) printf( __(  "You <b>also need</b> to upload a retina image for the Full Size image (it should normally be <b>%d×%d</b>).", 'wp-retina-2x' ), $max_width * 2, $max_height * 2 ); ?>
+		<?php _e("You can upload or replace the images by drag & drop.", 'wp-retina-2x'); ?>
+		<?php 
+			if ( file_exists( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' ) ) {
+				_e( 'The <a target="_blank" href="' . plugin_dir_url( __FILE__ ) . '/wp-retina-2x.log">log file</a> available and you can <a href="?page=wp-retina-2x&view=issues&clearlogs=true">clear</a> it.');
+			}
+		?>
+	</p>
 
 	<div id='wr2x-pages'>
 	<?php
@@ -197,30 +217,22 @@ function wpr2x_wp_retina_2x() {
 		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'><?php _e( "Issues", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo $issues_count; ?>)</span></li> |
 		<li class="all"><a <?php if ( $view == 'ignored' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=ignored'><?php _e( "Ignored", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo count( $ignored ); ?>)</span></li>
 	</ul>
-	<table class='wp-list-table widefat fixed media'>
+	<table class='wp-list-table widefat fixed media wr2x-table'>
 		<thead><tr>
 			<?php
-			echo "<th style='width: 64px;'></th>";
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 200px;'>" . __( "Base image", 'wp-retina-2x' ) . "</th>";
-
-			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Retina for Media sizes", 'wp-retina-2x' ) . "</th>";
-			echo "<th style='font-size: 11px; font-family: Verdana;'>" . __( "Retina for Base image", 'wp-retina-2x' ) . "</th>";
-			/*
-			
-			foreach ($sizes as $name => $attr) {
-				if ( !in_array( $name, $ignore_cols ) )
-					echo "<th style='width: 80px; font-size: 11px; font-family: Verdana;' class='manage-column'>" . $name . "</th>";
-			}
-			*/
-			
-			echo "<th style='font-size: 11px; font-family: Verdana; width: 152px;'>" . __( "Actions", 'wp-retina-2x' ) . "</th>";
+			echo "<th style='width: 56px;'>Thumbnail</th>";
+			echo "<th style=' width: 360px;'>" . __( "Base image", 'wp-retina-2x' ) . "</th>";
+			echo "<th style=''>" . __( "Media Sizes<br />Retina-ized", 'wp-retina-2x' ) . "</th>";
+			echo "<th style=''>" . __( "Full-Size<br/><b>Replace</b>", 'wp-retina-2x' ) . "</th>";
+			echo "<th style=''>" . __( "Full-Size Retina", 'wp-retina-2x' ) . "</th>";
+			echo "<th style=''>" . __( "Full-Size Retina<br/><b>Upload</b>", 'wp-retina-2x' ) . "</th>";
 			?>
 		</tr></thead>
 		<tbody>
 			<?php
 			foreach ($results as $index => $attr) {
 				$post = $attr['post'];
-				$retina_info = $attr['info'];
+				$info = $attr['info'];
 				$meta = wp_get_attachment_metadata( $post->ID );
 				// Let's clean the issues status
 				if ( $view != 'issues' ) {
@@ -233,31 +245,57 @@ function wpr2x_wp_retina_2x() {
 				
 				$attachmentsrc = wp_get_attachment_image_src( $post->ID, 'thumbnail' );
 				echo "<tr class='wr2x-file-row' postId='" . $post->ID . "'>";
-				echo "<td class='wr2x-image'><img style='max-width: 64px; max-height: 64px;' src='" . $attachmentsrc[0] . "' /></td>";
-				echo "<td class='wr2x-title'><a style='position: relative; top: -2px;' href='media.php?attachment_id=" . $post->ID . "&action=edit'>" . 
-					$post->post_title . '<br />' .
-					"<span style='font-size: 9px; line-height: 10px; display: block;'>" . $original_width . "×" . $original_height . "</span>";
-					"</a></td>";
+				echo "<td class='wr2x-image'><img src='" . $attachmentsrc[0] . "' /></td>";
+				echo "<td class='wr2x-title'><a href='media.php?attachment_id=" . $post->ID . "&action=edit'>" . ( $post->post_title ? $post->post_title : '<i>Untitled</i>' ) . '</a><br />' .
+					"<span class='resolution'>Resolution: <span class='" . ( $original_width < $max_width ? "red" : "" ) . "'>" . $original_width . "</span>×<span class='" . ( $original_height < $max_height ? "red" : "" ) . "'>" . $original_height . "</span></span>";
+				echo "<div class='actions'>";
+				echo "<a style='position: relative;' onclick='wr2x_generate(" . $post->ID . ", true)' id='wr2x_generate_button_" . $post->ID . "' class='wr2x-button'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a>";
+				if ( !wr2x_is_ignore( $post->ID ) )
+					echo " <a href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $post->ID . "' id='wr2x_generate_button_" . $post->ID . "' class='wr2x-button wr2x-button-ignore'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a>";
+				echo " <a style='position: relative;' class='wr2x-button wr2x-button-view'>" . __( "DETAILS", 'wp-retina-2x' ) . "</a>";
+				echo "</div></td>";
 
-					// Status of the retina for this image
-				echo "<td id='wr2x-info-$post->ID' class='wr2x-info'>";
+				// Media Sizes Retina-ized
+				echo '<td id="wr2x-info-' . $post->ID . '" title="See details" style="padding-top: 10px;" class="wr2x-info">';
 				echo wpr2x_html_get_basic_retina_info( $post, $info );
 				echo "</td>";
 
-				// Retina for Base Image
-				echo "<td><em>Coming soon.</em></td>";
-
-				// Actions
-				echo "<td><a style='position: relative; top: 0px;' onclick='wr2x_generate(" . $post->ID . ", true)' id='wr2x_generate_button_" . $post->ID . "' class='button button-primary'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a>";
-				if ( !wr2x_is_ignore( $post->ID ) ) {
-					echo "<a style='position: relative; top: 0px;' href='?page=wp-retina-2x&view=" . $view . "&paged=" . $paged . "&ignore=" . $post->ID . "' id='wr2x_generate_button_" . $post->ID . "' class='button button-primary'>" . __( "IGNORE", 'wp-retina-2x' ) . "</a>";
-				}			
+				// Full-Size Replace
+				echo "<td class='wr2x-fullsize-replace'><div class='wr2x-dragdrop'></div>";
 				echo "</td>";
+
+				if ( wr2x_is_pro() ) {
+					// Full-Size Retina
+					echo '<td id="wr2x-info-full-' . $post->ID . '" class="wr2x-image wr2x-info-full">';
+					echo wpr2x_html_get_basic_retina_info_full( $post->ID, $info );
+					echo "</td>";
+					// Full-Size Retina Upload
+					echo "<td class='wr2x-fullsize-retina-upload'>";
+					echo "<div class='wr2x-dragdrop'></div>";
+					echo "</td>";	
+				}
+				else {
+					echo "<td colspan='2' style='text-align: center;'><small><br />PRO VERSION ONLY</small></td>";
+				}
+
 				echo "</tr>";
 			}
 			?>
 		</tbody>
 	</table>
+	</div>
+
+	<div id="wr2x-modal-info-backdrop" style="display: none;">
+	</div>
+
+	<div id="wr2x-modal-info" style="display: none;" tabindex="1">
+		<div class="close">X</div>
+		<h2 style="margin-top: 0px;">Retina Details</h2>
+		<div class="loading">
+			<img src="<?php echo plugin_dir_url( __FILE__ ); ?>img/loading.gif" />
+		</div>
+		<div class="content">
+		</div>
 	</div>
 
 	<?php

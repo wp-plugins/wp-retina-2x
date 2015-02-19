@@ -1,7 +1,8 @@
 <?php
 
 	if ( !function_exists( 'jordy_meow_flattr' ) ) {
-		add_action( 'admin_head', 'jordy_meow_flattr', 1 );
+		if ( !defined( 'WP_HIDE_DONATION_BUTTONS' ) )
+			add_action( 'admin_head', 'jordy_meow_flattr', 1 );
 		function jordy_meow_flattr () {
 			?>
 				<script type="text/javascript">
@@ -18,8 +19,10 @@
 			<?php
 		}
 		function by_jordy_meow() {
-			echo '<div><span style="font-size: 13px; position: relative; top: -6px;">Developed by <a style="text-decoration: none;" href="https://plus.google.com/+JordyMeow">Jordy Meow</a></span>
-				<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" title="Jordy Meow" href="http://profiles.wordpress.org/TigrouMeow/"></a></div>';
+			echo '<div><span style="font-size: 13px; position: relative; top: -6px;">Developed by <a style="text-decoration: none;" href="https://plus.google.com/+JordyMeow">Jordy Meow</a></span>';
+			if ( !defined( 'WP_HIDE_DONATION_BUTTONS' ) )
+				echo ' <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" title="Jordy Meow" href="http://profiles.wordpress.org/TigrouMeow/"></a>';
+			echo '</div>';
 		}
 	}
 
