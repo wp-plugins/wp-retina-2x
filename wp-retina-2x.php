@@ -379,6 +379,11 @@ function wpr2x_html_get_basic_retina_info( $attachmentId, $retina_info ) {
 
 // Information for Details in the Retina Dashboard
 function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
+
+	if ( !wr2x_is_pro() ) {
+		return "PRO VERSION ONLY";
+	}
+
 	$sizes = wr2x_get_image_sizes();
 	$total = 0; $possible = 0; $issue = 0; $ignored = 0; $retina = 0;
 
