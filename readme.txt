@@ -30,6 +30,7 @@ Languages: English, French.
 = 3.0.0 =
 * Add: Link to logs from the dashboard (if logs are available), and possibility to clear it directly.
 * Add: Replace the Full-Size directly by drag & drop in the box.
+* Add: Support for WPML Media.
 * Change: Picturefill script to 'v2.2.0 - 2014-02-03'.
 * Change: Enhanced logs (in debug mode), much easier to read.
 * Change: Dashboard enhanced, more clear, possibility of having many image sizes on the screen.
