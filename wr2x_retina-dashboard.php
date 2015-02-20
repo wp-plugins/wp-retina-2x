@@ -256,7 +256,7 @@ function wpr2x_wp_retina_2x() {
 				echo "</div></td>";
 
 				// Media Sizes Retina-ized
-				echo '<td id="wr2x-info-' . $post->ID . '" title="See details" style="padding-top: 10px;" class="wr2x-info">';
+				echo '<td id="wr2x-info-' . $post->ID . '" style="padding-top: 10px;" class="wr2x-info">';
 				echo wpr2x_html_get_basic_retina_info( $post, $info );
 				echo "</td>";
 
@@ -275,7 +275,7 @@ function wpr2x_wp_retina_2x() {
 					echo "</td>";	
 				}
 				else {
-					echo "<td colspan='2' style='text-align: center;'><small><br />PRO VERSION ONLY</small></td>";
+					echo "<td colspan='2' style='text-align: center;'><small><br /><a target='_blank' href='http://apps.meow.fr/wp-retina-2x/'>PRO VERSION ONLY</a></small></td>";
 				}
 
 				echo "</tr>";

@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.0.0
+Version: 3.0.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.0.0';
+$wr2x_version = '3.0.4';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_retina_image = '1.4.1';
@@ -360,15 +360,15 @@ function wpr2x_html_get_basic_retina_info( $attachmentId, $retina_info ) {
 	foreach ( $sizes as $i => $status ) {
 		$status = ( isset( $retina_info ) && isset( $retina_info[$i] ) ) ? $retina_info[$i] : null;
 		if ( is_array( $status ) )
-			$result .= '<li class="retina-issue"></li>';
+			$result .= '<li class="retina-issue" title="' . $i . '"></li>';
 		else if ( $status == 'EXISTS' )
-			$result .= '<li class="retina-exists"></li>';
+			$result .= '<li class="retina-exists" title="' . $i . '"></li>';
 		else if ( $status == 'PENDING' )
-			$result .= '<li class="retina-pending"></li>';
+			$result .= '<li class="retina-pending" title="' . $i . '"></li>';
 		else if ( $status == 'MISSING' )
-			$result .= '<li class="retina-missing"></li>';
+			$result .= '<li class="retina-missing" title="' . $i . '"></li>';
 		else if ( $status == 'IGNORED' )
-			$result .= '<li class="retina-ignored"></li>';
+			$result .= '<li class="retina-ignored" title="' . $i . '"></li>';
 		else {
 			error_log( "Retina: This status is not recognized: " . $status );
 		}
@@ -381,7 +381,7 @@ function wpr2x_html_get_basic_retina_info( $attachmentId, $retina_info ) {
 function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
 
 	if ( !wr2x_is_pro() ) {
-		return "PRO VERSION ONLY";
+		return "PRO VERSION ONLY<br /><br />You can buy a serial from here: <a target='_blank' href='http://apps.meow.fr/wp-retina-2x/'>WP Retina 2x</a>.<br />Then add this serial in the settings. That's all! :)<br />Thanks a lot for your support.";
 	}
 
 	$sizes = wr2x_get_image_sizes();
@@ -543,11 +543,15 @@ function wr2x_get_active_image_sizes() {
 	return $active_sizes;
 }
 
+function wr2x_is_wpml_installed() {
+	return function_exists( 'icl_object_id' ) && !class_exists( 'Polylang' );
+}
+
 // SQL Query if WPML with an AND to check if the p.ID (p is attachment) is indeed an original
 // That is to limit the SQL that queries all the attachments
 function wr2x_create_sql_if_wpml_original() {
 	$whereIsOriginal = "";
-	if ( function_exists( 'icl_object_id' ) ) {
+	if ( wr2x_is_wpml_installed() ) {
 		global $wpdb;
 		global $sitepress;
 		$tbl_wpml = $wpdb->prefix . "icl_translations";
