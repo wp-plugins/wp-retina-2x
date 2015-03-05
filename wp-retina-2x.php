@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.0.4
+Version: 3.0.6
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.0.4';
+$wr2x_version = '3.0.6';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_retina_image = '1.4.1';
@@ -854,8 +854,8 @@ function wr2x_validate_pro( $subscr_id ) {
 		delete_option( 'wr2x_pro_status', "" );
 		return false;
 	}
-	require_once ABSPATH . WPINC . '/class-IXR.php';
-	$client = new IXR_Client( 'http://apps.meow.fr/xmlrpc.php' );
+	require_once ABSPATH . WPINC . '/class-wp-http-ixr-client.php';
+	$client = new WP_HTTP_IXR_Client( 'http://apps.meow.fr/xmlrpc.php' );
 	if ( !$client->query( 'meow_sales.auth', $subscr_id, 'retina', get_site_url() ) ) { 
 		update_option( 'wr2x_pro_serial', "" );
 		update_option( 'wr2x_pro_status', "A network error: " . $client->getErrorMessage() );

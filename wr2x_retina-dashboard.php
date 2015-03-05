@@ -31,7 +31,7 @@ function wr2x_admin_menu_dashboard () {
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
-	$s = isset ( $_GET[ 's' ] ) ? $_GET[ 's' ] : null;
+	$s = isset ( $_GET[ 's' ] ) ? sanitize_text_field( $_GET[ 's' ] ) : null;
 	$issues = $count = 0;
 	$posts_per_page = 15; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
@@ -245,7 +245,7 @@ function wpr2x_wp_retina_2x() {
 				
 				$attachmentsrc = wp_get_attachment_image_src( $post->ID, 'thumbnail' );
 				echo "<tr class='wr2x-file-row' postId='" . $post->ID . "'>";
-				echo "<td class='wr2x-image'><img src='" . $attachmentsrc[0] . "' /></td>";
+				echo "<td class='wr2x-image wr2x-info-thumbnail'><img src='" . $attachmentsrc[0] . "' /></td>";
 				echo "<td class='wr2x-title'><a href='media.php?attachment_id=" . $post->ID . "&action=edit'>" . ( $post->post_title ? $post->post_title : '<i>Untitled</i>' ) . '</a><br />' .
 					"<span class='resolution'>Resolution: <span class='" . ( $original_width < $max_width ? "red" : "" ) . "'>" . $original_width . "</span>×<span class='" . ( $original_height < $max_height ? "red" : "" ) . "'>" . $original_height . "</span></span>";
 				echo "<div class='actions'>";

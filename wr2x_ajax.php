@@ -194,8 +194,15 @@ function wr2x_admin_head() {
 					var data = jQuery.parseJSON(response);
 					jQuery('[postid=' + attachmentId + '] td').removeClass('wr2x-loading-file');
 					jQuery('[postid=' + attachmentId + '] .wr2x-dragdrop').removeClass('wr2x-hover-drop');
-					var imgSelector = '[postid=' + attachmentId + '] .wr2x-image img';
-					jQuery(imgSelector).attr('src', jQuery(imgSelector).attr('src')+'?'+ Math.random());
+
+					if (wr2x_replace) {
+						var imgSelector = '[postid=' + attachmentId + '] .wr2x-info-thumbnail img';
+						jQuery(imgSelector).attr('src', jQuery(imgSelector).attr('src')+'?'+ Math.random());
+					}
+					if (wr2x_upload) {
+						var imgSelector = '[postid=' + attachmentId + '] .wr2x-info-full img';
+						jQuery(imgSelector).attr('src', jQuery(imgSelector).attr('src')+'?'+ Math.random());
+					}
 
 					if (data.success === false) {
 						alert(data.message);

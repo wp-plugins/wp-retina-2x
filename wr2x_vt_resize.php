@@ -35,6 +35,7 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$quality = wr2x_getoption( "image_quality", "wr2x_advanced", "80" );
 		if ( is_numeric( $quality ) ) {
 			$image->set_quality( intval( $quality ) );
+			wr2x_log( "Quality: " . $quality );
 		}
 
 		$saved = $image->save( $cropped_img_path );
