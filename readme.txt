@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.0.8
+Stable tag: 3.1.0
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -13,7 +13,7 @@ Make your website look beautiful and crisp on Retina / High DPI displays.
 
 This plugin creates the image files required by the Retina (High DPI) devices and displays them to your visitors accordingly. Your website will look beautiful and crisp on every device! The retina images will be generated for you automatically - though you can also do it manually - and served to the retina devices.
 
-It supports different methods to serve the images to your visitors, for instance: PictureFill (future HTML standard + its JS polyfill), Retina.js (JS only), IMG Rewrite (on-the-fly HTML rewrite) and Retina-Images (server handler). Pick the one that works best with your hosting and WordPress environment. Multi-site are also supported.
+It supports different methods to serve the images to your visitors, for instance: PictureFill (future HTML standard + its JS polyfill), Retina.js (JS only), IMG Rewrite (on-the-fly HTML rewrite) and Retina-Images (server handler). A lazy-loading option is available as well. Pick the one that works best with your hosting and WordPress environment. Multi-site are also supported.
 
 The plugin is very fast and optimized. It doesn't create anything in the database. In most cases, it doesn't even require any configuration. More information and tutorial available one http://apps.meow.fr/wp-retina-2x/.
 
@@ -27,7 +27,8 @@ Languages: English, French.
 
 == Changelog ==
 
-= 3.0.8 =
+= 3.1.0 =
+* Add: Lazy-loading option for PictureFill (Pro).
 * Fix: For the Pro users having the IXR_client error.
 
 = 3.0.6 =

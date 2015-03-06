@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.0.8
+Version: 3.1.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,9 +24,10 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.0.8';
+$wr2x_version = '3.1.0';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
+$wr2x_lazysizes = '1.0.0';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -113,6 +114,8 @@ function wr2x_picture_rewrite( $buffer ) {
 	if ( !function_exists( "str_get_html" ) )
 		require('inc/simple_html_dom.php');
 
+	$lazysize = wr2x_getoption( "picturefill_lazysizes", "wr2x_advanced", false ) && wr2x_is_pro();
+	$killsrc = !wr2x_is_pro() || !wr2x_getoption( "picturefill_keep_src", "wr2x_advanced", false );
 	$nodes_count = 0;
 	$nodes_replaced = 0;
 	$html = str_get_html( $buffer );
@@ -131,10 +134,14 @@ function wr2x_picture_rewrite( $buffer ) {
 			if ( $potential_retina != null ) {
 				$retina_url = wr2x_from_system_to_url( $potential_retina );
 				$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
-				$element->srcset =  "$img_url, $retina_url 2x";
-				if ( !wr2x_is_pro() || !wr2x_getoption( "picturefill_keep_src", "wr2x_advanced", false ) ) {
-					$element->src = null;
+				if ( $lazysize ) {
+					$element->class = $element->class . ' lazyload';
+					$element->{'data-srcset'} =  "$img_url, $retina_url 2x";
 				}
+				else
+					$element->srcset =  "$img_url, $retina_url 2x";
+				if ( $killsrc )
+					$element->src = null;
 				$to = $element;
 				$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
 				wr2x_log( "The img tag '$from' was rewritten to '$to'" );
@@ -839,19 +846,21 @@ function wr2x_deactivate() {
 
 function wr2x_is_pro() {
 	$validated = get_transient( 'wr2x_validated' );
-	if ( !$validated ) {
-		$subscr_id = get_option( 'wr2x_pro_serial', "" );
-		if ( !empty( $subscr_id ) )
-			return wr2x_validate_pro( wr2x_getoption( "subscr_id", "wr2x_pro", array() ) );
-		return false;
+	if ( $validated ) {
+		$serial = get_option( 'wr2x_pro_serial');
+		return !empty( $serial );
 	}
-	return true;
+	$subscr_id = get_option( 'wr2x_pro_serial', "" );
+	if ( !empty( $subscr_id ) )
+		return wr2x_validate_pro( wr2x_getoption( "subscr_id", "wr2x_pro", array() ) );
+	return false;
 }
 
 function wr2x_validate_pro( $subscr_id ) {
 	if ( empty( $subscr_id ) ) {
 		delete_option( 'wr2x_pro_serial', "" );
 		delete_option( 'wr2x_pro_status', "" );
+		set_transient( 'wr2x_validated', false, 0 );
 		return false;
 	}
 	require_once ABSPATH . WPINC . '/class-IXR.php';
@@ -895,7 +904,7 @@ function wr2x_validate_pro( $subscr_id ) {
  */
 
 function wr2x_wp_enqueue_scripts () {
-	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image, $wr2x_picturefill;
+	global $wr2x_version, $wr2x_retinajs, $wr2x_retina_image, $wr2x_picturefill, $wr2x_lazysizes;
 	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
 	
 	if ( is_admin() && !wr2x_getoption( "retina_admin", "wr2x_advanced", false ) )
@@ -905,8 +914,14 @@ function wr2x_wp_enqueue_scripts () {
 	if ( $method == "Picturefill" ) {
 		if ( wr2x_is_debug() )
 			wp_enqueue_script( 'wr2x-debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
-		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) )
-			wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
+		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) ) {
+			// Lazysizes
+			if ( wr2x_getoption( "picturefill_lazysizes", "wr2x_advanced", false ) && wr2x_is_pro() )
+				wp_enqueue_script( 'picturefill', plugins_url( '/js/lazysizes.min.js', __FILE__ ), array(), $wr2x_lazysizes, true );
+			// Picturefill
+			else
+				wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
+		}
 		return;
 	}
 

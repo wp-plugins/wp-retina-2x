@@ -154,6 +154,13 @@ function wr2x_admin_init() {
                 'default' => false
             ),
             array(
+                'name' => 'picturefill_lazysizes',
+                'label' => __( 'Use Lazysizes (Pro)', 'wp-retina-2x' ),
+                'desc' => __( 'Instead of the PictureFill script, the plugin will use Lazysizes. Then your images loaded in a lazy way (when the visitor is getting close to them). Disable the Keep IMG SRC otherwise it doesn\'t make sense.', 'wp-retina-2x' ),
+                'type' => 'checkbox',
+                'default' => false
+            ),
+            array(
                 'name' => 'picturefill_noscript',
                 'label' => __( 'No Picturefill Script', 'wp-retina-2x' ),
                 'desc' => __( 'The script for Picturefill will not be loaded. Only the browsers with src-set support (e.g. Chrome) will display images. You can also load the Picturefill script manually.', 'wp-retina-2x' ),
