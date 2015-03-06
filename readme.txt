@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.0.6
+Stable tag: 3.0.8
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,9 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.0.8 =
+* Fix: For the Pro users having the IXR_client error.
 
 = 3.0.6 =
 * Fix: Plugin now works even behind a proxy.
