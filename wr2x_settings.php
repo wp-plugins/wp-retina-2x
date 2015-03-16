@@ -149,14 +149,14 @@ function wr2x_admin_init() {
             array(
                 'name' => 'picturefill_keep_src',
                 'label' => __( 'Keep IMG SRC (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'With PictureFill, IMG SRCs are replaced by SRC-SET and consequently search engines might not be able to find and reference those images. Keeping it will load images twice for retina devices on old browsers.', 'wp-retina-2x' ),
+                'desc' => __( 'With PictureFill, "src" tags are replaced by "src-set" tags and consequently search engines might not be able to find and reference those images. Keeping it will load images twice for retina devices on old browsers.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
             array(
                 'name' => 'picturefill_lazysizes',
                 'label' => __( 'Use Lazysizes (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'Instead of the PictureFill script, the plugin will use Lazysizes. Then your images loaded in a lazy way (when the visitor is getting close to them). Disable the Keep IMG SRC otherwise it doesn\'t make sense.', 'wp-retina-2x' ),
+                'desc' => __( 'HTML will be rewritten to support the lazysizes and the script will be also loaded. The images will be loaded in a lazy way (when the visitor is getting close to them). Disable the Keep IMG SRC otherwise it doesn\'t make sense.', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),

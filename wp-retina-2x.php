@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.1.0
+Version: 3.2.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -27,7 +27,7 @@ Originally developed for two of my websites:
 $wr2x_version = '3.1.0';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
-$wr2x_lazysizes = '1.0.0';
+$wr2x_lazysizes = '1.0.1';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -730,6 +730,7 @@ function wr2x_generate_images( $meta ) {
 	wr2x_log( "Full Size is {$original_basename}." );
 
 	foreach ( $sizes as $name => $attr ) {
+		$normal_file = "";
 		if ( in_array( $name, $ignore ) ) {
 			wr2x_log( "Retina for {$name} ignored (settings)." );
 			continue;
@@ -787,7 +788,10 @@ function wr2x_generate_images( $meta ) {
 				wr2x_log( "Retina for {$name} created: '{$retina_file}'." );
 			}
 		} else {
-			wr2x_log( "[ERROR] Base file '{$name}' cannot be found here: '{$normal_file}'." );
+			if ( empty( $normal_file ) )
+				wr2x_log( "[ERROR] Base file for '{$name}' does not exist." );
+			else
+				wr2x_log( "[ERROR] Base file for '{$name}' cannot be found here: '{$normal_file}'." );
 		}
 	}
 	
@@ -914,14 +918,12 @@ function wr2x_wp_enqueue_scripts () {
 	if ( $method == "Picturefill" ) {
 		if ( wr2x_is_debug() )
 			wp_enqueue_script( 'wr2x-debug', plugins_url( '/js/debug.js', __FILE__ ), array(), $wr2x_version, false );
-		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) ) {
-			// Lazysizes
-			if ( wr2x_getoption( "picturefill_lazysizes", "wr2x_advanced", false ) && wr2x_is_pro() )
-				wp_enqueue_script( 'picturefill', plugins_url( '/js/lazysizes.min.js', __FILE__ ), array(), $wr2x_lazysizes, true );
-			// Picturefill
-			else
-				wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, true );
-		}
+		// Picturefill
+		if ( !wr2x_getoption( "picturefill_noscript", "wr2x_advanced", false ) )
+			wp_enqueue_script( 'picturefill', plugins_url( '/js/picturefill.min.js', __FILE__ ), array(), $wr2x_picturefill, false );
+		// Lazysizes
+		if ( wr2x_getoption( "picturefill_lazysizes", "wr2x_advanced", false ) && wr2x_is_pro() )
+			wp_enqueue_script( 'lazysizes', plugins_url( '/js/lazysizes.min.js', __FILE__ ), array(), $wr2x_lazysizes, false );
 		return;
 	}
 
@@ -946,7 +948,7 @@ function wr2x_wp_enqueue_scripts () {
 	
 	// Retina.js only needs itself
 	if ($method == "retina.js")
-		wp_enqueue_script( 'retinajs', plugins_url( '/js/retina.js', __FILE__ ), array(), $wr2x_retinajs, true );
+		wp_enqueue_script( 'retinajs', plugins_url( '/js/retina.min.js', __FILE__ ), array(), $wr2x_retinajs, true );
 }
 
 ?>

@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,11 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.2.0 =
+* Fix: There was an issue when re-sizing PNG files.
+* Change: Lazysizes from 1.0.0 to 1.0.1 (seo improvement).
+* Change: Use minified version of retinajs.
 
 = 3.1.0 =
 * Add: Lazy-loading option for PictureFill (Pro).
