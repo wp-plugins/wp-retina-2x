@@ -165,8 +165,10 @@ function wr2x_admin_head() {
 			if (count < 0) {
 				return;
 			}
-			var wr2x_replace = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-replace');
-			var wr2x_upload = jQuery(evt.toElement).parent().hasClass('wr2x-fullsize-retina-upload');
+
+			console.debug("YO");
+			var wr2x_replace = jQuery(evt.target).parent().hasClass('wr2x-fullsize-replace');
+			var wr2x_upload = jQuery(evt.target).parent().hasClass('wr2x-fullsize-retina-upload');
 
 			function wr2x_handleReaderLoad(evt) {
 				var attachmentId = evt.target.attachmentId;
