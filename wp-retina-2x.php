@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.2.2
+Version: 3.2.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.2.2';
+$wr2x_version = '3.2.4';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_lazysizes = '1.0.1';
@@ -119,6 +119,10 @@ function wr2x_picture_rewrite( $buffer ) {
 	$nodes_count = 0;
 	$nodes_replaced = 0;
 	$html = str_get_html( $buffer );
+	if ( !$html ) {
+		wr2x_log( "The HTML buffer is null, another plugin might block the process." );
+		return $buffer;
+	}
 	foreach( $html->find( 'img' ) as $element ) {
 		$nodes_count++;
 		$parent = $element->parent();
@@ -132,8 +136,8 @@ function wr2x_picture_rewrite( $buffer ) {
 			$potential_retina = wr2x_get_retina( $filepath );
 			$from = substr( $element, 0 );
 			if ( $potential_retina != null ) {
-				$retina_url = wr2x_from_system_to_url( $potential_retina );
-				$img_url = trailingslashit( get_site_url() ) . $img_pathinfo;
+				$retina_url = wr2x_cdn_this( wr2x_from_system_to_url( $potential_retina ) );
+				$img_url = wr2x_cdn_this( trailingslashit( get_site_url() ) . $img_pathinfo );
 				if ( $lazysize ) {
 					$element->class = $element->class . ' lazyload';
 					$element->{'data-srcset'} =  "$img_url, $retina_url 2x";
@@ -142,8 +146,10 @@ function wr2x_picture_rewrite( $buffer ) {
 					$element->srcset =  "$img_url, $retina_url 2x";
 				if ( $killsrc )
 					$element->src = null;
+				else
+					$element->src = wr2x_cdn_this( $element->src );
 				$to = $element;
-				$buffer = str_replace( trim( $from, "</> "), trim($to, "</> "), $buffer );
+				$buffer = str_replace( trim( $from, "</> "), trim( $to, "</> " ), $buffer );
 				wr2x_log( "The img tag '$from' was rewritten to '$to'" );
 				$nodes_replaced++;
 			}
@@ -186,7 +192,7 @@ function wr2x_html_rewrite( $buffer ) {
 		$filepath = trailingslashit( ABSPATH ) . $img_pathinfo;
 		$potential_retina = wr2x_get_retina( $filepath );
 		if ( $potential_retina != null ) {
-			$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' );
+			$retina_pathinfo = wr2x_cdn_this( ltrim( str_replace( ABSPATH, "", $potential_retina ), '/' ) );
 			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
 			wr2x_log( "The img src '$img_pathinfo' was replaced by '$retina_pathinfo'" );
 			$nodes_replaced++;
@@ -506,12 +512,25 @@ function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
  *
  */
 
+// Rename this filename with CDN
+function wr2x_cdn_this( $file ) {
+	$domain = "";
+	if ( wr2x_is_pro() )
+		$cdn_domain = wr2x_getoption( "cdn_domain", "wr2x_advanced", "" );
+	if ( empty( $cdn_domain ) )
+		return $file;
+	$normal_domain = get_site_url();
+	$file = str_replace( $normal_domain, $cdn_domain, $file );
+	return $file;
+}
 
+// If CDN is true, then use custom CDN domain if enabled
 function wr2x_from_system_to_url( $file ) {
 	if ( empty( $file ) )
 		return "";
 	$retina_pathinfo = ltrim( str_replace( ABSPATH, "", $file ), '/' );
 	$url = trailingslashit( get_site_url() ) . $retina_pathinfo;
+	$url = wr2x_cdn_this( $url );
 	return $url;
 }
 

@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.2.2
+Stable tag: 3.2.4
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,12 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.2.4 =
+* Add: Custom CDN Domain support (check the "Custom CDN Domain" option).
+* Fix: Removed a console.log that was forgotten ;)
+* Change: different way of getting the temporary folder to write files (might help in a few cases).
+* Info: If you are curious about the abandoned island of Gunkanjima (Japan), please check my article here: http://www.totorotimes.com/gunkanjima/. I would love tweets and shares, that will definitely help me to do more adventures such as that one. Thank you and have a nice week-end everyone!
 
 = 3.2.2 =
 * Fix: Drag & drop images wasn't working on Firefox and Safari.

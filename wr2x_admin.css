@@ -51,7 +51,7 @@
 	font-size: 11px; 
 }
 
-.subsubsub #icl_subsubsub, .subsubsub br {
+#wr2x-pages + .subsubsub #icl_subsubsub, #wr2x-pages + .subsubsub br {
 	display: none;
 }
 

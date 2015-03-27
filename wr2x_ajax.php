@@ -166,7 +166,6 @@ function wr2x_admin_head() {
 				return;
 			}
 
-			console.debug("YO");
 			var wr2x_replace = jQuery(evt.target).parent().hasClass('wr2x-fullsize-replace');
 			var wr2x_upload = jQuery(evt.target).parent().hasClass('wr2x-fullsize-retina-upload');
 
@@ -480,7 +479,7 @@ function wr2x_check_get_ajax_uploaded_file() {
 	
 	if ( $tmpfname == FALSE ) {
 
-		$tmpdir = sys_get_temp_dir();
+		$tmpdir = get_temp_dir();
 		if ( !is_writable( $tmpdir ) )
 			echo json_encode( array(
 				'success' => false,
