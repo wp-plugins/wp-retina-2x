@@ -161,11 +161,6 @@ function wpr2x_wp_retina_2x() {
 	</div>
 
 	<?php 
-		// if (isset ( $_GET[ 'refresh' ] ) ? $_GET[ 'refresh' ] : 0) {
-		// 	echo "<div class='updated' style='margin-top: 20px;'><p>";
-		// 	_e( "Issues has been refreshed.", 'wp-retina-2x' );
-		// 	echo "</p></div>";
-		// }
 		if (isset ( $_GET[ 'clearlogs' ] ) ? $_GET[ 'clearlogs' ] : 0) {
 			echo "<div class='updated' style='margin-top: 20px;'><p>";
 			_e( "The logs have been cleared.", 'wp-retina-2x' );
@@ -187,12 +182,16 @@ function wpr2x_wp_retina_2x() {
 		}
 		$max_width = $max_width * 2;
 		$max_height = $max_height * 2;
+
+		$upload_max_size = ini_get('upload_max_filesize');
 	?>
 
 	<p>
 		<?php printf( __( 'The full-size images should have a resolution of <b>%d×%d</b> at least for the plugin to be able generate the <b>%d retina images</b> required by your website.', 'wp-retina-2x' ), $max_width, $max_height, count( $active_sizes ) ); ?>
-		<?php if ( $full_size_needed ) printf( __(  "You <b>also need</b> to upload a retina image for the Full Size image (it should normally be <b>%d×%d</b>).", 'wp-retina-2x' ), $max_width * 2, $max_height * 2 ); ?>
+		<?php if ( $full_size_needed ) printf( __(  "You <b>also need</b> to upload a retina image for the Full-Size image (might be <b>%d×%d</b>).", 'wp-retina-2x' ), $max_width * 2, $max_height * 2 ); ?>
 		<?php _e("You can upload or replace the images by drag & drop.", 'wp-retina-2x'); ?>
+		<?php printf( __( "Your PHP configuration allows uploads of <b>%dMB</b> maximum.", 'wp-retina-2x'), $upload_max_size ); ?>
+
 		<?php 
 			if ( file_exists( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' ) ) {
 				_e( 'The <a target="_blank" href="' . plugin_dir_url( __FILE__ ) . '/wp-retina-2x.log">log file</a> available and you can <a href="?page=wp-retina-2x&view=issues&clearlogs=true">clear</a> it.');
@@ -247,7 +246,7 @@ function wpr2x_wp_retina_2x() {
 				echo "<tr class='wr2x-file-row' postId='" . $post->ID . "'>";
 				echo "<td class='wr2x-image wr2x-info-thumbnail'><img src='" . $attachmentsrc[0] . "' /></td>";
 				echo "<td class='wr2x-title'><a href='media.php?attachment_id=" . $post->ID . "&action=edit'>" . ( $post->post_title ? $post->post_title : '<i>Untitled</i>' ) . '</a><br />' .
-					"<span class='resolution'>Resolution: <span class='" . ( $original_width < $max_width ? "red" : "" ) . "'>" . $original_width . "</span>×<span class='" . ( $original_height < $max_height ? "red" : "" ) . "'>" . $original_height . "</span></span>";
+					"<span class='resolution'>Full-Size: <span class='" . ( $original_width < $max_width ? "red" : "" ) . "'>" . $original_width . "</span>×<span class='" . ( $original_height < $max_height ? "red" : "" ) . "'>" . $original_height . "</span></span>";
 				echo "<div class='actions'>";
 				echo "<a style='position: relative;' onclick='wr2x_generate(" . $post->ID . ", true)' id='wr2x_generate_button_" . $post->ID . "' class='wr2x-button'>" . __( "GENERATE", 'wp-retina-2x' ) . "</a>";
 				if ( !wr2x_is_ignore( $post->ID ) )

@@ -219,7 +219,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'pro',
                 'label' => '',
-                'desc' => __( sprintf( 'Status: %s<br /><br />With the Pro version, full support for the <b>Full Size Retina</b> will be added. You will also get a new and nice pop-up window with more <b>Details</b> in the Retina dashboard. It is only 5$ a year and works for up to 5 websites.', $pro_status ), 'wp-retina-2x' ),
+                'desc' => __( sprintf( 'Status: %s<br /><br />With the Pro version, full support for the <b>Full Size Retina</b> will be added. You will also get a new and nice pop-up window with more <b>Details</b> in the Retina dashboard.', $pro_status ), 'wp-retina-2x' ),
                 'type' => 'html'
             ),
             array(

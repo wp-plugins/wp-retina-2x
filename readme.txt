@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.2.4
+Stable tag: 3.2.6
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.2.6 =
+* Add: Check the maximum upload value in PHP settings before actually uploading (to avoid silenced crashes).
+* Update: PictureFill from 2.2.0 to 2.3.0 (https://github.com/scottjehl/picturefill/releases/tag/2.3.0).
 
 = 3.2.4 =
 * Add: Custom CDN Domain support (check the "Custom CDN Domain" option).

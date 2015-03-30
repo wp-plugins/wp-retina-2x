@@ -22,6 +22,7 @@ function wr2x_admin_head() {
 		/* GENERATE RETINA IMAGES ACTION */
 
 		var current;
+		var maxPhpSize = <?php echo (int)ini_get('upload_max_filesize') * 1000000; ?>;
 		var ids = [];
 		var ajax_action = "generate"; // generate | delete
 	
@@ -219,8 +220,14 @@ function wr2x_admin_head() {
 				});
 			}
 
-			jQuery(evt.target).parents('td').addClass('wr2x-loading-file');
 			var file = files[0];
+			if (file.size > maxPhpSize) {
+				jQuery(this).removeClass('wr2x-hover-drop');
+				alert( "Your PHP configuration only allows file upload of a maximum of " + (maxPhpSize / 1000000) + "MB." );
+				return;
+			}
+
+			jQuery(evt.target).parents('td').addClass('wr2x-loading-file');
 			var reader = new FileReader();
 			reader.filename = file.name;
 			reader.attachmentId = jQuery(evt.target).parents('.wr2x-file-row').attr('postid');
