@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.2.6
+Version: 3.2.7
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.2.6';
+$wr2x_version = '3.2.7';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_lazysizes = '1.0.1';
@@ -137,7 +137,9 @@ function wr2x_picture_rewrite( $buffer ) {
 			$from = substr( $element, 0 );
 			if ( $potential_retina != null ) {
 				$retina_url = wr2x_cdn_this( wr2x_from_system_to_url( $potential_retina ) );
-				$img_url = wr2x_cdn_this( trailingslashit( get_site_url() ) . $img_pathinfo );
+				$retina_url = apply_filters( 'wr2x_img_retina_url', $retina_url );
+				$img_url = wr2x_cdn_this( site_url( $img_pathinfo ) );
+				$img_url  = apply_filters( 'wr2x_img_url', $img_url  );
 				if ( $lazysize ) {
 					$element->class = $element->class . ' lazyload';
 					$element->{'data-srcset'} =  "$img_url, $retina_url 2x";
@@ -146,8 +148,10 @@ function wr2x_picture_rewrite( $buffer ) {
 					$element->srcset =  "$img_url, $retina_url 2x";
 				if ( $killsrc )
 					$element->src = null;
-				else
-					$element->src = wr2x_cdn_this( $element->src );
+				else {
+					$img_src = wr2x_cdn_this( $element->src );
+					$element->src  = apply_filters( 'wr2x_img_src', $img_src  );
+				}
 				$to = $element;
 				$buffer = str_replace( trim( $from, "</> "), trim( $to, "</> " ), $buffer );
 				wr2x_log( "The img tag '$from' was rewritten to '$to'" );
@@ -863,7 +867,7 @@ function wr2x_deactivate() {
 /**
  *
  * PRO 
- * Come on, it's only 5$ :'(
+ * Come on, it's not so expensive :'(
  *
  */
 

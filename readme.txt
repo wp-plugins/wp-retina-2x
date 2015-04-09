@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.2.6
+Stable tag: 3.2.7
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.2.7 =
+* Add: API filters to give the opportunity to other plugins to plug into... this plugin ;)
+* Info: If you happy with the plugin, don't hesitate to write a review: https://wordpress.org/support/view/plugin-reviews/wp-retina-2x. That gives me a huge motivation! Of course you can also get the Pro version. Thanks to you all for your support, I have really many amazing users with excellent debugging reviews and feedbacks!
 
 = 3.2.6 =
 * Add: Check the maximum upload value in PHP settings before actually uploading (to avoid silenced crashes).
@@ -275,6 +279,17 @@ Quick and easy installation:
 == Frequently Asked Questions ==
 
 The FAQ can be found at http://apps.meow.fr/wp-retina-2x/faq/.
+
+Developer developers, WP Retina 2x has a little API. Here are a few filters and actions you might want to use.
+
+=== Actions ===
+* wr2x_retina_file_added: called when a new retina file is created, 1st argument is $attachment_id (of the media) and second is the $retina_filepath
+* wr2x_retina_file_removed: called when a new retina file is removed, 1st argument is $attachment_id (of the media) and second is the $retina_filepath
+
+=== Filters ===
+* wr2x_img_url: you can check and potentially override the $wr2x_img_url (normal/original image from the src) that will be used in the srcset for 1x
+* wr2x_img_retina_url: you can check and potentially override the $wr2x_img_retina_url (retina image) that will be used in the srcset for 2x
+* wr2x_img_src: you can check and potentially override the $wr2x_img_src that will be used in the img's src (only used in Pro version)
 
 == Screenshots ==
 
