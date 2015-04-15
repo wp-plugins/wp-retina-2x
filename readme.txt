@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.2.7
+Stable tag: 3.2.8
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -27,9 +27,12 @@ Languages: English, French.
 
 == Changelog ==
 
+= 3.2.8 =
+* Fix: Support for custom uploads directory.
+* Info: Added error_log for BedRock related debugging (commented, check line 137 in main file). BedRock users should try to modify the wr2x_get_wordpress_upload_root function (in wp-retina-2x.php) to make it work for them. Let's talk about it on https://wordpress.org/support/topic/path-incorrect-as-custom-uploads-directory-location-with-bedrock.
+
 = 3.2.7 =
 * Add: API filters to give the opportunity to other plugins to plug into... this plugin ;)
-* Info: If you happy with the plugin, don't hesitate to write a review: https://wordpress.org/support/view/plugin-reviews/wp-retina-2x. That gives me a huge motivation! Of course you can also get the Pro version. Thanks to you all for your support, I have really many amazing users with excellent debugging reviews and feedbacks!
 
 = 3.2.6 =
 * Add: Check the maximum upload value in PHP settings before actually uploading (to avoid silenced crashes).
@@ -39,7 +42,6 @@ Languages: English, French.
 * Add: Custom CDN Domain support (check the "Custom CDN Domain" option).
 * Fix: Removed a console.log that was forgotten ;)
 * Change: different way of getting the temporary folder to write files (might help in a few cases).
-* Info: If you are curious about the abandoned island of Gunkanjima (Japan), please check my article here: http://www.totorotimes.com/gunkanjima/. I would love tweets and shares, that will definitely help me to do more adventures such as that one. Thank you and have a nice week-end everyone!
 
 = 3.2.2 =
 * Fix: Drag & drop images wasn't working on Firefox and Safari.
