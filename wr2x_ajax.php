@@ -545,7 +545,8 @@ function wr2x_wp_ajax_wr2x_upload() {
 	//rename( $tmpfname, $retinafile );
 	//chmod( $retinafile, 0644 );
 	list( $width, $height ) = getimagesize( $tmpfname );
-	if ( $meta['width'] * 2 > $width || $meta['height'] * 2 > $height ) {
+
+	if ( !wr2x_are_dimensions_ok( $width, $height, $meta['width'] * 2, $meta['height'] * 2 ) ) {
 		echo json_encode( array(
 			'success' => false,
 			'message' => "This image has a resolution of ${width}×${height} but your Full Size image requires a retina image of at least " . ( $meta['width'] * 2 ) . "x" . ( $meta['height'] * 2 ) . "."

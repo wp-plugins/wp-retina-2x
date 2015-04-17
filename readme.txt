@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.1.1
-Stable tag: 3.2.8
+Stable tag: 3.2.9
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,11 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.2.9 =
+* Fix: Support for BedRock and a few more customized installs.
+* Update: Allows a little error margin for the resolution of images being uploaded for full-size retina.
+* Info: If you encounter any issue, please roll-back to 3.2.8 and come to the support forum (https://wordpress.org/support/plugin/wp-retina-2x). If you are happy with it, please write a little review (https://wordpress.org/support/view/plugin-reviews/wp-retina-2x) :) Nice week-end everyone!
 
 = 3.2.8 =
 * Fix: Support for custom uploads directory.
