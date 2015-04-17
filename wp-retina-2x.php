@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.2.9
+Version: 3.3.0
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,7 +24,7 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.2.9';
+$wr2x_version = '3.3.0';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.2.0.2014.02.03';
 $wr2x_lazysizes = '1.0.1';
@@ -218,7 +218,7 @@ function wr2x_html_rewrite( $buffer ) {
 // Function written by jappievw
 // http://wordpress.org/support/topic/cant-find-retina-file-with-custom-uploads-constant?replies=3#post-5078892
 function wr2x_get_pathinfo_from_image_src( $image_src ) {
-	$uploads_url = trailingslashit( wp_upload_dir()['baseurl'] );
+	$uploads_url = trailingslashit( wr2x_get_upload_root_url() );
 	if ( strpos( $image_src, $uploads_url ) === 0 ) {
 		return ltrim( substr( $image_src, strlen( $uploads_url ) ), '/');
 	}
@@ -522,12 +522,14 @@ function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
 // Get WordPress upload directory
 function wr2x_get_upload_root()
 {
-	return wp_upload_dir()['basedir'];
+	$uploads = wp_upload_dir();
+	return $uploads['basedir'];
 }
 
 function wr2x_get_upload_root_url()
 {
-	return wp_upload_dir()['baseurl'];
+	$uploads = wp_upload_dir();
+	return $uploads['baseurl'];
 }
 
 // Get WordPress directory
@@ -553,7 +555,7 @@ function wr2x_from_system_to_url( $file ) {
 	if ( empty( $file ) )
 		return "";
 	$retina_pathinfo = ltrim( str_replace( wr2x_get_upload_root(), "", $file ), '/' );
-	$url = trailingslashit( wp_upload_dir()['baseurl'] ) . $retina_pathinfo;
+	$url = trailingslashit( wr2x_get_upload_root_url() ) . $retina_pathinfo;
 	$url = wr2x_cdn_this( $url );
 	return $url;
 }
