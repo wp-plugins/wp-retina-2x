@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 4.1.1
+Tested up to: 4.2.0
 Stable tag: 3.3.0
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
