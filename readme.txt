@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.2.0
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.3.1 =
+* Update: LazySize from 1.0 to 1.1.
+* Update: PictureFill from 2.3.0 to 2.3.1.
 
 = 3.3.0 =
 * Fix: Used a PHP shortcut that only works in PHP 5.4. Shortcut removed.
