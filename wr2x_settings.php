@@ -18,10 +18,13 @@ function wr2x_settings_page() {
     by_jordy_meow();
     echo "</h2>";
 	if ( $method == 'retina.js' ) {
-		echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
+		echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
 	}
+    if ( $method == 'Picturefill' ) {
+        echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "PictureFill", 'wp-retina-2x' ) . "</u>.</span>";
+    }
 	if ( $method == 'Retina-Images' ) {
-        echo "<p><span style='color: blue;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
+        echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
         if ( defined( 'MULTISITE' ) && MULTISITE == true  ) {
             if ( get_site_option( 'ms_files_rewriting' ) ) {
                 // MODIFICATION: Craig Foster

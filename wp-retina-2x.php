@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.3.1
+Version: 3.3.2
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,10 +24,10 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.3.1';
+$wr2x_version = '3.3.2';
 $wr2x_retinajs = '1.3.0';
-$wr2x_picturefill = '2.2.0.2014.02.03';
-$wr2x_lazysizes = '1.0.1';
+$wr2x_picturefill = '2.3.1';
+$wr2x_lazysizes = '1.1';
 $wr2x_retina_image = '1.4.1';
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
@@ -354,9 +354,9 @@ function wr2x_add_ignore( $attachmentId ) {
  */
 
 function wpr2x_html_get_basic_retina_info_full( $attachmentId, $retina_info ) {
-	if ( !wr2x_getoption( "full_size", "wr2x_basics", false ) ) {
-		return __( "N/A", "wp-retina-2x" );
-	}
+	// if ( !wr2x_getoption( "full_size", "wr2x_basics", false ) ) {
+	// 	return __( "N/A", "wp-retina-2x" );
+	// }
 	$status = ( isset( $retina_info ) && isset( $retina_info['full-size'] ) ) ? $retina_info['full-size'] : 'IGNORED';
 	if ( $status == 'EXISTS' ) {
 		$fullsize_file = get_attached_file( $attachmentId );
@@ -365,7 +365,7 @@ function wpr2x_html_get_basic_retina_info_full( $attachmentId, $retina_info ) {
 		return '<img src="' . $retina . '" />';
 	}
 	else if ( is_array( $status ) ) {
-		return __( "<i>Required</i>", "wp-retina-2x" );
+		return __( "<i style='color: red;'>Required</i>", "wp-retina-2x" );
 	}
 	else if ( $status == 'IGNORED' ) {
 		return __( "N/A", "wp-retina-2x" );
@@ -692,13 +692,14 @@ function wr2x_retina_info( $id ) {
 	$ignore = wr2x_getoption( "ignore_sizes", "wr2x_basics", array() );
 
 	// Full-Size (if required in the settings)
-	if ( wr2x_getoption( "full_size", "wr2x_basics", false ) && wr2x_is_pro() ) {
-		$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
-		if ( $retina_file && file_exists( $retina_file ) )
-			$result['full-size'] = 'EXISTS';
-		else if ( $retina_file )
-			$result['full-size'] = array( 'width' => $original_width * 2, 'height' => $original_height * 2 );
-	}
+	//if ( wr2x_getoption( "full_size", "wr2x_basics", false ) && wr2x_is_pro() ) {
+	$fullsize_required = wr2x_getoption( "full_size", "wr2x_basics", false ) && wr2x_is_pro();
+	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . $pathinfo['extension'];
+	if ( $retina_file && file_exists( $retina_file ) )
+		$result['full-size'] = 'EXISTS';
+	else if ( $fullsize_required && $retina_file )
+		$result['full-size'] = array( 'width' => $original_width * 2, 'height' => $original_height * 2 );
+	//}
 
 	if ( $sizes ) {
 		foreach ($sizes as $name => $attr) {

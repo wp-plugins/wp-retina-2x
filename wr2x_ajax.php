@@ -482,7 +482,14 @@ function wr2x_check_get_ajax_uploaded_file() {
 	$data = $_POST['data'];
 
 	// Create the file as a TMP
-	$tmpfname = tempnam( sys_get_temp_dir(), "wpx_" );
+
+	// From version 3.3.2 (use uploads folder for tmp):
+	if ( !file_exists( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" ) )
+		mkdir( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" );
+	$tmpfname = tempnam( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp", "wpx_" );
+	
+	// Before version 3.3.2:
+	//$tmpfname = tempnam( sys_get_temp_dir(), "wpx_" );
 	
 	if ( $tmpfname == FALSE ) {
 
@@ -503,6 +510,7 @@ function wr2x_check_get_ajax_uploaded_file() {
 	$handle = fopen( $tmpfname, "w" );
 	fwrite( $handle, base64_decode( $data ) );
 	fclose( $handle );
+	chmod( $tmpfname, 0664 );
 
 	// Check if it is an image
 	$file_info = getimagesize( $tmpfname );
@@ -531,7 +539,6 @@ function wr2x_check_get_ajax_uploaded_file() {
 function wr2x_wp_ajax_wr2x_upload() {
 	$tmpfname = wr2x_check_get_ajax_uploaded_file();
 	$attachmentId = (int) $_POST['attachmentId'];
-
 	$meta = wp_get_attachment_metadata( $attachmentId );
 	$current_file = get_attached_file( $attachmentId );
 	$pathinfo = pathinfo( $current_file );
@@ -542,8 +549,6 @@ function wr2x_wp_ajax_wr2x_upload() {
 		unlink( $retinafile );
 
 	// Insert the new file and delete the temporary one
-	//rename( $tmpfname, $retinafile );
-	//chmod( $retinafile, 0644 );
 	list( $width, $height ) = getimagesize( $tmpfname );
 
 	if ( !wr2x_are_dimensions_ok( $width, $height, $meta['width'] * 2, $meta['height'] * 2 ) ) {

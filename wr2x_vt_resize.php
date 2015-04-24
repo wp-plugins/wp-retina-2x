@@ -19,6 +19,12 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$cropped_img_path = $no_ext_path . '-' . $width . 'x' . $height . "-tmp" . $extension;
 		$image = wp_get_image_editor( $file_path );
 
+		if ( is_wp_error( $image ) ) {
+			wr2x_log( "Resize failure: " . $result->get_error_message() );
+			error_log( "Resize failure: " . $result->get_error_message() );
+			return null;
+		}
+
 		// Resize or use Custom Crop
 		if ( !$customCrop )
 			$image->resize( $width, $height, $crop_params );
@@ -31,6 +37,11 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$saved = $image->save( $cropped_img_path );
 		if ( rename( $saved['path'], $newfile ) )
 			$cropped_img_path = $newfile;
+		else {
+			trigger_error( "Retina: Could not move " . $saved['path'] . " to " . $newfile . "." , E_WARNING );
+			error_log( "Retina: Could not move " . $saved['path'] . " to " . $newfile . "." );
+			return null;
+		}
 		$new_img_size = getimagesize( $cropped_img_path );
 		$new_img = str_replace( basename( $image_src[0] ), basename( $cropped_img_path ), $image_src[0] );
 		$vt_image = array ( 'url' => $new_img, 'width' => $new_img_size[0], 'height' => $new_img_size[1] );

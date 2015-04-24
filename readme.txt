@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.2.0
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,9 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.3.2 =
+* Fix: Use WP uploads folder for temporary files to avoid issues depending on hosting services.
 
 = 3.3.1 =
 * Update: LazySize from 1.0 to 1.1.
