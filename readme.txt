@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.2.0
-Stable tag: 3.3.2
+Stable tag: 3.3.4
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.3.4 =
+* Fix: Issues with retina images outside the uploads directory.
+* Info: Please write a review for the plugin if you are happy with it. I am trying my best to make this plugin to work with every kind of WP install and system :)
 
 = 3.3.2 =
 * Fix: Use WP uploads folder for temporary files to avoid issues depending on hosting services.
@@ -296,9 +300,13 @@ Quick and easy installation:
 
 == Frequently Asked Questions ==
 
-The FAQ can be found at http://apps.meow.fr/wp-retina-2x/faq/.
+Users, you will find the FAQ here: http://apps.meow.fr/wp-retina-2x/faq/.
 
-Developer, WP Retina 2x has a little API. Here are a few filters and actions you might want to use.
+Developers, WP Retina 2x has a little API. Here are a few filters and actions you might want to use.
+
+= Functions =
+* wr2x_get_retina_from_url( $url ): return the URL of the retina image (empty string if not found)
+* wr2x_get_retina( $syspath ): return the system path of the retina image (null if not found)
 
 = Actions =
 * wr2x_retina_file_added: called when a new retina file is created, 1st argument is $attachment_id (of the media) and second is the $retina_filepath

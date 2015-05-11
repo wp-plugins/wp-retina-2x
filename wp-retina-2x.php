@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.3.2
+Version: 3.3.4
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -131,14 +131,12 @@ function wr2x_picture_rewrite( $buffer ) {
 			continue;
 		}
 		else {
-			$img_pathinfo = wr2x_get_pathinfo_from_image_src( $element->src );
-			$filepath = trailingslashit( wr2x_get_upload_root() ) . $img_pathinfo;
-			$potential_retina = wr2x_get_retina( $filepath );
+			$retina_url = wr2x_get_retina_from_url( $element->src );
 			$from = substr( $element, 0 );
-			if ( $potential_retina != null ) {
-				$retina_url = wr2x_cdn_this( wr2x_from_system_to_url( $potential_retina ) );
+			if ( $retina_url != null ) {
+				$retina_url = wr2x_cdn_this( $retina_url );
 				$retina_url = apply_filters( 'wr2x_img_retina_url', $retina_url );
-				$img_url = wr2x_cdn_this( trailingslashit( wr2x_get_upload_root_url() ) . $img_pathinfo );
+				$img_url = wr2x_cdn_this( $element->src );
 				$img_url  = apply_filters( 'wr2x_img_url', $img_url  );
 				if ( $lazysize ) {
 					$element->class = $element->class . ' lazyload';
@@ -194,15 +192,15 @@ function wr2x_html_rewrite( $buffer ) {
 		$nodes_count++;
 		$img_pathinfo = wr2x_get_pathinfo_from_image_src( $tag->getAttribute('src') );
 		$filepath = trailingslashit( wr2x_get_upload_root() ) . $img_pathinfo;
-		$potential_retina = wr2x_get_retina( $filepath );
-		if ( $potential_retina != null ) {
-			$retina_pathinfo = wr2x_cdn_this( ltrim( str_replace( wr2x_get_upload_root(), "", $potential_retina ), '/' ) );
+		$system_retina = wr2x_get_retina( $filepath );
+		if ( $system_retina != null ) {
+			$retina_pathinfo = wr2x_cdn_this( ltrim( str_replace( wr2x_get_upload_root(), "", $system_retina ), '/' ) );
 			$buffer = str_replace( $img_pathinfo, $retina_pathinfo, $buffer );
 			wr2x_log( "The img src '$img_pathinfo' was replaced by '$retina_pathinfo'" );
 			$nodes_replaced++;
 		}
 		else {
-			wr2x_log( "The file '$potential_retina' was not found. Tag not modified." );
+			wr2x_log( "The file '$system_retina' was not found. Tag not modified." );
 		}
 	}
 	wr2x_log( "$nodes_replaced/$nodes_count were replaced." );
@@ -214,22 +212,6 @@ function wr2x_html_rewrite( $buffer ) {
  * ISSUES CALCULATION AND FUNCTIONS
  *
  */ 
-
-// Function written by jappievw
-// http://wordpress.org/support/topic/cant-find-retina-file-with-custom-uploads-constant?replies=3#post-5078892
-function wr2x_get_pathinfo_from_image_src( $image_src ) {
-	$uploads_url = trailingslashit( wr2x_get_upload_root_url() );
-	if ( strpos( $image_src, $uploads_url ) === 0 ) {
-		return ltrim( substr( $image_src, strlen( $uploads_url ) ), '/');
-	}
-	else if ( strpos( $image_src, wp_make_link_relative( $uploads_url ) ) === 0 ) {
-		return ltrim( substr( $image_src, strlen( wp_make_link_relative( $uploads_url ) ) ), '/');
-	}
-	else {
-		$img_info = parse_url( $image_src );
-		return ltrim( $img_info['path'], '/' );
-	}
-}
 
 // Compares two images dimensions (resolutions) against each while accepting an margin error
 function wr2x_are_dimensions_ok( $width, $height, $retina_width, $retina_height ) {
@@ -360,8 +342,7 @@ function wpr2x_html_get_basic_retina_info_full( $attachmentId, $retina_info ) {
 	$status = ( isset( $retina_info ) && isset( $retina_info['full-size'] ) ) ? $retina_info['full-size'] : 'IGNORED';
 	if ( $status == 'EXISTS' ) {
 		$fullsize_file = get_attached_file( $attachmentId );
-		$retina_file = wr2x_get_retina( $fullsize_file );
-		$retina = wr2x_from_system_to_url( $retina_file );
+		$retina_file = wr2x_get_retina_from_url( $fullsize_file );
 		return '<img src="' . $retina . '" />';
 	}
 	else if ( is_array( $status ) ) {
@@ -456,7 +437,7 @@ function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
 			$normal_file_system = trailingslashit( $pathinfo_system['dirname'] ) . $meta['sizes'][$i]['file'];
 			$retina_file_system = wr2x_get_retina( $normal_file_system );
 			$normal_file = trailingslashit( $basepath_url ) . $meta['sizes'][$i]['file'];
-			$retina_file = wr2x_from_system_to_url( $retina_file_system );
+			$retina_file = wr2x_get_retina_from_url( $normal_file );
 			$status = ( isset( $retina_info ) && isset( $retina_info[$i] ) ) ? $retina_info[$i] : null;
 			$width = $meta['sizes'][$i]['width'];
 			$height = $meta['sizes'][$i]['height'];
@@ -520,22 +501,73 @@ function wpr2x_html_get_details_retina_info( $post, $retina_info ) {
  */
 
 // Get WordPress upload directory
-function wr2x_get_upload_root()
-{
+function wr2x_get_upload_root() {
 	$uploads = wp_upload_dir();
 	return $uploads['basedir'];
 }
 
-function wr2x_get_upload_root_url()
-{
+function wr2x_get_upload_root_url() {
 	$uploads = wp_upload_dir();
 	return $uploads['baseurl'];
 }
 
 // Get WordPress directory
-function wr2x_get_wordpress_root()
-{
+function wr2x_get_wordpress_root() {
 	return ABSPATH;
+}
+
+// Return the retina file if there is any (system path)
+function wr2x_get_retina( $file ) {
+	$pathinfo = pathinfo( $file ) ;
+	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . ( isset( $pathinfo['extension'] ) ? $pathinfo['extension'] : "" );
+	if ( file_exists( $retina_file ) )
+		return $retina_file;
+	wr2x_log( "Retina file at '{$retina_file}' does not exist." );
+	return null;
+}
+
+// Return retina URL from the image URL
+function wr2x_get_retina_from_url( $url ) {
+	$filepath = wr2x_from_url_to_system( $url );
+	if ( empty( $filepath ) )
+		return "";
+	$system_retina = wr2x_get_retina( $filepath );
+	if ( empty( $system_retina ) )
+		return "";
+	$retina_url = wr2x_rewrite_url_to_retina( $url );
+	return $retina_url;
+}
+
+// Get the filepath from the URL
+function wr2x_from_url_to_system( $url ) {
+	$img_pathinfo = wr2x_get_pathinfo_from_image_src( $url );
+	$filepath = trailingslashit( wr2x_get_wordpress_root() ) . $img_pathinfo;
+	if ( file_exists( $filepath ) )
+		return $filepath;
+	$filepath = trailingslashit( wr2x_get_upload_root() ) . $img_pathinfo;
+	if ( file_exists( $filepath ) )
+		return $filepath;
+	return null;
+}
+
+function wr2x_rewrite_url_to_retina( $url ) {
+	$whereisdot = strrpos( $url, '.' );
+	$url = substr( $url, 0, $whereisdot ) . wr2x_retina_extension() . substr( $url, $whereisdot + 1 );
+	return $url;
+}
+
+// Clean the PathInfo of the IMG SRC.
+// IMPORTANT: This function STRIPS THE UPLOAD FOLDER if it's found
+// REASON: The reason is that on some installs the uploads folder is linked to a different "unlogical" physical folder
+// http://wordpress.org/support/topic/cant-find-retina-file-with-custom-uploads-constant?replies=3#post-5078892
+function wr2x_get_pathinfo_from_image_src( $image_src ) {
+	$uploads_url = trailingslashit( wr2x_get_upload_root_url() );
+	if ( strpos( $image_src, $uploads_url ) === 0 )
+		return ltrim( substr( $image_src, strlen( $uploads_url ) ), '/');
+	else if ( strpos( $image_src, wp_make_link_relative( $uploads_url ) ) === 0 )
+		return ltrim( substr( $image_src, strlen( wp_make_link_relative( $uploads_url ) ) ), '/');
+	$img_info = parse_url( $image_src );
+	return ltrim( $img_info['path'], '/' );
 }
 
 // Rename this filename with CDN
@@ -548,16 +580,6 @@ function wr2x_cdn_this( $file ) {
 	$normal_domain = get_site_url();
 	$file = str_replace( $normal_domain, $cdn_domain, $file );
 	return $file;
-}
-
-// If CDN is true, then use custom CDN domain if enabled
-function wr2x_from_system_to_url( $file ) {
-	if ( empty( $file ) )
-		return "";
-	$retina_pathinfo = ltrim( str_replace( wr2x_get_upload_root(), "", $file ), '/' );
-	$url = trailingslashit( wr2x_get_upload_root_url() ) . $retina_pathinfo;
-	$url = wr2x_cdn_this( $url );
-	return $url;
 }
 
 function wr2x_admin_menu() {
@@ -650,19 +672,6 @@ function wr2x_get_attachment_id( $file ) {
 // Return the retina extension followed by a dot
 function wr2x_retina_extension() {
 	return '@2x.';	
-}
-
-// Return the retina file if there is any
-function wr2x_get_retina( $file ) {
-	$pathinfo = pathinfo( $file ) ;
-	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . ( isset( $pathinfo['extension'] ) ? $pathinfo['extension'] : "" );
-	if ( file_exists( $retina_file ) ) {
-		return $retina_file;
-	}
-	else {
-		wr2x_log( "Retina file at '{$retina_file}' does not exist." );
-		return null;
-	}
 }
 
 function wr2x_is_image_meta( $meta ) {
