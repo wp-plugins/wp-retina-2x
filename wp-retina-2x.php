@@ -3,7 +3,7 @@
 Plugin Name: WP Retina 2x
 Plugin URI: http://www.meow.fr
 Description: Make your images crisp and beautiful on Retina (High-DPI) displays.
-Version: 3.3.5
+Version: 3.3.6
 Author: Jordy Meow
 Author URI: http://www.meow.fr
 
@@ -24,11 +24,12 @@ Originally developed for two of my websites:
  *
  */
 
-$wr2x_version = '3.3.5';
+$wr2x_version = '3.3.6';
 $wr2x_retinajs = '1.3.0';
 $wr2x_picturefill = '2.3.1';
 $wr2x_lazysizes = '1.1';
 $wr2x_retina_image = '1.4.1';
+$wr2x_extra_debug = false;
 
 add_action( 'admin_menu', 'wr2x_admin_menu' );
 add_action( 'wp_enqueue_scripts', 'wr2x_wp_enqueue_scripts' );
@@ -341,12 +342,10 @@ function wpr2x_html_get_basic_retina_info_full( $attachmentId, $retina_info ) {
 	// }
 	$status = ( isset( $retina_info ) && isset( $retina_info['full-size'] ) ) ? $retina_info['full-size'] : 'IGNORED';
 	if ( $status == 'EXISTS' ) {
-		$fullsize_file = get_attached_file( $attachmentId );
-		$retina_file = wr2x_get_retina_from_url( $fullsize_file );
-		return '<img src="' . $retina . '" />';
+		return '<ul class="retina-info"><li class="retina-exists" title="full-size"></li></ul>';
 	}
 	else if ( is_array( $status ) ) {
-		return __( "<i style='color: red;'>Required</i>", "wp-retina-2x" );
+		return '<ul class="retina-info"><li class="retina-issue" title="full-size"></li></ul>';
 	}
 	else if ( $status == 'IGNORED' ) {
 		return __( "N/A", "wp-retina-2x" );
@@ -519,6 +518,17 @@ function wr2x_get_wordpress_root() {
 // Return the retina file if there is any (system path)
 function wr2x_get_retina( $file ) {
 	$pathinfo = pathinfo( $file ) ;
+	if ( empty( $pathinfo ) || !isset( $pathinfo['dirname'] ) ) {
+		if ( empty( $file ) ) {
+			wr2x_log( "An empty filename was given to wr2x_get_retina()." );
+			error_log( "An empty filename was given to wr2x_get_retina()." );
+		}
+		else {
+			wr2x_log( "Pathinfo is null for " . $file . "." );
+			error_log( "Pathinfo is null for " . $file . "." );
+		}
+		return null;
+	}
 	$retina_file = trailingslashit( $pathinfo['dirname'] ) . $pathinfo['filename'] . wr2x_retina_extension() . ( isset( $pathinfo['extension'] ) ? $pathinfo['extension'] : "" );
 	if ( file_exists( $retina_file ) )
 		return $retina_file;
@@ -528,13 +538,21 @@ function wr2x_get_retina( $file ) {
 
 // Return retina URL from the image URL
 function wr2x_get_retina_from_url( $url ) {
+	wr2x_log( "[GRFU] From URL: " . $url, true);
 	$filepath = wr2x_from_url_to_system( $url );
-	if ( empty( $filepath ) )
-		return "";
+	if ( empty ( $filepath ) ) {
+		wr2x_log( "[GRFU] To PATH: Not found", true);
+		return null;
+	}
+	wr2x_log( "[GRFU] To PATH: " . $filepath, true);
 	$system_retina = wr2x_get_retina( $filepath );
-	if ( empty( $system_retina ) )
-		return "";
+	if ( empty ( $system_retina ) ) {
+		wr2x_log( "[GRFU] To Retina PATH: Not found", true);
+		return null;
+	}
+	wr2x_log( "[GRFU]To Retina PATH: " . $system_retina, true);
 	$retina_url = wr2x_rewrite_url_to_retina( $url );
+	wr2x_log( "[GRFU]To Retina URL: " . $retina_url, true);
 	return $retina_url;
 }
 
@@ -643,13 +661,16 @@ function wr2x_is_debug() {
 	return $debug && $debug == "on";
 }
 
-function wr2x_log( $data ) {
-	if ( wr2x_is_debug() ) {
-		$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
-		$date = date( "Y-m-d H:i:s" );
-		fwrite( $fh, "$date: {$data}\n" );
-		fclose( $fh );
-	}
+function wr2x_log( $data, $isExtra = false ) {
+	global $wr2x_extra_debug;
+	if ( $isExtra && !$wr2x_extra_debug )
+		return;
+	if ( !$isExtra && !wr2x_is_debug() )
+		return;
+	$fh = fopen( trailingslashit( WP_PLUGIN_DIR ) . 'wp-retina-2x/wp-retina-2x.log', 'a' );
+	$date = date( "Y-m-d H:i:s" );
+	fwrite( $fh, "$date: {$data}\n" );
+	fclose( $fh );
 }
 
 // Based on http://wordpress.stackexchange.com/questions/6645/turn-a-url-into-an-attachment-post-id

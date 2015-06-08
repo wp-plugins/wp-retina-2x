@@ -482,29 +482,23 @@ function wr2x_check_get_ajax_uploaded_file() {
 	$data = $_POST['data'];
 
 	// Create the file as a TMP
+	if ( is_writable( sys_get_temp_dir() ) ) {
+		$tmpfname = tempnam( sys_get_temp_dir(), "wpx_" );
+	}
+	else if ( is_writable( wr2x_get_upload_root() ) ) {
+		if ( !file_exists( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" ) )
+			mkdir( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" );
+		$tmpfname = tempnam( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp", "wpx_" );
+	}
 
-	// From version 3.3.2 (use uploads folder for tmp):
-	if ( !file_exists( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" ) )
-		mkdir( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp" );
-	$tmpfname = tempnam( trailingslashit( wr2x_get_upload_root() ) . "wr2x-tmp", "wpx_" );
-	
-	// Before version 3.3.2:
-	//$tmpfname = tempnam( sys_get_temp_dir(), "wpx_" );
-	
-	if ( $tmpfname == FALSE ) {
-
+	if ( $tmpfname == null || $tmpfname == FALSE ) {
 		$tmpdir = get_temp_dir();
-		if ( !is_writable( $tmpdir ) )
-			echo json_encode( array(
-				'success' => false,
-				'message' => __( "You don't have the rights to use a temporary directory.", 'wp-retina-2x' )
-			));
-		else
-			echo json_encode( array(
-				'success' => false,
-				'message' => __( "The temporary directory could not be created.", 'wp-retina-2x' )
-			));
-		die();
+		error_log( "Retina: The temporary directory could not be created." );
+		echo json_encode( array(
+			'success' => false,
+			'message' => __( "The temporary directory could not be created.", 'wp-retina-2x' )
+		));
+		die;
 	}
 
 	$handle = fopen( $tmpfname, "w" );

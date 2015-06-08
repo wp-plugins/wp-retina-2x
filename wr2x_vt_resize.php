@@ -18,6 +18,7 @@ if ( !function_exists('wr2x_vt_resize') ) {
 		$no_ext_path = $file_info['dirname'] . '/' . $file_info['filename'];
 		$cropped_img_path = $no_ext_path . '-' . $width . 'x' . $height . "-tmp" . $extension;
 		$image = wp_get_image_editor( $file_path );
+
 		if ( is_wp_error( $image ) ) {
 			wr2x_log( "Resize failure: " . $image->get_error_message() );
 			error_log( "Resize failure: " . $image->get_error_message() );

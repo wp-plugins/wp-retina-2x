@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 4.2.0
-Stable tag: 3.3.5
+Tested up to: 4.2.2
+Stable tag: 3.3.6
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -27,8 +27,12 @@ Languages: English, French.
 
 == Changelog ==
 
+= 3.3.6 =
+* Fix: There was an issue with local path for a few installs.
+* Add: Introduced $wr2x_extra_debug for extra developer debug (might be handy).
+
 = 3.3.5 =
-* Fix: Very minor issue (one of the debug line had a bug).
+Fix: Very minor issue (one of the debug line had a bug).
 
 = 3.3.4 =
 * Fix: Issues with retina images outside the uploads directory.
