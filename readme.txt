@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.2.2
-Stable tag: 3.3.6
+Stable tag: 3.3.8
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,14 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.3.8 =
+* Fix: There was an issue if the class starts with a space (broken HTML), plugin automatically fix it on the fly.
+* Fix: Full-Size image had the wrong path in the Details screen.
+* Fix: Option Auto Generate was wrongly show unchecked even though it is active by default.
+* Update: Moved the filters to allow developers to use files hosted on another server.
+* Update: Translation strings. If you want to translate the plugin in your language, please contact me :)
+* Info: I released a new plugin called WP Map Editor. You can get it here https://wordpress.org/plugins/wp-mapeditor/ and learn about it here http://apps.meow.fr/wp-mapeditor/. I am welcoming a few beta-testers :)
 
 = 3.3.6 =
 * Fix: There was an issue with local path for a few installs.

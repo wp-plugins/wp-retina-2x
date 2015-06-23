@@ -12,19 +12,19 @@ function wr2x_settings_page() {
     global $wr2x_settings_api;
 	echo '<div class="wrap">';
     jordy_meow_donation(true);
-	$method = wr2x_getoption( "method", "wr2x_advanced", 'retina.js' );
+	$method = wr2x_getoption( "method", "wr2x_advanced", 'Picturefill' );
 
 	echo "<div id='icon-options-general' class='icon32'><br></div><h2>Retina";
     by_jordy_meow();
     echo "</h2>";
 	if ( $method == 'retina.js' ) {
-		echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
+		echo "<p><span>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Client side", 'wp-retina-2x' ) . "</u>.</span>";
 	}
     if ( $method == 'Picturefill' ) {
-        echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "PictureFill", 'wp-retina-2x' ) . "</u>.</span>";
+        echo "<p><span>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "PictureFill", 'wp-retina-2x' ) . "</u>.</span>";
     }
 	if ( $method == 'Retina-Images' ) {
-        echo "<p><span style='color: #3175B8;'>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
+        echo "<p><span>" . __( "Current method:", 'wp-retina-2x' ) . " <u>" . __( "Server side", 'wp-retina-2x' ) . "</u>.</span>";
         if ( defined( 'MULTISITE' ) && MULTISITE == true  ) {
             if ( get_site_option( 'ms_files_rewriting' ) ) {
                 // MODIFICATION: Craig Foster
@@ -44,6 +44,15 @@ function wr2x_settings_page() {
     $wr2x_settings_api->show_forms();
     echo '</div>';
 	jordy_meow_footer();
+}
+
+function wr2x_setoption( $option, $section, $value ) {
+    $options = get_option( $section );
+    if ( empty( $options ) ) {
+        $options = array();
+    }
+    $options[$option] = $value;
+    update_option( $section, $options );
 }
 
 function wr2x_getoption( $option, $section, $default = '' ) {
@@ -85,6 +94,11 @@ function wr2x_admin_init() {
         )
     );
 	
+    // Default Auto-Generate
+    $auto_generate = wr2x_getoption( 'auto_generate', 'wr2x_basics', null );
+    if ( $auto_generate === null )
+        wr2x_setoption( 'auto_generate', 'wr2x_basics', 'on' );
+
 	$wpsizes = wr2x_get_image_sizes();
 	$sizes = array();
 	foreach ( $wpsizes as $name => $attr )
