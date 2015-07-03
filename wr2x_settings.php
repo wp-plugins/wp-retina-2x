@@ -116,14 +116,14 @@ function wr2x_admin_init() {
 			array(
                 'name' => 'auto_generate',
                 'label' => __( 'Auto Generate', 'wp-retina-2x' ),
-                'desc' => __( 'Generate retina images automatically when images are uploaded or re-generated.<br />The \'Disabled Sizes\' will be skipped.', 'wp-retina-2x' ),
+                'desc' => __( 'Generate retina images automatically when images are uploaded or re-generated.<br /><small>The \'Disabled Sizes\' will be skipped.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => true
             ),
             array(
                 'name' => 'full_size',
                 'label' => __( 'Full Size Retina (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'Retina for the full-size image will be considered required.<br />Checks and upload feature are available.', 'wp-retina-2x' ),
+                'desc' => __( 'Retina for the full-size image will be considered required.<br /><small>Checks for Full-Size retina will be enabled and upload features made available.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             )
@@ -153,7 +153,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'debug',
                 'label' => __( 'Debug Mode', 'wp-retina-2x' ),
-                'desc' => __( 'If checked, the client will be always served Retina images. <br />Please use it for testing purposes. It creates a <a href="' . plugins_url("wp-retina-2x") . '/wp-retina-2x.log">log file</a> in the plugin folder.', 'wp-retina-2x' ),
+                'desc' => __( 'Retina images will be always displayed and a log file will be created. <br /><small>Please use it for testing purposes. It creates a <a href="' . plugins_url("wp-retina-2x") . '/wp-retina-2x.log">log file</a> in the plugin folder.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
@@ -167,27 +167,27 @@ function wr2x_admin_init() {
             array(
                 'name' => 'picture_fill',
                 'label' => '',
-                'desc' => __( '<h2>For PictureFill</h2>', 'wp-retina-2x' ),
+                'desc' => __( '<h2>For PictureFill</h2><small>Using "Keep IMG SRC" and "Use Lazysizes" is the perfect middle between SEO and Performance.</small>', 'wp-retina-2x' ),
                 'type' => 'html'
             ),
             array(
                 'name' => 'picturefill_keep_src',
                 'label' => __( 'Keep IMG SRC (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'With PictureFill, <b>src</b> tags are replaced by <b>src-set</b> tags and consequently search engines might not be able to find and reference those images. Keeping it will load images twice for retina devices on old browsers.', 'wp-retina-2x' ),
+                'desc' => __( 'Excellent for SEO. But Retina devices will get both normal and retina images.<br /><small>With PictureFill, <b>src</b> tags are replaced by <b>src-set</b> tags and consequently search engines might not be able to find and reference those images.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
             array(
                 'name' => 'picturefill_lazysizes',
                 'label' => __( 'Use Lazysizes (Pro)', 'wp-retina-2x' ),
-                'desc' => __( 'HTML will be rewritten to support the lazysizes and the script will be also loaded. The images will be loaded in a lazy way (when the visitor is getting close to them).', 'wp-retina-2x' ),
+                'desc' => __( 'Retina images will be loaded in a lazy way, when the visitor is getting close to them.<br /><small>HTML will be rewritten to support the lazysizes and the script will be also loaded. </small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
             array(
                 'name' => 'picturefill_noscript',
                 'label' => __( 'No Picturefill Script', 'wp-retina-2x' ),
-                'desc' => __( 'The script for Picturefill will not be loaded. Only the browsers with src-set support (e.g. Chrome) will display images. You can also load the Picturefill script manually.', 'wp-retina-2x' ),
+                'desc' => __( 'The script for Picturefill will not be loaded.<br /><small>Only the browsers with src-set support (e.g. Chrome) will display images. You can also load the Picturefill script manually.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
@@ -214,7 +214,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'retina_admin',
                 'label' => __( 'Admin in Retina', 'wp-retina-2x' ),
-                'desc' => __( 'If checked, the WordPress Admin will also be Retina. Some plugins (like NextGen) do not like Retina enabled in the admin.', 'wp-retina-2x' ),
+                'desc' => __( 'WordPress Admin will also be Retina.<br /><small>Some plugins (like NextGen) do not like Retina enabled in the admin.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),
@@ -227,7 +227,7 @@ function wr2x_admin_init() {
             array(
                 'name' => 'ignore_mobile',
                 'label' => __( 'Ignore Mobile', 'wp-retina-2x' ),
-                'desc' => __( 'Doesn\'t deliver Retina images to mobiles.<br />PictureFill doesn\'t support it and cache will also prevent it from working.', 'wp-retina-2x' ),
+                'desc' => __( 'Doesn\'t deliver Retina images to mobiles.<br /><small>PictureFill doesn\'t support it and cache will also prevent it from working.</small>', 'wp-retina-2x' ),
                 'type' => 'checkbox',
                 'default' => false
             ),

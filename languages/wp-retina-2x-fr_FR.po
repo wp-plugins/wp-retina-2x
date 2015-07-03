@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Retina 2x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 16:53+0900\n"
-"PO-Revision-Date: 2014-01-24 16:54+0900\n"
+"POT-Creation-Date: 2015-06-23 15:58+0900\n"
+"PO-Revision-Date: 2015-06-23 16:19+0900\n"
 "Last-Translator: Jordy Meow <work@meow.fr>\n"
 "Language-Team: Jordy Meow <work@meow.fr>\n"
 "Language: fr_FR\n"
@@ -12,146 +12,264 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: ../\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.8.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: wr2x_ajax.php:39
-msgid "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page."
-msgstr "Fait. <a href='javascript:history.go(0)'>Rafraîchissez</a> cette page."
+#: wp-retina-2x.php:354
+msgid "N/A"
+msgstr "N/A"
 
-#: wr2x_ajax.php:42
+#: wp-retina-2x.php:387
 msgid ""
-"Done. You might want to <a href='?page=wp-"
-"retina-2x&view=issues&refresh=true'>refresh</a> the issues."
+"PRO VERSION ONLY<br /><br />You can buy a serial from here: <a "
+"target='_blank' href='http://apps.meow.fr/wp-retina-2x/'>WP Retina 2x</a>."
+"<br />Then add this serial in the settings. That's all! :)<br />Thanks a lot "
+"for your support."
 msgstr ""
-"Fait. Vous devriez peut-être <a href='?page=wp-"
-"retina-2x&view=issues&refresh=true'>rafraîchir</a> la liste des problèmes."
+"PRO VERSION SEULEMENT<br /><br />Vous pouvez obtenir un serial code ici : <a "
+"target='_blank' href='http://apps.meow.fr/wp-retina-2x/'>WP Retina 2x</a>."
+"<br />Ajouter le ensuite dans les paramètres de Retina.<br />Merci beaucoup "
+"pour votre support :)"
 
-#: wr2x_ajax.php:52 wr2x_ajax.php:103
-msgid "Please wait..."
-msgstr "Patientez SVP..."
+#: wp-retina-2x.php:422
+msgid ""
+"The metadata is broken! This is not related to the retina plugin. You should "
+"probably use a plugin to re-generate the missing metadata and images."
+msgstr ""
 
-#: wr2x_ajax.php:60
+#: wp-retina-2x.php:426
+#, php-format
+msgid ""
+"The image size '%s' could not be found. You probably changed your image "
+"sizes but this specific image was not re-build. This is not related to the "
+"retina plugin. You should probably use a plugin to re-generate the missing "
+"metadata and images."
+msgstr ""
+
+#: wp-retina-2x.php:444
+#, php-format
+msgid ""
+"The retina version of the Full-Size image is missing.<br />Full Size Retina "
+"has been checked in the Settings and this image is therefore required.<br /"
+">Please drag & drop an image of at least <b>%dx%d</b> in the <b>Full-Size "
+"Retina Upload</b> column."
+msgstr ""
+
+#: wp-retina-2x.php:448
+#, php-format
+msgid ""
+"The Full-Size image is too small (<b>%dx%d</b>) and this size cannot be "
+"generated.<br />Please upload an image of at least <b>%dx%d</b>."
+msgstr ""
+
+#: wp-retina-2x.php:458
+msgid "The retina image can be created. Please use the 'GENERATE' button."
+msgstr ""
+
+#: wp-retina-2x.php:463
+msgid "The standard image normally created by WordPress is missing."
+msgstr ""
+
+#: wp-retina-2x.php:468
+msgid "This size is ignored by your retina settings."
+msgstr "Cette taille est ignorée par vos paramètres."
+
+#: wp-retina-2x.php:952
+msgid "Your serial does not seem right."
+msgstr ""
+
+#: wp-retina-2x.php:955
+msgid "Your subscription is not active."
+msgstr "Votre plugin n'est pas enregistré."
+
+#: wp-retina-2x.php:958
+msgid "Too many URLs are linked to your subscription."
+msgstr ""
+
+#: wp-retina-2x.php:970
+msgid "Your subscription is enabled."
+msgstr "Votre plugin est enregistré."
+
+#: wr2x_ajax.php:30
+msgid ""
+"<a href='?page=wp-retina-2x&view=issues&refresh=true'>Refresh</a> this page."
+msgstr ""
+
+#: wr2x_ajax.php:58 wr2x_ajax.php:105
+msgid "Wait..."
+msgstr "Patientez..."
+
+#: wr2x_ajax.php:66
 msgid "Nothing to do ;)"
 msgstr "Rien à faire ;)"
 
-#: wr2x_ajax.php:110 wr2x_retina-dashboard.php:247
+#: wr2x_ajax.php:112 wr2x_retina-dashboard.php:251
 msgid "GENERATE"
 msgstr "GÉNÉRER"
 
-#: wr2x_ajax.php:258 wr2x_ajax.php:287
+#: wr2x_ajax.php:356 wr2x_ajax.php:392 wr2x_ajax.php:425 wr2x_ajax.php:449
 msgid "The attachment ID is missing."
 msgstr "The attachment ID is missing."
 
-#: wr2x_ajax.php:275
+#: wr2x_ajax.php:380
+msgid "Full retina file deleted."
+msgstr ""
+
+#: wr2x_ajax.php:414
 msgid "Retina files deleted."
 msgstr "Les images Retina ont été supprimées."
 
-#: wr2x_ajax.php:305
+#: wr2x_ajax.php:437
+msgid "Details retrieved."
+msgstr "Détails téléchargés."
+
+#: wr2x_ajax.php:467
 msgid "Retina files generated."
 msgstr "Les images Retina ont été générées."
 
-#: wr2x_ajax.php:316
+#: wr2x_ajax.php:477
 msgid "You do not have permission to upload files."
 msgstr "Vous n'avez pas la permission d'uploader des fichiers."
 
-#: wr2x_ajax.php:332
-msgid "You don't have the rights to use a temporary directory."
-msgstr "Vous n'avez pas la permission d'utiliser un répertoire temporaire."
-
-#: wr2x_ajax.php:337
+#: wr2x_ajax.php:499
 msgid "The temporary directory could not be created."
 msgstr "The temporary directory could not be created."
 
-#: wr2x_ajax.php:352
+#: wr2x_ajax.php:515
 msgid "The file is not an image or the upload went wrong."
 msgstr ""
 "Ce fichier n'est pas une image ou alors il y a eu un problème durant "
 "l'upload."
 
-#: wr2x_ajax.php:362
+#: wr2x_ajax.php:525
 msgid "You cannot use this file (wrong extension? wrong type?)."
 msgstr "Vous ne pouvez pas utiliser ce fichier (mauvaise extension ou type ?)."
 
-#: wr2x_ajax.php:411
+#: wr2x_ajax.php:568
+msgid "Uploaded successfully."
+msgstr "Mise à jour réussie."
+
+#: wr2x_ajax.php:619
 msgid "Replaced successfully."
 msgstr "Remplacé avec succès."
 
-#: wr2x_retina-dashboard.php:19
+#: wr2x_retina-dashboard.php:26
 msgid "Retina images"
 msgstr "Images Retina"
 
-#: wr2x_retina-dashboard.php:20
+#: wr2x_retina-dashboard.php:27
 #, php-format
-msgid "WP Retina 2x %s"
-msgstr "WP Retina 2x %s"
+msgid "Retina %s"
+msgstr "Retina %s"
 
-#: wr2x_retina-dashboard.php:132
-msgid "Generate"
-msgstr "Générer"
-
-#: wr2x_retina-dashboard.php:146
-msgid "Delete all @2x"
-msgstr "Tout supprimer (@2x)"
-
-#: wr2x_retina-dashboard.php:149
-msgid "Refresh issues"
+#: wr2x_retina-dashboard.php:138
+msgid "Refresh"
 msgstr "Rafraîchir"
 
-#: wr2x_retina-dashboard.php:159
-msgid "Issues has been refreshed."
-msgstr "La liste des problèmes a été rafraîchie."
+#: wr2x_retina-dashboard.php:152
+msgid "Bulk Delete"
+msgstr "Tout Supprimer"
 
-#: wr2x_retina-dashboard.php:164
+#: wr2x_retina-dashboard.php:155
+msgid "Bulk Generate"
+msgstr "Tout Générer"
+
+#: wr2x_retina-dashboard.php:166
+msgid "The logs have been cleared."
+msgstr "Les logs ont été supprimés."
+
+#: wr2x_retina-dashboard.php:190
+#, php-format
 msgid ""
-"This screen allows you to check the media for which the retina files are "
-"missing. You can then create the files independently for each media or for "
-"all of them. You can also upload and replace the images by drag & drop them "
-"on the grid."
+"The full-size images should have a resolution of <b>%d×%d</b> at least for "
+"the plugin to be able generate the <b>%d retina images</b> required by your "
+"website."
 msgstr ""
-"Cet écran vous permet de vérifier pour quels médias les fichiers Retina "
-"n'ont pas encore été créés. Vous pouvez ensuite créer les fichiers "
-"indépendemment ou pour l'ensemble d'entre-eux. Vous pouvez aussi glisser & "
-"déposer les nouveaux fichiers dans le tableau."
+"Les images Full-Size images doivent avoir une résolution d'au moins <b>%d×"
+"%d</b> pour que le plugin puisse générer les <b>%d images retina</b>."
 
-#: wr2x_retina-dashboard.php:179
+#: wr2x_retina-dashboard.php:191
+#, php-format
+msgid ""
+"You <b>also need</b> to upload a retina image for the Full-Size image (might "
+"be <b>%d×%d</b>)."
+msgstr ""
+
+#: wr2x_retina-dashboard.php:192
+msgid "You can upload or replace the images by drag & drop."
+msgstr ""
+
+#: wr2x_retina-dashboard.php:193
+#, php-format
+msgid "Your PHP configuration allows uploads of <b>%dMB</b> maximum."
+msgstr ""
+
+#: wr2x_retina-dashboard.php:197
+#, php-format
+msgid ""
+"The <a target=\"_blank\" href=\"%s/wp-retina-2x.log\">log file</a> is "
+"available. You can also <a href=\"?page=wp-"
+"retina-2x&view=issues&clearlogs=true\">clear</a> it."
+msgstr ""
+
+#: wr2x_retina-dashboard.php:215
 msgid "All"
 msgstr "Tous"
 
-#: wr2x_retina-dashboard.php:180
+#: wr2x_retina-dashboard.php:216
 msgid "Issues"
 msgstr "Problèmes"
 
-#: wr2x_retina-dashboard.php:181
+#: wr2x_retina-dashboard.php:217
 msgid "Ignored"
 msgstr "Ignorés"
 
-#: wr2x_retina-dashboard.php:187
-msgid "Title"
-msgstr "Titre"
+#: wr2x_retina-dashboard.php:223
+msgid "Base image"
+msgstr ""
 
-#: wr2x_retina-dashboard.php:195
-msgid "Actions"
-msgstr "Actions"
+#: wr2x_retina-dashboard.php:224
+msgid "Media Sizes<br />Retina-ized"
+msgstr ""
 
-#: wr2x_retina-dashboard.php:250
+#: wr2x_retina-dashboard.php:225
+msgid "Full-Size<br/><b>Replace</b>"
+msgstr ""
+
+#: wr2x_retina-dashboard.php:226
+msgid "Full-Size Retina"
+msgstr ""
+
+#: wr2x_retina-dashboard.php:227
+msgid "Full-Size Retina<br/><b>Upload</b>"
+msgstr ""
+
+#: wr2x_retina-dashboard.php:253
 msgid "IGNORE"
 msgstr "IGNORER"
 
-#: wr2x_settings.php:18 wr2x_settings.php:21
+#: wr2x_retina-dashboard.php:254
+msgid "DETAILS"
+msgstr "DETAILS"
+
+#: wr2x_settings.php:21 wr2x_settings.php:24 wr2x_settings.php:27
 msgid "Current method:"
 msgstr "Methode utilisée :"
 
-#: wr2x_settings.php:18
+#: wr2x_settings.php:21
 msgid "Client side"
 msgstr "Client side"
 
-#: wr2x_settings.php:21
+#: wr2x_settings.php:24
+msgid "PictureFill"
+msgstr "PictureFill"
+
+#: wr2x_settings.php:27
 msgid "Server side"
 msgstr "Server side"
 
-#: wr2x_settings.php:26
+#: wr2x_settings.php:32
 msgid ""
 "By the way, you are using a <b>WordPress Multi-Site installation</b>! You "
 "must edit your .htaccess manually and add '<b>RewriteRule ^files/(.+) wp-"
@@ -164,7 +282,7 @@ msgstr ""
 "ms=true&file=$1 [L]</b>' en tant que première RewriteRule si vous voulez que "
 "le Client side fonctionne."
 
-#: wr2x_settings.php:29
+#: wr2x_settings.php:35
 msgid ""
 "By the way, you are using a <b>WordPress Multi-Site installation</b>! You "
 "must edit your .htaccess manually and add '<b>RewriteRule ^(wp-content/.+\\."
@@ -178,7 +296,7 @@ msgstr ""
 "wp-retina-2x/wr2x_image.php?ms=true&file=$1 [L]</b>' en tant que première "
 "RewriteRule si vous voulez que le Client side fonctionne."
 
-#: wr2x_settings.php:33
+#: wr2x_settings.php:39
 msgid ""
 "The permalinks are not enabled. They need to be enabled in order to use the "
 "server-side method."
@@ -186,141 +304,322 @@ msgstr ""
 "Les permaliens n'étant pas activés, la méthode côté serveur ne pourra pas "
 "fonctionner."
 
-#: wr2x_settings.php:62
+#: wr2x_settings.php:85
 msgid "Basics"
-msgstr "Basique"
+msgstr "Basic"
 
-#: wr2x_settings.php:66
+#: wr2x_settings.php:89
 msgid "Advanced"
 msgstr "Avancé"
 
-#: wr2x_settings.php:79
+#: wr2x_settings.php:93
+msgid "Pro"
+msgstr "Pro"
+
+#: wr2x_settings.php:111
 msgid "Disabled Sizes"
 msgstr "Tailles désactivés"
 
-#: wr2x_settings.php:80
-msgid "The checked sizes will not be generated for Retina displays."
-msgstr "Les tailles sélectionnés ne seront pas prises en compte pour Retina."
+#: wr2x_settings.php:112
+msgid ""
+"<br />The selected sizes will not have their retina equivalent generated."
+msgstr ""
 
-#: wr2x_settings.php:86
+#: wr2x_settings.php:118
 msgid "Auto Generate"
 msgstr "Auto-Génération"
 
-#: wr2x_settings.php:87
+#: wr2x_settings.php:119
 msgid ""
-"Generate Retina images automatically when images are uploaded to the Media "
-"Library."
+"Generate retina images automatically when images are uploaded or re-"
+"generated.<br />The 'Disabled Sizes' will be skipped."
 msgstr ""
-"Génération automatique des fichiers Retina dès que vous uploadez ou "
-"remplacez des médias."
 
-#: wr2x_settings.php:95
+#: wr2x_settings.php:125
+msgid "Full Size Retina (Pro)"
+msgstr ""
+
+#: wr2x_settings.php:126
+msgid ""
+"Retina for the full-size image will be considered required.<br />Checks and "
+"upload feature are available."
+msgstr ""
+
+#: wr2x_settings.php:134
 msgid "Method"
 msgstr "Méthode"
 
-#: wr2x_settings.php:97
+#: wr2x_settings.php:135
 msgid ""
-"<br />\n"
-"                        The <b>HTML srcset method</b> is the best. The HTML "
-"will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/srcset/w3c-"
-"srcset/\">the srcset attribute</a> added to the img tags. Works with "
-"caching. Unfortunately, not all the browsers support it yet.<br /><br />\n"
-"                \t\tThe <b>HTML Rewrite method</b> is one of the best "
-"methods. It replaces the images by the retina images - if available - in the "
-"HTML directly. It's tricky to use HTML caching with it however.<br /><br /"
-">               \t\t\n"
-"                \t\tThe <b>Retina.js method</b> is fail-safe and only uses "
-"one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</a>. "
-"When a Retina Display is detected, requests for every images on the page "
-"will be sent to the server and the retina images will be retrieved if "
-"available. Requires a lot of bandwidth.<br /><br />\n"
-"                        The <b>Retina-Images method</b> is efficient. The "
-"images will go through the <a href=\"https://github.com/Retina-Images/Retina-"
-"Images/\">Retina-Images</a> handler. Caching systems might be an issue.\n"
-"                \t"
+"<br />Check the <a href=\"http://apps.meow.fr/wp-retina-2x/\">plugin "
+"official page</a> if you want to know more about the methods to deliver the "
+"retina images."
 msgstr ""
-"<br />\n"
-"                        The <b>HTML srcset method</b> is the best. The HTML "
-"will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/srcset/w3c-"
-"srcset/\">the srcset attribute</a> added to the img tags. Works with "
-"caching. Unfortunately, not all the browsers support it yet.<br /><br />\n"
-"                \t\tThe <b>HTML Rewrite method</b> is one of the best "
-"methods. It replaces the images by the retina images - if available - in the "
-"HTML directly. It's tricky to use HTML caching with it however.<br /><br /"
-">               \t\t\n"
-"                \t\tThe <b>Retina.js method</b> is fail-safe and only uses "
-"one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</a>. "
-"When a Retina Display is detected, requests for every images on the page "
-"will be sent to the server and the retina images will be retrieved if "
-"available. Requires a lot of bandwidth.<br /><br />\n"
-"                        The <b>Retina-Images method</b> is efficient. The "
-"images will go through the <a href=\"https://github.com/Retina-Images/Retina-"
-"Images/\">Retina-Images</a> handler. Caching systems might be an issue.\n"
-"                \t"
 
-#: wr2x_settings.php:106
-msgid "HTML srcset (W3C Draft)"
-msgstr "HTML srcset (W3C Draft)"
+#: wr2x_settings.php:139
+msgid "Picturefill (Recommended)"
+msgstr ""
 
-#: wr2x_settings.php:107
-msgid "HTML Rewrite"
-msgstr "HTML Rewrite"
-
-#: wr2x_settings.php:108
+#: wr2x_settings.php:140
 msgid "Retina.js"
 msgstr "Retina.js"
 
-#: wr2x_settings.php:109
+#: wr2x_settings.php:141
+msgid "IMG Rewrite"
+msgstr ""
+
+#: wr2x_settings.php:142
 msgid "Retina-Images"
 msgstr "Retina-Images"
 
-#: wr2x_settings.php:110
+#: wr2x_settings.php:143
 msgid "None"
 msgstr "Aucune"
 
-#: wr2x_settings.php:115
+#: wr2x_settings.php:148
 msgid "Quality"
 msgstr "Qualité"
 
-#: wr2x_settings.php:116
-msgid "Image Compression quality (between 0 and 100)."
-msgstr "Qualité de compression (entre 0 et 100)."
+#: wr2x_settings.php:149
+msgid ""
+"<br />Image Compression quality (between 0 and 100).<br />That doesn't "
+"always actually work depending on your hosting service."
+msgstr ""
 
-#: wr2x_settings.php:122
+#: wr2x_settings.php:155
 msgid "Debug Mode"
 msgstr "Mode Debug"
 
-#: wr2x_settings.php:123
+#: wr2x_settings.php:156
 msgid ""
-"If checked, the client will be always served Retina images. Convenient for "
-"testing."
+"If checked, the client will be always served Retina images. <br />Please use "
+"it for testing purposes. It creates a <a href=\""
 msgstr ""
-"Si sélectionné, les images Retina seront toujours délivrées. Idéal pour vos "
-"tests."
 
-#: wr2x_settings.php:129
+#: wr2x_settings.php:162
+msgid "Custom CDN Domain (Pro)"
+msgstr ""
+
+#: wr2x_settings.php:163
+msgid ""
+"<br />If not empty, your site domain will be replaced with this CDN domain "
+"(PictureFill and HTML Rewrite only)."
+msgstr ""
+
+#: wr2x_settings.php:170
+msgid "<h2>For PictureFill</h2>"
+msgstr ""
+
+#: wr2x_settings.php:175
+msgid "Keep IMG SRC (Pro)"
+msgstr ""
+
+#: wr2x_settings.php:176
+msgid ""
+"With PictureFill, <b>src</b> tags are replaced by <b>src-set</b> tags and "
+"consequently search engines might not be able to find and reference those "
+"images. Keeping it will load images twice for retina devices on old browsers."
+msgstr ""
+
+#: wr2x_settings.php:182
+msgid "Use Lazysizes (Pro)"
+msgstr ""
+
+#: wr2x_settings.php:183
+msgid ""
+"HTML will be rewritten to support the lazysizes and the script will be also "
+"loaded. The images will be loaded in a lazy way (when the visitor is getting "
+"close to them)."
+msgstr ""
+
+#: wr2x_settings.php:189
+msgid "No Picturefill Script"
+msgstr ""
+
+#: wr2x_settings.php:190
+msgid ""
+"The script for Picturefill will not be loaded. Only the browsers with src-"
+"set support (e.g. Chrome) will display images. You can also load the "
+"Picturefill script manually."
+msgstr ""
+
+#: wr2x_settings.php:197
+msgid "<h2>Admin Screens</h2>"
+msgstr ""
+
+#: wr2x_settings.php:202
 msgid "Hide 'Retina' column"
 msgstr "Cacher la colonne 'Retina'"
 
-#: wr2x_settings.php:130
+#: wr2x_settings.php:203
 msgid "Will hide the 'Retina Column' from the Media Library."
 msgstr "La colonne Retina ne s'affichera plus dans la Bibliothèque."
 
-#: wr2x_settings.php:136
+#: wr2x_settings.php:209
 msgid "Hide Retina Dashboard"
 msgstr "Cacher le Retina Dashboard"
 
-#: wr2x_settings.php:137
+#: wr2x_settings.php:210
 msgid "Doesn't show the Retina Dashboard menu and tools."
 msgstr "Le Retina Dashboard ne s'affichera plus dans les menus."
 
-#: wr2x_settings.php:143
+#: wr2x_settings.php:216
+msgid "Admin in Retina"
+msgstr ""
+
+#: wr2x_settings.php:217
+msgid ""
+"If checked, the WordPress Admin will also be Retina. Some plugins (like "
+"NextGen) do not like Retina enabled in the admin."
+msgstr ""
+
+#: wr2x_settings.php:224
+msgid "<h2>Mobiles</h2>"
+msgstr ""
+
+#: wr2x_settings.php:229
 msgid "Ignore Mobile"
 msgstr "Ignorer Mobiles"
 
-#: wr2x_settings.php:144
-msgid "Doesn't deliver Retina images to mobiles."
-msgstr "Pas de retina pour les mobiles."
+#: wr2x_settings.php:230
+msgid ""
+"Doesn't deliver Retina images to mobiles.<br />PictureFill doesn't support "
+"it and cache will also prevent it from working."
+msgstr ""
+
+#: wr2x_settings.php:244
+msgid "Serial"
+msgstr ""
+
+#: wr2x_settings.php:245
+msgid ""
+"<br />Enter your serial or subscription ID here. If you don't have one yet, "
+"get one <a target=\"_blank\" href=\"http://apps.meow.fr/wp-retina-2x/"
+"\">right here</a>."
+msgstr ""
+
+#~ msgid ""
+#~ "Done. Please <a href='javascript:history.go(0)'>refresh</a> this page."
+#~ msgstr ""
+#~ "Fait. <a href='javascript:history.go(0)'>Rafraîchissez</a> cette page."
+
+#~ msgid ""
+#~ "Done. You might want to <a href='?page=wp-"
+#~ "retina-2x&view=issues&refresh=true'>refresh</a> the issues."
+#~ msgstr ""
+#~ "Fait. Vous devriez peut-être <a href='?page=wp-"
+#~ "retina-2x&view=issues&refresh=true'>rafraîchir</a> la liste des problèmes."
+
+#~ msgid "Please wait..."
+#~ msgstr "Patientez SVP..."
+
+#~ msgid "You don't have the rights to use a temporary directory."
+#~ msgstr "Vous n'avez pas la permission d'utiliser un répertoire temporaire."
+
+#~ msgid "WP Retina 2x %s"
+#~ msgstr "WP Retina 2x %s"
+
+#~ msgid "Generate"
+#~ msgstr "Générer"
+
+#~ msgid "Delete all @2x"
+#~ msgstr "Tout supprimer (@2x)"
+
+#~ msgid "Refresh issues"
+#~ msgstr "Rafraîchir"
+
+#~ msgid "Issues has been refreshed."
+#~ msgstr "La liste des problèmes a été rafraîchie."
+
+#~ msgid ""
+#~ "This screen allows you to check the media for which the retina files are "
+#~ "missing. You can then create the files independently for each media or "
+#~ "for all of them. You can also upload and replace the images by drag & "
+#~ "drop them on the grid."
+#~ msgstr ""
+#~ "Cet écran vous permet de vérifier pour quels médias les fichiers Retina "
+#~ "n'ont pas encore été créés. Vous pouvez ensuite créer les fichiers "
+#~ "indépendemment ou pour l'ensemble d'entre-eux. Vous pouvez aussi glisser "
+#~ "& déposer les nouveaux fichiers dans le tableau."
+
+#~ msgid "Title"
+#~ msgstr "Titre"
+
+#~ msgid "Actions"
+#~ msgstr "Actions"
+
+#~ msgid "The checked sizes will not be generated for Retina displays."
+#~ msgstr ""
+#~ "Les tailles sélectionnés ne seront pas prises en compte pour Retina."
+
+#~ msgid ""
+#~ "Generate Retina images automatically when images are uploaded to the "
+#~ "Media Library."
+#~ msgstr ""
+#~ "Génération automatique des fichiers Retina dès que vous uploadez ou "
+#~ "remplacez des médias."
+
+#~ msgid ""
+#~ "<br />\n"
+#~ "                        The <b>HTML srcset method</b> is the best. The "
+#~ "HTML will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/"
+#~ "srcset/w3c-srcset/\">the srcset attribute</a> added to the img tags. "
+#~ "Works with caching. Unfortunately, not all the browsers support it yet."
+#~ "<br /><br />\n"
+#~ "                \t\tThe <b>HTML Rewrite method</b> is one of the best "
+#~ "methods. It replaces the images by the retina images - if available - in "
+#~ "the HTML directly. It's tricky to use HTML caching with it however.<br /"
+#~ "><br />               \t\t\n"
+#~ "                \t\tThe <b>Retina.js method</b> is fail-safe and only "
+#~ "uses one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</"
+#~ "a>. When a Retina Display is detected, requests for every images on the "
+#~ "page will be sent to the server and the retina images will be retrieved "
+#~ "if available. Requires a lot of bandwidth.<br /><br />\n"
+#~ "                        The <b>Retina-Images method</b> is efficient. The "
+#~ "images will go through the <a href=\"https://github.com/Retina-Images/"
+#~ "Retina-Images/\">Retina-Images</a> handler. Caching systems might be an "
+#~ "issue.\n"
+#~ "                \t"
+#~ msgstr ""
+#~ "<br />\n"
+#~ "                        The <b>HTML srcset method</b> is the best. The "
+#~ "HTML will be rewritten with <a href=\"http://www.w3.org/html/wg/drafts/"
+#~ "srcset/w3c-srcset/\">the srcset attribute</a> added to the img tags. "
+#~ "Works with caching. Unfortunately, not all the browsers support it yet."
+#~ "<br /><br />\n"
+#~ "                \t\tThe <b>HTML Rewrite method</b> is one of the best "
+#~ "methods. It replaces the images by the retina images - if available - in "
+#~ "the HTML directly. It's tricky to use HTML caching with it however.<br /"
+#~ "><br />               \t\t\n"
+#~ "                \t\tThe <b>Retina.js method</b> is fail-safe and only "
+#~ "uses one <a href=\"https://github.com/imulus/retinajs/\">JavaScript file</"
+#~ "a>. When a Retina Display is detected, requests for every images on the "
+#~ "page will be sent to the server and the retina images will be retrieved "
+#~ "if available. Requires a lot of bandwidth.<br /><br />\n"
+#~ "                        The <b>Retina-Images method</b> is efficient. The "
+#~ "images will go through the <a href=\"https://github.com/Retina-Images/"
+#~ "Retina-Images/\">Retina-Images</a> handler. Caching systems might be an "
+#~ "issue.\n"
+#~ "                \t"
+
+#~ msgid "HTML srcset (W3C Draft)"
+#~ msgstr "HTML srcset (W3C Draft)"
+
+#~ msgid "HTML Rewrite"
+#~ msgstr "HTML Rewrite"
+
+#~ msgid "Image Compression quality (between 0 and 100)."
+#~ msgstr "Qualité de compression (entre 0 et 100)."
+
+#~ msgid ""
+#~ "If checked, the client will be always served Retina images. Convenient "
+#~ "for testing."
+#~ msgstr ""
+#~ "Si sélectionné, les images Retina seront toujours délivrées. Idéal pour "
+#~ "vos tests."
+
+#~ msgid "Doesn't deliver Retina images to mobiles."
+#~ msgstr "Pas de retina pour les mobiles."
 
 #~ msgid ""
 #~ "<br />\n"

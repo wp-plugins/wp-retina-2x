@@ -183,7 +183,7 @@ function wpr2x_wp_retina_2x() {
 		$max_width = $max_width * 2;
 		$max_height = $max_height * 2;
 
-		$upload_max_size = ini_get('upload_max_filesize');
+		$upload_max_size = ini_get( 'upload_max_filesize' );
 	?>
 
 	<p>
@@ -194,7 +194,7 @@ function wpr2x_wp_retina_2x() {
 
 		<?php 
 			if ( file_exists( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' ) ) {
-				_e( 'The <a target="_blank" href="' . plugin_dir_url( __FILE__ ) . '/wp-retina-2x.log">log file</a> available and you can <a href="?page=wp-retina-2x&view=issues&clearlogs=true">clear</a> it.');
+				printf( __( 'The <a target="_blank" href="%s/wp-retina-2x.log">log file</a> is available. You can also <a href="?page=wp-retina-2x&view=issues&clearlogs=true">clear</a> it.', 'wp-retina-2x' ), plugin_dir_url( __FILE__ ) );
 			}
 		?>
 	</p>
