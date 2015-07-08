@@ -5,7 +5,7 @@ Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plug
 License: GPLv2 or later
 Requires at least: 3.5
 Tested up to: 4.2.2
-Stable tag: 3.4.0
+Stable tag: 3.4.2
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -26,6 +26,10 @@ Languages: English, French.
 3. Check if it works! - if it doesn't, read the FAQ, the tutorial, and check the forums.
 
 == Changelog ==
+
+= 3.4.2 =
+* Fix: Full-Size Retina wasn't removed when the original file was deleted from WP.
+* Info: If you use Lightroom and WordPress, please have a look at http://apps.meow.fr/wplr-sync/ :)
 
 = 3.4.0 =
 * Fix: Images set up with a 0x0 size must be skipped.
