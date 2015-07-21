@@ -25,7 +25,7 @@ function wr2x_admin_menu_dashboard () {
 	$flagged = count( wr2x_get_issues() );
 	$warning_title = __( "Retina images", 'wp-retina-2x' );
 	$menu_label = sprintf( __( 'Retina %s' ), "<span class='update-plugins count-$flagged' title='$warning_title'><span class='update-count'>" . number_format_i18n( $flagged ) . "</span></span>" );
-	add_media_page( 'Retina', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' ); 
+	add_media_page( 'Retina', $menu_label, 'manage_options', 'wp-retina-2x', 'wpr2x_wp_retina_2x' );
 }
 
 function wpr2x_wp_retina_2x() {
@@ -36,15 +36,15 @@ function wpr2x_wp_retina_2x() {
 	$posts_per_page = 15; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
 	$ignored = wr2x_get_ignores();
-	
+
 	?>
 	<div class='wrap'>
 	<?php jordy_meow_donation(true); ?>
 	<div id="icon-upload" class="icon32"><br></div>
 	<h2>Retina <?php by_jordy_meow(); ?></h2>
 
-	<?php 
-	
+	<?php
+
 	if ( $view == 'issues' ) {
 		global $wpdb;
 		$totalcount = $wpdb->get_var( $wpdb->prepare( "
@@ -58,8 +58,8 @@ function wpr2x_wp_retina_2x() {
 			post_mime_type = 'image/gif' )
 		", '%' . $s . '%' ) );
 		$postin = count( $issues ) < 1 ? array( -1 ) : $issues;
-		$query = new WP_Query( 
-			array( 
+		$query = new WP_Query(
+			array(
 				'post_status' => 'inherit',
 				'post_type' => 'attachment',
 				'post__in' => $postin,
@@ -68,7 +68,7 @@ function wpr2x_wp_retina_2x() {
 				's' => $s
 			)
 		);
-	} 
+	}
 	else if ( $view == 'ignored' ) {
 		global $wpdb;
 		$totalcount = $wpdb->get_var( $wpdb->prepare( "
@@ -83,8 +83,8 @@ function wpr2x_wp_retina_2x() {
 			post_mime_type = 'image/gif' )
 		", '%' . $s . '%' ) );
 		$postin = count( $ignored ) < 1 ? array( -1 ) : $ignored;
-		$query = new WP_Query( 
-			array( 
+		$query = new WP_Query(
+			array(
 				'post_status' => 'inherit',
 				'post_type' => 'attachment',
 				'post__in' => $postin,
@@ -93,10 +93,10 @@ function wpr2x_wp_retina_2x() {
 				's' => $s
 			)
 		);
-	} 
+	}
 	else {
-		$query = new WP_Query( 
-			array( 
+		$query = new WP_Query(
+			array(
 				'post_status' => 'inherit',
 				'post_type' => 'attachment',
 				'post_mime_type' => 'image/jpeg,image/gif,image/jpg,image/png',
@@ -128,12 +128,12 @@ function wpr2x_wp_retina_2x() {
 	$pagescount = $query->max_num_pages;
 	foreach ( $query->posts as $post ) {
 		$info = wr2x_retina_info( $post->ID );
-		array_push( $results, array( 'post' => $post, 'info' => $info ) );		
+		array_push( $results, array( 'post' => $post, 'info' => $info ) );
 	}
 	?>
 
 	<div style='background: #FFF; padding: 5px; border-radius: 4px; height: 28px; box-shadow: 0px 0px 6px #C2C2C2;'>
-		
+
 		<!-- REFRESH -->
 		<a id='wr2x_refresh' href='?page=wp-retina-2x&view=issues&refresh=true' class='button' style='float: left;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo plugin_dir_url( __FILE__ ); ?>img/refresh.png' /><?php _e("Refresh", 'wp-retina-2x'); ?></a>
 
@@ -153,14 +153,14 @@ function wpr2x_wp_retina_2x() {
 
 		<!-- GENERATE ALL -->
 		<a id='wr2x_generate_button_all' onclick='wr2x_generate_all()' class='button-primary' style='float: right; margin-right: 5px;'><img style='position: relative; top: 3px; left: -2px; margin-right: 3px; width: 16px; height: 16px;' src='<?php echo plugin_dir_url( __FILE__ ); ?>img/photo-album--plus.png' /><?php _e("Bulk Generate", 'wp-retina-2x'); ?></a>
-		
+
 
 		<!-- PROGRESS -->
 		<span style='margin-left: 12px; font-size: 13px; top: 5px; position: relative; color: #24547C; font-weight: bold;' id='wr2x_progression'></span>
-		
+
 	</div>
 
-	<?php 
+	<?php
 		if (isset ( $_GET[ 'clearlogs' ] ) ? $_GET[ 'clearlogs' ] : 0) {
 			echo "<div class='updated' style='margin-top: 20px;'><p>";
 			_e( "The logs have been cleared.", 'wp-retina-2x' );
@@ -173,10 +173,10 @@ function wpr2x_wp_retina_2x() {
 		$max_width = 0;
 		$max_height = 0;
 		foreach ( $active_sizes as $name => $active_size ) {
-			if ( $active_size['height'] > $max_height ) {
+			if ( $active_size['height'] != 9999 && $active_size['height'] > $max_height ) {
 				$max_height = $active_size['height'];
 			}
-			if ( $active_size['width'] > $max_width ) {
+			if ( $active_size['width'] != 9999 && $active_size['width'] > $max_width ) {
 				$max_width = $active_size['width'];
 			}
 		}
@@ -192,7 +192,7 @@ function wpr2x_wp_retina_2x() {
 		<?php _e("You can upload or replace the images by drag & drop.", 'wp-retina-2x'); ?>
 		<?php printf( __( "Your PHP configuration allows uploads of <b>%dMB</b> maximum.", 'wp-retina-2x'), $upload_max_size ); ?>
 
-		<?php 
+		<?php
 			if ( file_exists( plugin_dir_path( __FILE__ ) . '/wp-retina-2x.log' ) ) {
 				printf( __( 'The <a target="_blank" href="%s/wp-retina-2x.log">log file</a> is available. You can also <a href="?page=wp-retina-2x&view=issues&clearlogs=true">clear</a> it.', 'wp-retina-2x' ), plugin_dir_url( __FILE__ ) );
 			}
@@ -201,16 +201,16 @@ function wpr2x_wp_retina_2x() {
 
 	<div id='wr2x-pages'>
 	<?php
-	echo paginate_links(array(  
+	echo paginate_links(array(
 	  'base' => '?page=wp-retina-2x&s=' . urlencode($s) . '&view=' . $view . '%_%',
       'current' => $paged,
       'format' => '&paged=%#%',
       'total' => $pagescount,
       'prev_next' => false
-    ));  
+    ));
 	?>
 	</div>
-	
+
 	<ul class="subsubsub">
 		<li class="all"><a <?php if ( $view == 'all' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=all'><?php _e( "All", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo $totalcount; ?>)</span></li> |
 		<li class="all"><a <?php if ( $view == 'issues' ) echo "class='current'"; ?> href='?page=wp-retina-2x&s=<?php echo $s; ?>&view=issues'><?php _e( "Issues", 'wp-retina-2x' ); ?></a><span class="count">(<?php echo $issues_count; ?>)</span></li> |
@@ -241,7 +241,7 @@ function wpr2x_wp_retina_2x() {
 					$original_width = $meta['width'];
 					$original_height = $meta['height'];
 				}
-				
+
 				$attachmentsrc = wp_get_attachment_image_src( $post->ID, 'thumbnail' );
 				echo "<tr class='wr2x-file-row' postId='" . $post->ID . "'>";
 				echo "<td class='wr2x-image wr2x-info-thumbnail'><img src='" . $attachmentsrc[0] . "' /></td>";
@@ -271,7 +271,7 @@ function wpr2x_wp_retina_2x() {
 					// Full-Size Retina Upload
 					echo "<td class='wr2x-fullsize-retina-upload'>";
 					echo "<div class='wr2x-dragdrop'></div>";
-					echo "</td>";	
+					echo "</td>";
 				}
 				else {
 					echo "<td colspan='2' style='text-align: center;'><small><br /><a target='_blank' href='http://apps.meow.fr/wp-retina-2x/'>PRO VERSION ONLY</a></small></td>";

@@ -1533,7 +1533,7 @@ class simple_html_dom
 		$node->attr[$name] = str_replace("\n", "", $node->attr[$name]);
 		// PaperG: If this is a "class" selector, lets get rid of the preceeding and trailing space since some people leave it in the multi class case.
 		if ($name == "class") {
-			$node->attr[$name] = trim($node->attr[$name]);
+			$node->attr[$name] = $node->attr[$name];
 		}
 	}
 
