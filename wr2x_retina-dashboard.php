@@ -31,7 +31,7 @@ function wr2x_admin_menu_dashboard () {
 function wpr2x_wp_retina_2x() {
 	$view = isset ( $_GET[ 'view' ] ) ? $_GET[ 'view' ] : 'issues';
 	$paged = isset ( $_GET[ 'paged' ] ) ? $_GET[ 'paged' ] : 1;
-	$s = isset ( $_GET[ 's' ] ) ? sanitize_text_field( $_GET[ 's' ] ) : null;
+	$s = isset( $_GET[ 's' ] ) && !empty( $_GET[ 's' ] ) ? sanitize_text_field( $_GET[ 's' ] ) : null;
 	$issues = $count = 0;
 	$posts_per_page = 15; // TODO: HOW TO GET THE NUMBER OF MEDIA PER PAGES? IT IS NOT get_option('posts_per_page');
 	$issues = wr2x_get_issues();
@@ -40,7 +40,6 @@ function wpr2x_wp_retina_2x() {
 	?>
 	<div class='wrap'>
 	<?php jordy_meow_donation(true); ?>
-	<div id="icon-upload" class="icon32"><br></div>
 	<h2>Retina <?php by_jordy_meow(); ?></h2>
 
 	<?php

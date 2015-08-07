@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: retina, images, image, admin, attachment, media, files, iphone, ipad, plugin, picture, pictures
 License: GPLv2 or later
 Requires at least: 3.5
-Tested up to: 4.2.2
-Stable tag: 3.4.4
+Tested up to: 4.2.4
+Stable tag: 3.4.6
 
 Make your website look beautiful and crisp on Retina / High DPI displays.
 
@@ -27,11 +27,15 @@ Languages: English, French.
 
 == Changelog ==
 
+= 3.4.6 =
+* Fix: Search string not null but empty induces error.
+* Change: User Agent used for Pro authentification.
+* Info: If you use Lightroom & WP, please have a look at http://apps.meow.fr/wplr-sync/ :)
+
 = 3.4.4 =
 * Fix: Issues with class containing trailing spaces. Fixed in in SimpleHTMLDOM.
 * Fix: Used to show weird numbers when using 9999 as width or height.
 * Add: Filter and default filter to avoid certain IMG SRC to be checked/parsed by the plugin while rendering.
-* Info: If you use Lightroom & WP, please have a look at http://apps.meow.fr/wplr-sync/ :)
 
 = 3.4.2 =
 * Fix: Full-Size Retina wasn't removed when the original file was deleted from WP.
